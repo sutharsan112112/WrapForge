@@ -1,17 +1,17 @@
 import express from 'express';
-import { isAuthenticated, isAdmin } from '../middleware/authMiddleware.js';
+import { authMiddleware, isAdmin } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 // Dummy in-memory data
 const items = [];
 
 // GET all items (Admin only)
-router.get('/items', isAuthenticated, isAdmin, (req, res) => {
+router.get('/items', authMiddleware, isAdmin, (req, res) => {
     res.json({ items });
 });
 
 // POST create a new item (Admin only)
-router.post('/items', isAuthenticated, isAdmin, (req, res) => {
+router.post('/items', authMiddleware, isAdmin, (req, res) => {
     const newItem = {
         id: items.length + 1,
         ...req.body
@@ -21,7 +21,7 @@ router.post('/items', isAuthenticated, isAdmin, (req, res) => {
 });
 
 // PUT update an item (Admin only)
-router.put('/items/:id', isAuthenticated, isAdmin, (req, res) => {
+router.put('/items/:id', authMiddleware, isAdmin, (req, res) => {
     const id = parseInt(req.params.id);
     const index = items.findIndex(item => item.id === id);
 
@@ -38,7 +38,7 @@ router.put('/items/:id', isAuthenticated, isAdmin, (req, res) => {
 });
 
 // DELETE an item (Admin only)
-router.delete('/items/:id', isAuthenticated, isAdmin, (req, res) => {
+router.delete('/items/:id', authMiddleware, isAdmin, (req, res) => {
     const id = parseInt(req.params.id);
     const index = items.findIndex(item => item.id === id);
 

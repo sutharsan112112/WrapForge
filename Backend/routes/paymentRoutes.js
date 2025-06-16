@@ -1,9 +1,9 @@
 import express from 'express';
-import { verifylogin } from '../middleware/paymentMiddleware';
-import { handlePayment } from './controller/paymentController.js';
+import PaymentController from '../controllers /paymentController.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
-   const router = express.Router();
+const router = express.Router();
 
-   router.post('/', verifylogin, hendlepayment);
+router.post('/create-checkout-session', authMiddleware, PaymentController.createCheckoutSession);
 
-   export default router;
+export default router;
