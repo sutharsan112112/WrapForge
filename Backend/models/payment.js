@@ -23,10 +23,10 @@ const paymentSchema = new mongoose.Schema({
     enum: ['pending', 'completed', 'failed'],
     default: 'pending'
   },
-  // stripeSessionId: {
-  //   type: String,
-  //   required: true
-  // },
+  stripeSessionId: {
+    type: String,
+    required: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

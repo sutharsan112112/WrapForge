@@ -1,11 +1,8 @@
 // middleware/authMiddleware.js
-
 import jwt from 'jsonwebtoken';
-
 import User from '../models/payment.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
-
 
 // isAdmin middleware
 export const isAdmin = (req, res, next) => {

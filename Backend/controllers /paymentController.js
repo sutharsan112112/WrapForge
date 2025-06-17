@@ -33,8 +33,8 @@ class PaymentController {
         userId: req.user._id,
         email: userEmail,
         amount,
-        // stripeSessionId: session.id,
-        // paymentStatus: 'pending',
+        stripeSessionId: session.id,
+        paymentStatus: 'pending',
       });
 
       res.status(200).json({ id: session.id });
