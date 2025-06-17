@@ -1,6 +1,7 @@
 // middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
 import User from '../models/payment.js';
+import Sticker from '../models/Sticker.js';;
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
