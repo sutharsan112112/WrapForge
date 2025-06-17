@@ -1,6 +1,7 @@
 // middleware/authMiddleware.js
 import jwt from 'jsonwebtoken';
 import User from '../models/payment.js';
+import Sticker from '../models/Sticker.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
 
@@ -34,5 +35,26 @@ export const authMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     res.status(401).json({ message: 'Token verification failed' });
+  }
+};
+
+export const authmiddleware = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ message: 'Not authorized, no token' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (req.user.role === 'admin' || req.user.role === 'partner') {
+      next();
+    } else {
+      return res.status(403).json({ message: 'Not authorized as admin or partner' });
+    }
+  } catch (error) {
+    res.status(401).json({ message: 'Not authorized, token failed' });
   }
 };
