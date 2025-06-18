@@ -4,8 +4,8 @@ import {
   getStickers,
   updateSticker,
   deleteSticker
-} from '../controllers/stickerController.js';
-import authmiddleware from '../middleware/authMiddleware.js';
+} from '../controllers /stickerController.js';
+import { authmiddleware } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
