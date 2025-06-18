@@ -1,14 +1,29 @@
 import express from 'express';
-import { getAllVehicles, getStickers } from '../controllers /vehicleController.js';
+import {
+  getAllVehicles,
+  getVehicleById,
+  createVehicle,
+  updateVehicle,
+  deleteVehicle
+} from '../controllers /vehicleController.js';
 
-import { VehicleIdmiddleware } from '../middleware/vehiclemiddleware.js';
+import { vehicleMiddleware } from '../middleware/vehiclemiddleware.js'
 
 const router = express.Router();
 
-// Route to fetch all vehicles
+// GET all vehicles
 router.get('/', getAllVehicles);
 
-// Route to fetch stickers for a specific vehicle
-router.get('/:vehicleId/stickers', VehicleIdmiddleware, getStickers);
+// GET single vehicle
+router.get('/:vehicleId', vehicleMiddleware, getVehicleById);
+
+// POST new vehicle
+router.post('/', createVehicle);
+
+// PUT update vehicle
+router.put('/:vehicleId', vehicleMiddleware, updateVehicle);
+
+// DELETE vehicle
+router.delete('/:vehicleId', vehicleMiddleware, deleteVehicle);
 
 export default router;
