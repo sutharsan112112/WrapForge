@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api/vehicles', VehicleRoutes);
+app.use('/api/vehicle', VehicleRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/contact", contactRoutes);
