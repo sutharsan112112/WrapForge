@@ -1,44 +1,101 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import logo from '../src/assets/images/WrapForge logo.png'
 
-const Signup = () => {
+const SignupPage = () => {
   return (
-    <div className="container mt-5" style={{ maxWidth: '500px' }}>
-      <div className="text-center mb-4">
-        <img src={logo} alt="WrapForge Logo" width="120" />
-        <h3 className="mt-3">Sign Up</h3>
+    <div className="min-h-screen flex items-center justify-center bg-[#f3f3fb] px-4">
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+        {/* Logo and Title */}
+        <div className="text-center mb-6">
+          <img src='/src/assets/images/WrapForge logo.png' alt="WrapForge Logo" className="mx-auto w-20" />
+          <h2 className="mt-3 text-2xl font-bold text-[#2f1c13]">Sign Up</h2>
+        </div>
+
+        {/* Form */}
+        <form>
+          {/* Username */}
+          <div className="mb-4">
+            <label htmlFor="username" className="block mb-1 font-medium text-block-700">
+              User Name
+            </label>
+            <input
+              type="text"
+              id="username"
+              placeholder="Enter your username"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+
+          {/* Email */}
+
+          <div className="mb-4">
+            <label htmlFor="email" className="block mb-1 font-medium text-block-700">
+              Email address
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="example@mail.com"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+
+          {/* Password */}
+          <div className="mb-4">
+            <label htmlFor="password" className="block mb-1 font-medium text-block-700">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+
+          {/* Confirm Password */}
+          <div className="mb-4">
+            <label htmlFor="confirmPassword" className="block mb-1 font-medium text-block-700">
+              Confirm Password
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm your password"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+
+          {/* Terms Checkbox */}
+          <div className="flex items-center mb-6">
+            <input
+              type="checkbox"
+              id="terms"
+              className="h-4 w-4 text-yellow-500 border-gray-300 focus:ring-yellow-500"
+            />
+            <label htmlFor="terms" className="ml-2 text-block-700 text-sm font-medium">
+              I agree to the <span className="text-blue-600 hover:underline font-medium">Terms & Conditions</span>
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 hover:bg-orange-500 text-black font-semibold py-2 rounded-md transition duration-300"
+          >
+            Sign Up
+          </button>
+
+          {/* Login Link */}
+          <p className="text-center mt-5 text-sm text-block-700 font-medium">
+            Already have an account?{' '}
+            <a href="/login" className="text-blue-600 font-semibold hover:underline font-medium">
+              Login
+            </a>
+          </p>
+        </form>
       </div>
-      <form>
-        <div className="mb-3">
-          <label htmlFor="username" className="form-label">User Name</label>
-          <input type="text" className="form-control" id="username" placeholder="Enter your username" />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email address</label>
-          <input type="email" className="form-control" id="email" placeholder="Enter your email" />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">Password</label>
-          <input type="password" className="form-control" id="password" placeholder="Enter your password" />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-          <input type="password" className="form-control" id="confirmPassword" placeholder="Confirm your password" />
-        </div>
-        <div className="form-check mb-3">
-          <input className="form-check-input" type="checkbox" id="terms" />
-          <label className="form-check-label" htmlFor="terms">
-            I agree to the Terms & Conditions
-          </label>
-        </div>
-        <button type="submit" className="btn btn-primary w-100">Sign Up</button>
-        <div className="text-center mt-3">
-          Already have an account? <a href="/login">Login</a>
-        </div>
-      </form>
     </div>
   );
 };
 
-export default Signup;
+export default SignupPage;
