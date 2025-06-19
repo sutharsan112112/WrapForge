@@ -1,48 +1,37 @@
-import React from 'react';
+import React from "react";
 
 const images = [
-    // Add your image URLs here
-    'https://via.placeholder.com/300x200?text=Image+1',
-    'https://via.placeholder.com/300x200?text=Image+2',
-    'https://via.placeholder.com/300x200?text=Image+3',
-    'https://via.placeholder.com/300x200?text=Image+4',
-    'https://via.placeholder.com/300x200?text=Image+5',
-    'https://via.placeholder.com/300x200?text=Image+6',
+    // Replace with your image URLs or import statements
+    "https://source.unsplash.com/random/400x300?sig=1",
+    "https://source.unsplash.com/random/400x300?sig=2",
+    "https://source.unsplash.com/random/400x300?sig=3",
+    "https://source.unsplash.com/random/400x300?sig=4",
+    "https://source.unsplash.com/random/400x300?sig=5",
+    "https://source.unsplash.com/random/400x300?sig=6",
 ];
 
-const GalleryPage = () => {
+export default function GalleryPage() {
     return (
-        <div style={{ padding: '2rem' }}>
-            <h1>Gallery</h1>
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-                    gap: '1.5rem',
-                    marginTop: '2rem',
-                }}
-            >
-                {images.map((src, idx) => (
-                    <div
-                        key={idx}
-                        style={{
-                            border: '1px solid #ddd',
-                            borderRadius: '8px',
-                            overflow: 'hidden',
-                            background: '#fafafa',
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                        }}
-                    >
-                        <img
-                            src={src}
-                            alt={`Gallery ${idx + 1}`}
-                            style={{ width: '100%', height: 'auto', display: 'block' }}
-                        />
-                    </div>
-                ))}
+        <div className="min-h-screen bg-gray-100 py-10">
+            <div className="max-w-5xl mx-auto px-4">
+                <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+                    Gallery
+                </h1>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {images.map((src, idx) => (
+                        <div
+                            key={idx}
+                            className="overflow-hidden rounded-lg shadow-lg bg-white hover:scale-105 transition-transform"
+                        >
+                            <img
+                                src={src}
+                                alt={`Gallery ${idx + 1}`}
+                                className="w-full h-60 object-cover"
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
-};
-
-export default GalleryPage;
+}
