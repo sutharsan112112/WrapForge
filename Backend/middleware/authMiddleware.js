@@ -39,16 +39,22 @@ export const authMiddleware = async (req, res, next) => {
 
 export const authmiddleware = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ message: 'Not authorized, no token' });
     }
 
+    const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(decoded.id).select('-password');
 
-    if (req.user.role === 'admin' || req.user.role === 'partner') {
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    req.user = user;
+
+    if (user.role === 'admin' || user.role === 'partner') {
       next();
     } else {
       return res.status(403).json({ message: 'Not authorized as admin or partner' });
