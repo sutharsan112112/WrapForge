@@ -6,7 +6,7 @@ import VehiclePage from './pages/Vehicle page';
 import ServicePage from './pages/Service page';
 import GalleryPage from './pages/Gallery page';
 import ContactPage from './pages/Cotact page';
-import LoginPage from './auth/Login page.jsx';
+import Loginpage from './auth/Login page.jsx';
 import SignUpPage from './auth/Signup page.jsx';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
         <Route path='/service' element={<ServicePage></ServicePage>} />
         <Route path='/gallery' element={<GalleryPage></GalleryPage>} />
         <Route path='/contact' element={<ContactPage></ContactPage>} />
-        <Route path='/login' element={<LoginPage></LoginPage>} />
+        <Route path='/login' element={<Loginpage></Loginpage>} />
         <Route path='/signuppage' element={<SignUpPage></SignUpPage>} />
       </Routes>
 </>

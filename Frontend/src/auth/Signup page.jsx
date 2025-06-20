@@ -67,13 +67,10 @@ const SignupPage = () => {
 
           {/* Terms Checkbox */}
           <div className="flex items-center mb-6">
-            <input
-              type="checkbox"
-              id="terms"
-              className="h-4 w-4 text-yellow-500 border-gray-300 focus:ring-yellow-500"
-            />
-            <label htmlFor="terms" className="ml-2 text-block-700 text-sm font-medium">
-              I agree to the <span className="text-blue-600 hover:underline font-medium">Terms & Conditions</span>
+            <label className="flex items-center space-x-2">
+              <input type="checkbox" className="accent-yellow-500" />
+              <span>I agree to the</span>
+              <span className="text-blue-600 hover:underline font-medium">Terms & Conditions</span>
             </label>
           </div>
 
