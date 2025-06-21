@@ -1,18 +1,16 @@
 import express from 'express';
 import {
   createSticker,
-  getStickers,
+  getAllStickers,
   updateSticker,
   deleteSticker
 } from '../controllers /stickerController.js';
-import { authmiddleware } from '../middleware/authMiddleware.js';
-
+import { protect, isAdminOrPartner } from '../middleware/stickerMiddleware.js'
 const router = express.Router();
 
-// Only admin or partner can access these
-router.post('/', authmiddleware, createSticker);
-router.get('/', authmiddleware, getStickers);
-router.put('/:id', authmiddleware, updateSticker);
-router.delete('/:id', authmiddleware, deleteSticker);
+router.post('/', protect, isAdminOrPartner, createSticker);
+router.get('/', protect, getAllStickers);
+router.put('/:id', protect, isAdminOrPartner, updateSticker);
+router.delete('/:id', protect, isAdminOrPartner, deleteSticker);
 
 export default router;
