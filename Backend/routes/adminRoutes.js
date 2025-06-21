@@ -1,17 +1,17 @@
 import express from 'express';
-import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
+import { protect, adminOnly } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 // Dummy in-memory data
 const items = [];
 
 // GET all items (Admin only)
-router.get('/items', protect, authorizeRoles('admin'), (req, res) => {
+router.get('/items', protect, adminOnly, (req, res) => {
     res.json({ items });
 });
 
 // POST create a new item (Admin only)
-router.post('/items', protect, authorizeRoles('admin'), (req, res) => {
+router.post('/items', protect, adminOnly, (req, res) => {
     const newItem = {
         id: items.length + 1,
         ...req.body
@@ -21,7 +21,7 @@ router.post('/items', protect, authorizeRoles('admin'), (req, res) => {
 });
 
 // PUT update an item (Admin only)
-router.put('/items/:id', protect, authorizeRoles('admin'), (req, res) => {
+router.put('/items/:id', protect, adminOnly, (req, res) => {
     const id = parseInt(req.params.id);
     const index = items.findIndex(item => item.id === id);
 
@@ -38,7 +38,7 @@ router.put('/items/:id', protect, authorizeRoles('admin'), (req, res) => {
 });
 
 // DELETE an item (Admin only)
-router.delete('/items/:id', protect, authorizeRoles('admin'), (req, res) => {
+router.delete('/items/:id', protect, adminOnly, (req, res) => {
     const id = parseInt(req.params.id);
     const index = items.findIndex(item => item.id === id);
 

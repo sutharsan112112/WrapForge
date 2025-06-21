@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
-import User from '../models/Sticker.js';
+import User from '../models/User.js';
 
+// Protect: verify JWT
 export const protect = async (req, res, next) => {
   let token;
-
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -21,7 +21,7 @@ export const protect = async (req, res, next) => {
   }
 };
 
-// Only for admin or partner
+// Role check: only admin or partner
 export const isAdminOrPartner = (req, res, next) => {
   if (req.user && (req.user.role === 'admin' || req.user.role === 'partner')) {
     next();

@@ -1,10 +1,10 @@
 import Sticker from '../models/Sticker.js';
 
-// Create Sticker
+// Create sticker
 export const createSticker = async (req, res) => {
   try {
-    const { name, design, vehicleType, price } = req.body;
-    const newSticker = new Sticker({ name, design, vehicleType, price });
+    const { name, design, imageUrl } = req.body;
+    const newSticker = new Sticker({ name, design, imageUrl });
     await newSticker.save();
     res.status(201).json({ message: 'Sticker created successfully', sticker: newSticker });
   } catch (error) {
@@ -25,9 +25,11 @@ export const getAllStickers = async (req, res) => {
 // Update sticker
 export const updateSticker = async (req, res) => {
   try {
-    const sticker = await Sticker.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!sticker) return res.status(404).json({ message: 'Sticker not found' });
-    res.status(200).json({ message: 'Sticker updated successfully', sticker });
+    const updatedSticker = await Sticker.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedSticker) {
+      return res.status(404).json({ message: 'Sticker not found' });
+    }
+    res.status(200).json({ message: 'Sticker updated', sticker: updatedSticker });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update sticker', error });
   }
@@ -36,9 +38,11 @@ export const updateSticker = async (req, res) => {
 // Delete sticker
 export const deleteSticker = async (req, res) => {
   try {
-    const sticker = await Sticker.findByIdAndDelete(req.params.id);
-    if (!sticker) return res.status(404).json({ message: 'Sticker not found' });
-    res.status(200).json({ message: 'Sticker deleted successfully' });
+    const deletedSticker = await Sticker.findByIdAndDelete(req.params.id);
+    if (!deletedSticker) {
+      return res.status(404).json({ message: 'Sticker not found' });
+    }
+    res.status(200).json({ message: 'Sticker deleted' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete sticker', error });
   }

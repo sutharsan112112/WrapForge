@@ -16,4 +16,5 @@ const stickerSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const Sticker = mongoose.model('Sticker', stickerSchema);
+
 export default Sticker;
