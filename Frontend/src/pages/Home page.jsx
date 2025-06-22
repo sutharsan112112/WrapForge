@@ -1,7 +1,18 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
+import API from '../axios';
 
 function HomePage() {
+        useEffect(() => {
+           API.get('/test')
+            .then((res) => {
+              console.log('Backend message:', res.data.message);
+            })
+            .catch((err) => {
+              console.error('Error connecting backend:', err.message);
+            });
+        }, []);
+
   return (
     <div className="bg-gray-100 font-sans text-gray-800">
       {/* Hero Section */}
