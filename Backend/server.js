@@ -16,10 +16,6 @@ connectDB();
 
 const app = express(); // Move this above app.get
 
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Backend connected successfully!' });
-});
-
 app.use(cors({
   origin: 'http://localhost:5173', // Your frontend port (React + Vite)
   credentials: true

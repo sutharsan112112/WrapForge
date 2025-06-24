@@ -8,6 +8,7 @@ import GalleryPage from './pages/Gallery page';
 import ContactPage from './pages/Cotact page';
 import Loginpage from './auth/Login page.jsx';
 import SignUpPage from './auth/Signup page.jsx';
+import Fooder from './components/Fooder.jsx';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path='/login' element={<Loginpage></Loginpage>} />
         <Route path='/signuppage' element={<SignUpPage></SignUpPage>} />
       </Routes>
+      <Fooder />
 </>
   );
 }

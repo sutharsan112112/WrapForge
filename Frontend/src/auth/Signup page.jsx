@@ -1,6 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const SignupPage = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+    try {
+      await axios.post('/api/auth/signup', formData);
+      alert('Signup successful!');
+      localStorage.setItem('token', res.data.token);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Signup failed');
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f3f3fb] px-4">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
@@ -11,7 +38,7 @@ const SignupPage = () => {
         </div>
 
         {/* Form */}
-        <form>
+        <form onSubmit={handleSubmit}>
           {/* Username */}
           <div className="mb-4">
             <label htmlFor="username" className="block mb-1 font-medium text-block-700">
@@ -20,13 +47,15 @@ const SignupPage = () => {
             <input
               type="text"
               id="username"
+              value={formData.username}
+              onChange={handleChange}
               placeholder="Enter your username"
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
+              required
             />
           </div>
 
           {/* Email */}
-
           <div className="mb-4">
             <label htmlFor="email" className="block mb-1 font-medium text-block-700">
               Email address
@@ -34,8 +63,11 @@ const SignupPage = () => {
             <input
               type="email"
               id="email"
+              value={formData.email}
+              onChange={handleChange}
               placeholder="example@mail.com"
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
+              required
             />
           </div>
 
@@ -47,8 +79,11 @@ const SignupPage = () => {
             <input
               type="password"
               id="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Enter your password"
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
+              required
             />
           </div>
 
@@ -60,15 +95,18 @@ const SignupPage = () => {
             <input
               type="password"
               id="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
               placeholder="Confirm your password"
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
+              required
             />
           </div>
 
           {/* Terms Checkbox */}
           <div className="flex items-center mb-6">
             <label className="flex items-center space-x-2">
-              <input type="checkbox" className="accent-yellow-500" />
+              <input type="checkbox" className="accent-yellow-500" required />
               <span>I agree to the</span>
               <span className="text-blue-600 hover:underline font-medium">Terms & Conditions</span>
             </label>
