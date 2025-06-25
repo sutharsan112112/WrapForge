@@ -13,7 +13,6 @@ function Navbar() {
             <div>
                 <Link to="/" className="ml-4 text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Home</Link>
                 <Link to="/vehicle" className="ml-4 text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Vehicle</Link>
-                <Link to="/service" className="ml-4 text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Service</Link>
                 <Link to="/gallery" className="ml-4 text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Gallery</Link>
                 <Link to="/contact" className="ml-4 text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Contact</Link>
                 <Link to="/login" className="ml-4 bg-yellow-500 text-white px-6 py-3 rounded hover:bg-orange-500 transition-colors">Login</Link>

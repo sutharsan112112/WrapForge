@@ -1,43 +1,55 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'user',
   });
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const { id, value, name } = e.target;
+    setFormData({
+      ...formData,
+      [id || name]: value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       alert('Passwords do not match');
       return;
     }
+
+    setLoading(true);
+    setMessage('');
+
     try {
-      await axios.post('/api/auth/signup', formData);
-      alert('Signup successful!');
+      const res = await axios.post('http://localhost:5000/api/auth/signup', formData);
       localStorage.setItem('token', res.data.token);
-    } catch (err) {
-      alert(err.response?.data?.message || 'Signup failed');
+      setMessage('Signup successful!');
+    } catch (error) {
+      setMessage(error.response?.data?.message || 'Signup failed. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f3f3fb] px-4">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        {/* Logo and Title */}
         <div className="text-center mb-6">
-          <img src='/src/assets/images/WrapForge logo.png' alt="WrapForge Logo" className="mx-auto w-20" />
+          <img src="/src/assets/images/WrapForge logo.png" alt="WrapForge Logo" className="mx-auto w-20" />
           <h2 className="mt-3 text-2xl font-bold text-[#2f1c13]">Sign Up</h2>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit}>
           {/* Username */}
           <div className="mb-4">
@@ -103,6 +115,25 @@ const SignupPage = () => {
             />
           </div>
 
+          {/* Role Select */}
+          <div className="mb-4">
+            <label htmlFor="role" className="block mb-1 font-medium text-block-700">
+              Role
+            </label>
+            <select
+              name="role"
+              id="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="mt-1 block w-full p-2 border border-gray-300 rounded"
+              required
+            >
+              <option value="user">User</option>
+              <option value="partner">Partner</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
           {/* Terms Checkbox */}
           <div className="flex items-center mb-6">
             <label className="flex items-center space-x-2">
@@ -115,10 +146,16 @@ const SignupPage = () => {
           {/* Submit Button */}
           <button
             type="submit"
+            disabled={loading}
             className="w-full bg-yellow-500 hover:bg-orange-500 text-black font-semibold py-2 rounded-md transition duration-300"
           >
-            Sign Up
+            {loading ? 'Signing up...' : 'Sign Up'}
           </button>
+
+          {/* Message */}
+          {message && (
+            <p className="mt-4 text-center text-sm text-red-600">{message}</p>
+          )}
 
           {/* Login Link */}
           <p className="text-center mt-5 text-sm text-block-700 font-medium">
