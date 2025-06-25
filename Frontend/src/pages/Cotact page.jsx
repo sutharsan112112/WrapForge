@@ -25,7 +25,7 @@ const ContactPage = () => {
     const body = { name, email, message };
 
     try {
-      const res = await fetch('http://localhost:5000/api/contact', {  // உங்கள் backend URL இடங்க
+      const res = await fetch('http://localhost:5000/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -54,7 +54,7 @@ const ContactPage = () => {
         <div className="text-center mb-6">
           <img src={logo} alt="WrapForge Logo" className="mx-auto w-20" />
           <h2 className="mt-3 text-2xl font-bold text-[#2f1c13]">Contact Admin</h2>
-          <p className="text-gray-600 text-sm mt-1">Send us your message or concern</p>
+          <p className="text-gray-600 text-sm mt-1">Send us your message</p>
         </div>
 
         <form onSubmit={handleSubmit}>

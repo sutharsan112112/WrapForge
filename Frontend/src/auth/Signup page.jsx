@@ -6,7 +6,6 @@ const SignupPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'user',
   });
 
   const [loading, setLoading] = useState(false);
@@ -113,25 +112,6 @@ const SignupPage = () => {
               className="mt-1 block w-full p-2 border border-gray-300 rounded"
               required
             />
-          </div>
-
-          {/* Role Select */}
-          <div className="mb-4">
-            <label htmlFor="role" className="block mb-1 font-medium text-block-700">
-              Role
-            </label>
-            <select
-              name="role"
-              id="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
-              required
-            >
-              <option value="user">User</option>
-              <option value="partner">Partner</option>
-              <option value="admin">Admin</option>
-            </select>
           </div>
 
           {/* Terms Checkbox */}
