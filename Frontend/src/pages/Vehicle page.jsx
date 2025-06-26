@@ -98,7 +98,7 @@ function VehiclePage() {
                 <span>{type}</span>
                 <span className="text-sm">
                   {expandedVehicleType === type ? (
-                    <svg className="w-4 h-4 inline-block ml-2 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                    <svg className="w-08 h-08 inline-block ml-2 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                   ) : (
                     <svg className="w-4 h-4 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                   )}
@@ -137,7 +137,7 @@ function VehiclePage() {
         </button>
 
         {/* Vehicle Image/3D Model - Increased size */}
-        <div className="relative flex items-center justify-center w-full max-w-5xl h-[500px] mt-16 mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="relative flex items-center justify-center w-full max-w-10xl h-[685px] mt-16 mb-8 bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Navigation Arrows */}
           <button
             className="absolute left-4 p-3 bg-gray-200 hover:bg-gray-300 rounded-full text-gray-700 text-2xl z-10 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
