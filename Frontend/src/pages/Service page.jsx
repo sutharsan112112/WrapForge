@@ -10,7 +10,7 @@ const images = [
 
 ];
 
-const GalleryPage = () => {
+const ServicePage = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const openModal = (item) => {
@@ -22,7 +22,7 @@ const GalleryPage = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-200 min-h-screen flex flex-col items-center">
+    <div className="p-6 bg-gray-200 mt-20 min-h-screen flex flex-col items-center">
       <h1 className="text-4xl font-bold text-orange-500 mb-8">Gallery</h1>
       <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-6 w-6xl h-6xl">
         {images.map((item, idx) => (
@@ -51,4 +51,4 @@ const GalleryPage = () => {
   );
 };
 
-export default GalleryPage;
+export default ServicePage;

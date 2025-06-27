@@ -12,8 +12,7 @@ const Fooder = () => {
             <ul className="space-y-1 text-lg">
               <li><Link to="/">Home</Link></li>
               <li><Link to="/vehicle">Vehicle</Link></li>
-              <li><Link to="/store">Gallery</Link></li>
-              <li><Link to="/about">Contact</Link></li>
+              <li><Link to="/service">Service</Link></li>
             </ul>
           </div>
           <div>

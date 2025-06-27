@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import logo from '/src/assets/images/WrapForge logo.png';
 
 const ContactPage = () => {
-  // form data states
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -14,42 +14,41 @@ const ContactPage = () => {
     e.preventDefault();
 
     if (!agree) {
-      alert('Please agree to receive communications');
+      setResponseMsg('Please agree to the terms.');
       return;
     }
 
-    setLoading(true);
-    setResponseMsg('');
-
-    // API request body
-    const body = { name, email, message };
-
     try {
-      const res = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
+      setLoading(true);
+      setResponseMsg('');
 
-      if (res.ok) {
-        setResponseMsg('Message sent successfully!');
-        setName('');
-        setEmail('');
-        setMessage('');
-        setAgree(false);
-      } else {
-        const data = await res.json();
-        setResponseMsg('Failed to send message: ' + (data.message || res.statusText));
-      }
+      const token = localStorage.getItem('token'); // 🔐 JWT must be stored here after login
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      const payload = { message }; // Only sending message (sender info from token)
+      const response = await axios.post('http://localhost:5000/api/contact', payload, config);
+
+      setResponseMsg(response.data.message);
+      setMessage('');
+      setName('');
+      setEmail('');
+      setAgree(false);
     } catch (error) {
-      setResponseMsg('Error sending message: ' + error.message);
+      setResponseMsg(
+        error.response?.data?.message || 'Failed to send message. Try again later.'
+      );
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f3f3fb] px-4">
+    <div  id='' className="min-h-screen flex items-center justify-center bg-[#f3f3fb] px-4">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-lg">
         <div className="text-center mb-6">
           <img src={logo} alt="WrapForge Logo" className="mx-auto w-20" />
@@ -58,7 +57,7 @@ const ContactPage = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Name */}
+          {/* Optional: Display Name and Email if not needed for backend */}
           <div className="mb-4">
             <label htmlFor="name" className="block mb-1 font-medium text-gray-700">
               Your Name
@@ -74,7 +73,6 @@ const ContactPage = () => {
             />
           </div>
 
-          {/* Email */}
           <div className="mb-4">
             <label htmlFor="email" className="block mb-1 font-medium text-gray-700">
               Email Address
@@ -90,7 +88,6 @@ const ContactPage = () => {
             />
           </div>
 
-          {/* Message */}
           <div className="mb-4">
             <label htmlFor="message" className="block mb-1 font-medium text-gray-700">
               Message
@@ -106,7 +103,6 @@ const ContactPage = () => {
             ></textarea>
           </div>
 
-          {/* Checkbox */}
           <div className="flex items-center justify-between text-sm mb-6">
             <label className="flex items-center space-x-2 text-black font-semibold">
               <input
@@ -120,7 +116,6 @@ const ContactPage = () => {
             </label>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
@@ -129,7 +124,6 @@ const ContactPage = () => {
             {loading ? 'Sending...' : 'Send Message'}
           </button>
 
-          {/* Response message */}
           {responseMsg && (
             <p className="mt-4 text-center text-sm text-red-600">{responseMsg}</p>
           )}

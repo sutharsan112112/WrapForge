@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import API from 'axios';
+import axios from 'axios';
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -10,31 +12,54 @@ const SignupPage = () => {
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [mismatchError, setMismatchError] = useState('');
 
   const handleChange = (e) => {
-    const { id, value, name } = e.target;
-    setFormData({
-      ...formData,
-      [id || name]: value,
-    });
+    const { id, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [id]: value }));
+
+    // Password validation
+    if (id === 'password') {
+      if (value.length < 6) {
+        setPasswordError('Password must be at least 6 characters long');
+      } else {
+        setPasswordError('');
+      }
+    }
+
+    // Confirm Password match check
+    if (id === 'confirmPassword' || (id === 'password' && formData.confirmPassword)) {
+      setMismatchError(
+        id === 'confirmPassword'
+          ? value !== formData.password
+            ? 'Passwords do not match'
+            : ''
+          : formData.confirmPassword !== value
+          ? 'Passwords do not match'
+          : ''
+      );
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match');
-      return;
-    }
-
     setLoading(true);
     setMessage('');
 
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/signup', formData);
-      localStorage.setItem('token', res.data.token);
-      setMessage('Signup successful!');
+      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      console.log('Signup success:', response.data);
+      setMessage('Signup successful! You can now log in.');
+      setFormData({ username: '', email: '', password: '', confirmPassword: '' });
     } catch (error) {
+      console.error('Signup error:', error.response?.data?.message || error.message);
       setMessage(error.response?.data?.message || 'Signup failed. Please try again.');
     } finally {
       setLoading(false);
@@ -52,9 +77,7 @@ const SignupPage = () => {
         <form onSubmit={handleSubmit}>
           {/* Username */}
           <div className="mb-4">
-            <label htmlFor="username" className="block mb-1 font-medium text-block-700">
-              User Name
-            </label>
+            <label htmlFor="username" className="block mb-1 font-medium text-block-700">User Name</label>
             <input
               type="text"
               id="username"
@@ -68,9 +91,7 @@ const SignupPage = () => {
 
           {/* Email */}
           <div className="mb-4">
-            <label htmlFor="email" className="block mb-1 font-medium text-block-700">
-              Email address
-            </label>
+            <label htmlFor="email" className="block mb-1 font-medium text-block-700">Email address</label>
             <input
               type="email"
               id="email"
@@ -84,37 +105,45 @@ const SignupPage = () => {
 
           {/* Password */}
           <div className="mb-4">
-            <label htmlFor="password" className="block mb-1 font-medium text-block-700">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
-              required
-            />
+            <label htmlFor="password" className="block mb-1 font-medium text-block-700">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded pr-10"
+                required
+              />
+              <button type="button" className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-blue-500" onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+            {passwordError && <p className="text-sm text-red-600 mt-1">{passwordError}</p>}
           </div>
 
           {/* Confirm Password */}
           <div className="mb-4">
-            <label htmlFor="confirmPassword" className="block mb-1 font-medium text-block-700">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
-              required
-            />
+            <label htmlFor="confirmPassword" className="block mb-1 font-medium text-block-700">Confirm Password</label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? 'text' : 'password'}
+                id="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded pr-10"
+                required
+              />
+              <button type="button" className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-blue-500" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                {showConfirmPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+            {mismatchError && <p className="text-sm text-red-600 mt-1">{mismatchError}</p>}
           </div>
 
-          {/* Terms Checkbox */}
+          {/* Terms */}
           <div className="flex items-center mb-6">
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="accent-yellow-500" required />
@@ -123,10 +152,10 @@ const SignupPage = () => {
             </label>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || passwordError || mismatchError}
             className="w-full bg-yellow-500 hover:bg-orange-500 text-black font-semibold py-2 rounded-md transition duration-300"
           >
             {loading ? 'Signing up...' : 'Sign Up'}
