@@ -1,17 +1,22 @@
 import Vehicle from '../models/Vehicle.js';
 import Sticker from '../models/Sticker.js';
 
+
 // Create a new vehicle
 export const createVehicle = async (req, res) => {
   try {
     const { name, model, year } = req.body;
-    const newVehicle = new Vehicle({ name, model, year });
+    const image = req.file ? `/uploads/${req.file.filename}` : '';
+
+    const newVehicle = new Vehicle({ name, model, year, image });
     await newVehicle.save();
     res.status(201).json(newVehicle);
   } catch (error) {
     res.status(500).json({ error: 'Failed to create vehicle' });
   }
+
 };
+
 
 // Get all vehicles
 export const getAllVehicles = async (req, res) => {
@@ -52,6 +57,7 @@ export const updateVehicle = async (req, res) => {
     res.status(500).json({ error: 'Failed to update vehicle' });
   }
 };
+
 
 // Delete vehicle
 export const deleteVehicle = async (req, res) => {
