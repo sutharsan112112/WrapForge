@@ -8,6 +8,7 @@ import Loginpage from './auth/Login page.jsx';
 import SignUpPage from './auth/Signup page.jsx';
 import Fooder from './components/Fooder.jsx';
 import AdminDashboard from '../src/dashboard/AdminDashboard.jsx';
+import PartnerDashboard from './dashboard/PartnerDashboard.jsx';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path='/vehicle' element={<VehiclePage></VehiclePage>} />
         <Route path='/service' element={<ServicePage></ServicePage>} />
         <Route path='/admin' element={<AdminDashboard></AdminDashboard>} />
+        <Route path='/partner' element={<PartnerDashboard></PartnerDashboard>} />
         <Route path='/login' element={<Loginpage></Loginpage>} />
         <Route path='/signuppage' element={<SignUpPage></SignUpPage>} />
       </Routes>

@@ -17,15 +17,15 @@ connectDB();
 
 const app = express(); // Move this above app.get
 
+
 app.use(cors({
-  origin: 'http://localhost:5173', // Your frontend port (React + Vite)
-  credentials: true
+  origin: 'http://localhost:5173',
+  credentials: true,
 }));
 
 
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-app.use(cors());
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

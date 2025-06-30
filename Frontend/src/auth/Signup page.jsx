@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import API from 'axios';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import logo from '/src/assets/images/WrapForge logo.png';
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -11,7 +14,6 @@ const SignupPage = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
@@ -19,48 +21,35 @@ const SignupPage = () => {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [id]: value }));
+    setFormData((prev) => ({ ...prev, [id]: value }));
 
-    // Password validation
     if (id === 'password') {
-      if (value.length < 6) {
-        setPasswordError('Password must be at least 6 characters long');
-      } else {
-        setPasswordError('');
-      }
+      setPasswordError(value.length < 6 ? 'Password must be at least 6 characters' : '');
     }
 
-    // Confirm Password match check
     if (id === 'confirmPassword' || (id === 'password' && formData.confirmPassword)) {
-      setMismatchError(
+      const mismatch =
         id === 'confirmPassword'
           ? value !== formData.password
-            ? 'Passwords do not match'
-            : ''
-          : formData.confirmPassword !== value
-          ? 'Passwords do not match'
-          : ''
-      );
+          : formData.confirmPassword !== value;
+      setMismatchError(mismatch ? 'Passwords do not match' : '');
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      console.log('Signup success:', response.data);
-      setMessage('Signup successful! You can now log in.');
-      setFormData({ username: '', email: '', password: '', confirmPassword: '' });
-    } catch (error) {
-      console.error('Signup error:', error.response?.data?.message || error.message);
-      setMessage(error.response?.data?.message || 'Signup failed. Please try again.');
+      const { confirmPassword, ...registerData } = formData;
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/signup`, formData);
+      if (res.status === 201 || res.status === 200) {
+        alert('Registration successful! Please login.');
+        navigate('/login');
+      }
+    } catch (err) {
+      console.error('Signup error:', err.response?.data);
+      alert(err.response?.data?.error || 'Registration failed.');
     } finally {
       setLoading(false);
     }
@@ -70,7 +59,7 @@ const SignupPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-[#f3f3fb] px-4">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
         <div className="text-center mb-6">
-          <img src="/src/assets/images/WrapForge logo.png" alt="WrapForge Logo" className="mx-auto w-20" />
+          <img src={logo} alt="WrapForge Logo" className="mx-auto w-20" />
           <h2 className="mt-3 text-2xl font-bold text-[#2f1c13]">Sign Up</h2>
         </div>
 
@@ -112,11 +101,14 @@ const SignupPage = () => {
                 id="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Enter your password"
                 className="mt-1 block w-full p-2 border border-gray-300 rounded pr-10"
                 required
               />
-              <button type="button" className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-blue-500" onClick={() => setShowPassword(!showPassword)}>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-blue-500"
+              >
                 {showPassword ? 'Hide' : 'Show'}
               </button>
             </div>
@@ -132,11 +124,14 @@ const SignupPage = () => {
                 id="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                placeholder="Confirm your password"
                 className="mt-1 block w-full p-2 border border-gray-300 rounded pr-10"
                 required
               />
-              <button type="button" className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-blue-500" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-blue-500"
+              >
                 {showConfirmPassword ? 'Hide' : 'Show'}
               </button>
             </div>
@@ -161,17 +156,10 @@ const SignupPage = () => {
             {loading ? 'Signing up...' : 'Sign Up'}
           </button>
 
-          {/* Message */}
-          {message && (
-            <p className="mt-4 text-center text-sm text-red-600">{message}</p>
-          )}
-
           {/* Login Link */}
           <p className="text-center mt-5 text-sm text-block-700 font-medium">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-600 font-semibold hover:underline font-medium">
-              Login
-            </a>
+            <a href="/login" className="text-blue-600 font-semibold hover:underline">Login</a>
           </p>
         </form>
       </div>
