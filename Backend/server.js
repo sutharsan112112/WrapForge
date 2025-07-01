@@ -18,16 +18,11 @@ connectDB();
 const app = express(); // Move this above app.get
 
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true,
-}));
-
-
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(express.json());
 
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
