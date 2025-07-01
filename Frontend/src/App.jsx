@@ -4,11 +4,13 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/Home page';
 import VehiclePage from './pages/Vehicle page';
 import ServicePage from '../src/pages/Service page.jsx';
+import AdminDashboard from '../src/dashboard/AdminDashboard.jsx';
+import PartnerDashboard from './dashboard/PartnerDashboard.jsx';
+import UserDashboard from './dashboard/UserDashboard.jsx';
 import Loginpage from './auth/Login page.jsx';
 import SignUpPage from './auth/Signup page.jsx';
 import Fooder from './components/Fooder.jsx';
-import AdminDashboard from '../src/dashboard/AdminDashboard.jsx';
-import PartnerDashboard from './dashboard/PartnerDashboard.jsx';
+import AddVehicles from './pages/AddVehicles.jsx';
 
 function App() {
   return (
@@ -19,9 +21,11 @@ function App() {
         <Route path='/vehicle' element={<VehiclePage></VehiclePage>} />
         <Route path='/service' element={<ServicePage></ServicePage>} />
         <Route path='/admin' element={<AdminDashboard></AdminDashboard>} />
-        <Route path='/partner' element={<PartnerDashboard></PartnerDashboard>} />
+        <Route path='/partnerdashboard' element={<PartnerDashboard></PartnerDashboard>} />
+        <Route path='/userdashboard' element={<UserDashboard></UserDashboard>} />
         <Route path='/login' element={<Loginpage></Loginpage>} />
         <Route path='/signuppage' element={<SignUpPage></SignUpPage>} />
+        <Route path='/addvehicles' element={<AddVehicles></AddVehicles>} />
       </Routes>
       <Fooder />
 </>

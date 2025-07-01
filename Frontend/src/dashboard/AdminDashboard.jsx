@@ -3,8 +3,11 @@ import {
   LayoutDashboard, Car, Users, Settings, Box, Wrench,
   Calendar, UserPlus, PlusCircle, DollarSign
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
   const recentServices = [
     { vehicle: "Toyota Camry", plate: "ABC-123", customer: "John Smith", service: "Oil Change", status: "Completed", date: "2023-12-01" },
     { vehicle: "Honda Civic", plate: "XYZ-789", customer: "Sarah Johnson", service: "Brake Repair", status: "In Progress", date: "2023-12-02" },
@@ -12,19 +15,19 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="flex mt-20 min-h-screen bg-gray-100">
+    <div className="flex mt-20 min-h-screen bg-orange-100">
       {/* Sidebar */}
       <aside className="w-64 bg-yellow-300 shadow-md p-4">
         <h2 className="text-2xl font-bold mb-2">Admin Panel</h2>
         <p className="text-xs text-gray-500 mb-4">Vehicle Service Management</p>
-        <nav className="space-y-2C">
+        <nav className="space-y-2">
           <SidebarItem icon={<LayoutDashboard size={18} />} label="Dashboard" active />
-          <SidebarItem icon={<Car size={18} />} label="Vehicles" />
-          <SidebarItem icon={<Users size={18} />} label="Partners" />
-          <SidebarItem icon={<Users size={18} />} label="Customers" />
-          <SidebarItem icon={<Wrench size={18} />} label="Services" />
-          <SidebarItem icon={<Box size={18} />} label="Inventory" />
-          <SidebarItem icon={<Settings size={18} />} label="Settings" />
+          <SidebarItem icon={<Car size={18} />} label="Vehicles" onClick={() => navigate('/vehicles')} />
+          <SidebarItem icon={<Users size={18} />} label="Partners" onClick={() => navigate('/partners')} />
+          <SidebarItem icon={<Users size={18} />} label="Customers" onClick={() => navigate('/customers')} />
+          <SidebarItem icon={<Wrench size={18} />} label="Services" onClick={() => navigate('/services')} />
+          <SidebarItem icon={<Box size={18} />} label="Inventory" onClick={() => navigate('/inventory')} />
+          <SidebarItem icon={<Settings size={18} />} label="Settings" onClick={() => navigate('/settings')} />
         </nav>
       </aside>
 
@@ -35,7 +38,10 @@ const AdminDashboard = () => {
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <p className="text-sm text-gray-500">Welcome back! Here's what's happening with your business today.</p>
           </div>
-          <button className="bg-yellow-400 text-black px-4 py-2 rounded-md shadow-md hover:bg-orange-500 transition">
+          <button
+            onClick={() => navigate('/schedule-service')}
+            className="bg-yellow-400 text-black px-4 py-2 rounded-md shadow-md hover:bg-orange-500 transition"
+          >
             Schedule Service
           </button>
         </div>
@@ -72,18 +78,35 @@ const AdminDashboard = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-4 mt-6">
-          <ActionButton icon={<PlusCircle size={16} />} label="Add Vehicle" color="bg-yellow-400 hover:bg-orange-500" />
-          <ActionButton icon={<UserPlus size={16} />} label="Add Customers" color="bg-yellow-400 hover:bg-orange-500" />
-          <ActionButton icon={<Users size={16} />} label="Add Partners" color="bg-yellow-400 hover:bg-orange-500" />
-          <ActionButton icon={<Calendar size={16} />} label="Schedule Service" color="bg-yellow-400 hover:bg-orange-500" />
+          <ActionButton
+            icon={<PlusCircle size={16} />}
+            label="Add Vehicle"
+            color="bg-yellow-400 hover:bg-orange-500"
+            onClick={() => navigate('/Addvehicles')}
+          />
+          <ActionButton
+            icon={<UserPlus size={16} />}
+            label="Add Stickers"
+            color="bg-yellow-400 hover:bg-orange-500"
+            onClick={() => navigate('/add-stickers')}
+          />
+          <ActionButton
+            icon={<Calendar size={16} />}
+            label="Schedule Service"
+            color="bg-yellow-400 hover:bg-orange-500"
+            onClick={() => navigate('/schedule-service')}
+          />
         </div>
       </main>
     </div>
   );
 };
 
-const SidebarItem = ({ icon, label, active }) => (
-  <div className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${active ? 'bg-indigo-100 font-semibold' : 'hover:bg-gray-100'}`}>
+const SidebarItem = ({ icon, label, active, onClick }) => (
+  <div
+    onClick={onClick}
+    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${active ? 'bg-indigo-100 font-semibold' : 'hover:bg-gray-100'}`}
+  >
     {icon}
     <span>{label}</span>
   </div>
@@ -120,8 +143,8 @@ const ServiceRow = ({ vehicle, plate, customer, service, status, date }) => {
   );
 };
 
-const ActionButton = ({ icon, label, color }) => (
-  <button className={`flex items-center gap-2 px-4 py-2 rounded-md text-white ${color} shadow-md hover:opacity-90 transition`}>
+const ActionButton = ({ icon, label, color, onClick }) => (
+  <button onClick={onClick} className={`flex items-center gap-2 px-4 py-2 rounded-md text-white ${color} shadow-md hover:opacity-90 transition`}>
     {icon}
     {label}
   </button>

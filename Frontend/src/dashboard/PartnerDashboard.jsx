@@ -1,10 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Car, Wrench, Calendar,
   Bell, Search, LogOut
 } from 'lucide-react';
 
+
 const PartnerDashboard = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex min-h-screen bg-gray-50 text-gray-800 mt-20">
       {/* Sidebar */}

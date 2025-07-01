@@ -41,15 +41,14 @@ const SignupPage = () => {
     setLoading(true);
 
     try {
-      const { confirmPassword, ...registerData } = formData;
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/signup`, formData);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, formData);
       if (res.status === 201 || res.status === 200) {
+        console.log('Registration Successful!');
         alert('Registration successful! Please login.');
         navigate('/login');
       }
     } catch (err) {
-      console.error('Signup error:', err.response?.data);
-      alert(err.response?.data?.error || 'Registration failed.');
+        alert('Registration failed.');
     } finally {
       setLoading(false);
     }

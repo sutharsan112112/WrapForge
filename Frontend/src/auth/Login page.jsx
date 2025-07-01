@@ -11,37 +11,50 @@ const Login = () => {
     password: ''
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setPasswordError(''); // Clear previous error
+
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
 
       if (res.status === 200) {
+        console.log('Login Successful!');
         alert('Login Successful!');
         
-        // Store token in localStorage
         localStorage.setItem('token', res.data.token);
-
-        // Optional: Store user data if needed
         localStorage.setItem('user', JSON.stringify(res.data.user));
 
-        // Role-based redirect
         const role = res.data.user?.role;
-        if (role === 'admin') {
-          navigate('/admin');
-        } if (role === 'partner') {
-          navigate('/partner/dashboard');
-        } if (role === 'user') {
-          navigate('/user/dashboard');
+        switch (role) {
+          case 'admin':
+            navigate('/admin');
+            break;
+          case 'partner':
+            navigate('/partnerdashboard');
+            break;
+          case 'user':
+            navigate('/userdashboard');
+            break;
+          default:
+            alert('Invalid role');
         }
       }
     } catch (err) {
       console.error('Login error:', err);
-      alert(err.response?.data?.message || 'Login failed');
+      const msg = err.response?.data?.message || 'Login failed';
+      alert(msg);
+
+      if (msg.toLowerCase().includes('password')) {
+        setPasswordError(msg);
+      }
     }
   };
 
@@ -72,16 +85,27 @@ const Login = () => {
 
           {/* Password */}
           <div className="mb-4">
-            <label className="block font-semibold text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded"
-              required
-            />
+            <label htmlFor="password" className="block mb-1 font-medium text-block-700">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded pr-10"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-sm text-blue-500"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+            {passwordError && <p className="text-sm text-red-600 mt-1">{passwordError}</p>}
           </div>
 
           {/* Options */}
