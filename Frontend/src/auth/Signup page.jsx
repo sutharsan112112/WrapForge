@@ -41,7 +41,7 @@ const SignupPage = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, formData);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
       if (res.status === 201 || res.status === 200) {
         console.log('Registration Successful!');
         alert('Registration successful! Please login.');

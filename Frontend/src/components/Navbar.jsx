@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Link as ScrollLink } from 'react-scroll';
 
 function Navbar() {
   const [user, setUser] = useState(null);
@@ -30,9 +31,12 @@ function Navbar() {
       </div>
 
       <div className="flex items-center space-x-4 relative">
-        <Link to="/" className="text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Home</Link>
-        <Link to="/vehicle" className="text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Vehicle</Link>
-        <Link to="/service" className="text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Service</Link>
+        {/* Scroll Links */}
+        <ScrollLink to="home" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Home</ScrollLink>
+        <ScrollLink to="aboutus" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">About us</ScrollLink>
+        <ScrollLink to="Vehicle" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Vehicle</ScrollLink>
+        <ScrollLink to="service" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Service</ScrollLink>
+        <ScrollLink to="contact" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Contact us</ScrollLink>
 
         {!user ? (
           <button

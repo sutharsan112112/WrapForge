@@ -10,7 +10,7 @@ const images = [
 
 ];
 
-const ServicePage = () => {
+const Service = () => {
   const [selectedImage, setSelectedImage] = useState(null);
 
   const openModal = (item) => {
@@ -51,4 +51,4 @@ const ServicePage = () => {
   );
 };
 
-export default ServicePage;
+export default Service;
