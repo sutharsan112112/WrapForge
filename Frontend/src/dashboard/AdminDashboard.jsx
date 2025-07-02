@@ -88,7 +88,7 @@ const AdminDashboard = () => {
             icon={<UserPlus size={16} />}
             label="Add Stickers"
             color="bg-yellow-400 hover:bg-orange-500"
-            onClick={() => navigate('/add-stickers')}
+            onClick={() => navigate('/Addstickers')}
           />
           <ActionButton
             icon={<Calendar size={16} />}
@@ -97,6 +97,30 @@ const AdminDashboard = () => {
             onClick={() => navigate('/schedule-service')}
           />
         </div>
+
+        {/* Modal */}
+              {showAddStickerModal && (
+                <div
+                  className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm shadow-lg bg-black/50 flex items-center justify-center p-4"
+                  onClick={() => setShowAddStickerModal(false)}
+                >
+                  <div
+                    className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <button
+                      onClick={() => setShowAddStickerModal(false)}
+                      className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+                      aria-label="Close modal"
+                    >
+                      <X size={20} />
+                    </button>
+                    <div className="p-6 overflow-hidden">
+                      <AddStickers />
+                    </div>
+                  </div>
+                </div>
+              )}
       </main>
     </div>
   );

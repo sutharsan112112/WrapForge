@@ -1,15 +1,34 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard, Car, Wrench, Calendar,
-  Bell, Search, LogOut
+  Bell, Search, UserPlus, X
 } from 'lucide-react';
-
+import AddStickers from '../pages/Addstickers';
 
 const PartnerDashboard = () => {
-  const navigate = useNavigate();
+  const [showAddStickerModal, setShowAddStickerModal] = useState(false);
+
+  // Disable body scroll on modal open
+  useEffect(() => {
+    if (showAddStickerModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') setShowAddStickerModal(false);
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      document.body.style.overflow = 'auto';
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [showAddStickerModal]);
+
   return (
-    <div className="flex min-h-screen bg-gray-50 text-gray-800 mt-20">
+    <div className="flex min-h-screen bg-gray-50 text-gray-800 mt-20 relative">
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 shadow-sm p-4 space-y-4" aria-label="Sidebar Navigation">
         <h2 className="text-2xl font-bold mb-1">Partner Panel</h2>
@@ -19,7 +38,6 @@ const PartnerDashboard = () => {
           <SidebarItem icon={<Car size={20} />} label="My Vehicles" />
           <SidebarItem icon={<Wrench size={20} />} label="Service History" />
           <SidebarItem icon={<Calendar size={20} />} label="Schedule" />
-          <SidebarItem icon={<LogOut size={20} />} label="Logout" />
         </nav>
       </aside>
 
@@ -34,18 +52,20 @@ const PartnerDashboard = () => {
                 type="text"
                 placeholder="Search..."
                 className="pl-10 pr-4 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
-                aria-label="Search"
               />
               <Search className="absolute left-3 top-2.5 text-gray-400" size={16} />
             </div>
-            <button className="relative p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-300" aria-label="Notifications">
+            <button
+              className="relative p-2 rounded-full hover:bg-gray-100"
+              aria-label="Notifications"
+            >
               <Bell size={20} />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border border-white"></span>
             </button>
           </div>
         </div>
 
-        {/* Stats Section */}
+        {/* Table Section */}
         <div className="px-6 pb-6">
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-lg font-semibold mb-3">Recent Service Records</h2>
@@ -67,40 +87,57 @@ const PartnerDashboard = () => {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="px-6 -mt-2 mb-4">
-          <button className="bg-indigo-600 text-white px-4 py-2 rounded-md shadow hover:bg-indigo-700 transition focus:outline-none focus:ring-2 focus:ring-indigo-300">
-            + Add Sticker
-          </button>
+        {/* Action Button */}
+        <div className="flex flex-wrap gap-4 mt-6 px-6">
+          <ActionButton
+            icon={<UserPlus size={16} />}
+            label="Add Stickers"
+            color="bg-yellow-400 hover:bg-orange-500"
+            onClick={() => setShowAddStickerModal(true)}
+          />
         </div>
       </main>
+
+      {/* Modal */}
+      {showAddStickerModal && (
+        <div
+          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm shadow-lg bg-black/50 flex items-center justify-center p-4"
+          onClick={() => setShowAddStickerModal(false)}
+        >
+          <div
+            className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowAddStickerModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+              aria-label="Close modal"
+            >
+              <X size={20} />
+            </button>
+            <div className="p-6 overflow-hidden">
+              <AddStickers />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-// Sidebar Button
+// Sidebar Item
 const SidebarItem = ({ icon, label, active }) => (
   <button
     className={`w-full flex items-center gap-3 p-2 rounded-md transition text-sm
-      ${active ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-gray-100 text-gray-700'} 
-      focus:outline-none focus:ring-2 focus:ring-indigo-300`}
-    aria-current={active ? 'page' : undefined}
+      ${active ? 'bg-indigo-600 text-white font-medium' : 'hover:bg-gray-100 text-gray-700'}`}
     aria-label={label}
   >
     {icon}
-    <span className="whitespace-nowrap truncate">{label}</span>
+    <span>{label}</span>
   </button>
 );
 
-// Stats Card
-const StatCard = ({ title, value, color }) => (
-  <div className={`p-4 ${color} rounded-md shadow-sm`}>
-    <p className="text-sm text-gray-600">{title}</p>
-    <h3 className="text-2xl font-bold">{value}</h3>
-  </div>
-);
-
-// Table Row
+// Service Row
 const ServiceRow = ({ vehicle, service, date, status }) => {
   const statusColor =
     status === 'Completed'
@@ -115,12 +152,21 @@ const ServiceRow = ({ vehicle, service, date, status }) => {
       <td className="px-4 py-2 border">{service}</td>
       <td className="px-4 py-2 border">{date}</td>
       <td className="px-4 py-2 border">
-        <span className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>
-          {status}
-        </span>
+        <span className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>{status}</span>
       </td>
     </tr>
   );
 };
+
+// Action Button
+const ActionButton = ({ icon, label, color, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`${color} text-black rounded-md font-semibold flex items-center justify-center gap-2 py-2 px-4 shadow-md`}
+  >
+    {icon}
+    {label}
+  </button>
+);
 
 export default PartnerDashboard;

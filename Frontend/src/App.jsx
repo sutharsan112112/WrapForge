@@ -11,6 +11,7 @@ import Loginpage from './auth/Login page.jsx';
 import SignUpPage from './auth/Signup page.jsx';
 import Fooder from './components/Fooder.jsx';
 import AddVehicles from './pages/AddVehicles.jsx';
+import AddStickers from './pages/Addstickers.jsx';
 
 function App() {
   return (
@@ -26,6 +27,8 @@ function App() {
         <Route path='/login' element={<Loginpage></Loginpage>} />
         <Route path='/signuppage' element={<SignUpPage></SignUpPage>} />
         <Route path='/addvehicles' element={<AddVehicles></AddVehicles>} />
+        <Route path='/addstickers' element={<AddStickers></AddStickers>} />
+        <Route path="/add-sticker" element={<AddStickers />} />
       </Routes>
       <Fooder />
 </>

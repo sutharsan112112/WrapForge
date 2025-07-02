@@ -83,10 +83,7 @@ const AddVehicle = () => {
     formData.append('image', newVehicle.file);
 
     try {
-      const res = await fetch('http://localhost:5000/api/vehicle', {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/vehicle`, formData);
       if (!res.ok) {
         throw new Error('Failed to upload vehicle');
       }
@@ -112,13 +109,6 @@ const AddVehicle = () => {
       </div>
 
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md border">
-        <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-            <span role="img" aria-label="car">
-              🚗
-            </span>
-          </div>
-        </div>
         <h2 className="text-xl font-semibold text-center mb-1">Add New Vehicle</h2>
         <p className="text-sm text-center text-gray-500 mb-6">Register your vehicle information in the system</p>
 
