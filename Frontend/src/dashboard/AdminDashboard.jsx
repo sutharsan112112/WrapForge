@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   LayoutDashboard, Car, Users, Settings, Box, Wrench,
-  Calendar, UserPlus, PlusCircle, DollarSign
+  Calendar, UserPlus, PlusCircle, DollarSign, X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import AddStickers from '../pages/Addstickers';
+import AddVehicle from '../pages/AddVehicles';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const [showAddStickerModal, setShowAddStickerModal] = useState(false);
+  const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
 
   const recentServices = [
     { vehicle: "Toyota Camry", plate: "ABC-123", customer: "John Smith", service: "Oil Change", status: "Completed", date: "2023-12-01" },
@@ -15,16 +19,16 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="flex mt-20 min-h-screen bg-orange-100">
+    <div className="flex mt-20 min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-yellow-300 shadow-md p-4">
+      <aside className="w-64 bg-yellow-300 shadow-md p-4 hidden md:block">
         <h2 className="text-2xl font-bold mb-2">Admin Panel</h2>
         <p className="text-xs text-gray-500 mb-4">Vehicle Service Management</p>
         <nav className="space-y-2">
           <SidebarItem icon={<LayoutDashboard size={18} />} label="Dashboard" active />
           <SidebarItem icon={<Car size={18} />} label="Vehicles" onClick={() => navigate('/vehicles')} />
           <SidebarItem icon={<Users size={18} />} label="Partners" onClick={() => navigate('/partners')} />
-          <SidebarItem icon={<Users size={18} />} label="Customers" onClick={() => navigate('/customers')} />
+          <SidebarItem icon={<UserPlus size={18} />} label="Customers" onClick={() => navigate('/customers')} />
           <SidebarItem icon={<Wrench size={18} />} label="Services" onClick={() => navigate('/services')} />
           <SidebarItem icon={<Box size={18} />} label="Inventory" onClick={() => navigate('/inventory')} />
           <SidebarItem icon={<Settings size={18} />} label="Settings" onClick={() => navigate('/settings')} />
@@ -82,13 +86,13 @@ const AdminDashboard = () => {
             icon={<PlusCircle size={16} />}
             label="Add Vehicle"
             color="bg-yellow-400 hover:bg-orange-500"
-            onClick={() => navigate('/Addvehicles')}
+            onClick={() => setShowAddVehicleModal(true)}
           />
           <ActionButton
             icon={<UserPlus size={16} />}
             label="Add Stickers"
             color="bg-yellow-400 hover:bg-orange-500"
-            onClick={() => navigate('/Addstickers')}
+            onClick={() => setShowAddStickerModal(true)}
           />
           <ActionButton
             icon={<Calendar size={16} />}
@@ -98,44 +102,71 @@ const AdminDashboard = () => {
           />
         </div>
 
-        {/* Modal */}
-              {showAddStickerModal && (
-                <div
-                  className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm shadow-lg bg-black/50 flex items-center justify-center p-4"
-                  onClick={() => setShowAddStickerModal(false)}
-                >
-                  <div
-                    className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <button
-                      onClick={() => setShowAddStickerModal(false)}
-                      className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
-                      aria-label="Close modal"
-                    >
-                      <X size={20} />
-                    </button>
-                    <div className="p-6 overflow-hidden">
-                      <AddStickers />
-                    </div>
-                  </div>
-                </div>
-              )}
+        {/* Add Stickers Modal */}
+        {showAddStickerModal && (
+          <div
+            className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4"
+            onClick={() => setShowAddStickerModal(false)}
+          >
+            <div
+              className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowAddStickerModal(false)}
+                className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+                aria-label="Close modal"
+              >
+                <X size={20} />
+              </button>
+              <div className="p-6 h-full">{/* ✅ No scroll here */}
+                <AddStickers />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add Vehicle Modal */}
+        {showAddVehicleModal && (
+          <div
+            className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm shadow-lg bg-black/50 flex items-center justify-center p-4"
+            onClick={() => setShowAddVehicleModal(false)}
+          >
+            <div
+              className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowAddVehicleModal(false)}
+                className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+                aria-label="Close modal"
+              >
+                <X size={20} />
+              </button>
+              <div className="p-6 h-full">{/* ✅ No scroll here */}
+                <AddVehicle />
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
 };
 
+// Sidebar Item Component
 const SidebarItem = ({ icon, label, active, onClick }) => (
   <div
     onClick={onClick}
     className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${active ? 'bg-indigo-100 font-semibold' : 'hover:bg-gray-100'}`}
+    style={{ userSelect: 'none' }}
   >
     {icon}
     <span>{label}</span>
   </div>
 );
 
+// Stat Card Component
 const StatCard = ({ title, value, growth, color, icon }) => (
   <div className={`p-4 ${color} rounded-md shadow-md flex items-center justify-between`}>
     <div>
@@ -149,11 +180,14 @@ const StatCard = ({ title, value, growth, color, icon }) => (
   </div>
 );
 
+// Service Table Row
 const ServiceRow = ({ vehicle, plate, customer, service, status, date }) => {
   const statusColor =
-    status === 'Completed' ? 'bg-green-100 text-green-700' :
-    status === 'In Progress' ? 'bg-yellow-100 text-yellow-700' :
-    'bg-gray-200 text-gray-700';
+    status === 'Completed'
+      ? 'bg-green-100 text-green-700'
+      : status === 'In Progress'
+      ? 'bg-yellow-100 text-yellow-700'
+      : 'bg-gray-200 text-gray-700';
 
   return (
     <tr className="border-b hover:bg-gray-50 transition">
@@ -161,14 +195,21 @@ const ServiceRow = ({ vehicle, plate, customer, service, status, date }) => {
       <td>{plate}</td>
       <td>{customer}</td>
       <td>{service}</td>
-      <td><span className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>{status}</span></td>
+      <td>
+        <span className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>{status}</span>
+      </td>
       <td>{date}</td>
     </tr>
   );
 };
 
+// Action Button Component
 const ActionButton = ({ icon, label, color, onClick }) => (
-  <button onClick={onClick} className={`flex items-center gap-2 px-4 py-2 rounded-md text-white ${color} shadow-md hover:opacity-90 transition`}>
+  <button
+    onClick={onClick}
+    className={`flex items-center gap-2 px-4 py-2 rounded-md text-black ${color} shadow-md hover:opacity-90 transition font-semibold`}
+    type="button"
+  >
     {icon}
     {label}
   </button>

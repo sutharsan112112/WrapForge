@@ -6,6 +6,7 @@ import {
 import AddStickers from '../pages/Addstickers';
 
 const PartnerDashboard = () => {
+  const navigate = useNavigate();
   const [showAddStickerModal, setShowAddStickerModal] = useState(false);
 
   // Disable body scroll on modal open
