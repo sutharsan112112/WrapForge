@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '@google/model-viewer';
 
-function Vehicle() {
+function VehiclePage() {
   const [vehicleData, setVehicleData] = useState({ Bike: [] });
   const [expandedVehicleType, setExpandedVehicleType] = useState('Bike');
   const [selectedModel, setSelectedModel] = useState(null);
@@ -77,7 +77,7 @@ function Vehicle() {
   };
 
   return (
-    <div className="flex mt-25 min-h-screen bg-white font-sans">
+    <div className="flex min-h-screen bg-gray-100 font-sans">
       <div className="w-80 bg-yellow-500 p-6 shadow-lg">
         <h2 className="text-3xl font-bold text-gray-800 mb-6 uppercase text-center">
           Vehicle
@@ -168,7 +168,7 @@ function Vehicle() {
         
           {/* select model */}
           {selectedModel ? (
-  selectedModel.image?.endsWith('.glb') ? (
+  selectedModel?.image && selectedModel.image.endsWith('.glb') ? (
     <model-viewer
       src={`http://localhost:5000${selectedModel.image}`}
       alt={selectedModel.name}
@@ -209,4 +209,4 @@ function Vehicle() {
   );
 }
 
-export default Vehicle;
+export default VehiclePage;

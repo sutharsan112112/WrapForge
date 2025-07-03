@@ -12,6 +12,8 @@ import SignUpPage from './auth/Signup page.jsx';
 import Fooder from './components/Fooder.jsx';
 import AddVehicles from './pages/AddVehicles.jsx';
 import AddStickers from './pages/Addstickers.jsx';
+// import VehicleScene from './pages/VehicleScene.jsx';
+// import Sticker from './pages/Sticker.jsx';
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
         <Route path='/addvehicles' element={<AddVehicles></AddVehicles>} />
         <Route path='/addstickers' element={<AddStickers></AddStickers>} />
         <Route path="/add-sticker" element={<AddStickers />} />
+        {/* <Route path='/vehiclesceene' element={<VehicleScene />} />
+        <Route path='/sticker' element={<Sticker />} /> */}
       </Routes>
       <Fooder />
 </>

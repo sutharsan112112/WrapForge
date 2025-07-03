@@ -24,7 +24,6 @@ const Login = () => {
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
-
       if (res.status === 200) {
         console.log('Login Successful!');
         alert('Login Successful!');

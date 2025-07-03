@@ -40,15 +40,21 @@ const SignupPage = () => {
     e.preventDefault();
     setLoading(true);
 
+    const API_URL = import.meta.env.VITE_API_URL;
+
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
-      if (res.status === 201 || res.status === 200) {
-        console.log('Registration Successful!');
-        alert('Registration successful! Please login.');
+      const res = await axios.post(`${API_URL}/auth/register`, {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (res.status === 200 || res.status === 201) {
+        alert('Registration successful!');
         navigate('/login');
       }
     } catch (err) {
-        alert('Registration failed.');
+      alert('Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -65,7 +71,7 @@ const SignupPage = () => {
         <form onSubmit={handleSubmit}>
           {/* Username */}
           <div className="mb-4">
-            <label htmlFor="username" className="block mb-1 font-medium text-block-700">User Name</label>
+            <label htmlFor="username" className="block mb-1 font-medium text-gray-700">User Name</label>
             <input
               type="text"
               id="username"
@@ -79,7 +85,7 @@ const SignupPage = () => {
 
           {/* Email */}
           <div className="mb-4">
-            <label htmlFor="email" className="block mb-1 font-medium text-block-700">Email address</label>
+            <label htmlFor="email" className="block mb-1 font-medium text-gray-700">Email address</label>
             <input
               type="email"
               id="email"
@@ -93,7 +99,7 @@ const SignupPage = () => {
 
           {/* Password */}
           <div className="mb-4">
-            <label htmlFor="password" className="block mb-1 font-medium text-block-700">Password</label>
+            <label htmlFor="password" className="block mb-1 font-medium text-gray-700">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -116,7 +122,7 @@ const SignupPage = () => {
 
           {/* Confirm Password */}
           <div className="mb-4">
-            <label htmlFor="confirmPassword" className="block mb-1 font-medium text-block-700">Confirm Password</label>
+            <label htmlFor="confirmPassword" className="block mb-1 font-medium text-gray-700">Confirm Password</label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -138,11 +144,11 @@ const SignupPage = () => {
           </div>
 
           {/* Terms */}
-          <div className="flex items-center mb-6">
+          <div className="flex items-center mb-6 text-sm">
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="accent-yellow-500" required />
               <span>I agree to the</span>
-              <span className="text-blue-600 hover:underline font-medium">Terms & Conditions</span>
+              <span className="text-blue-600 hover:underline font-medium cursor-pointer">Terms & Conditions</span>
             </label>
           </div>
 
@@ -156,7 +162,7 @@ const SignupPage = () => {
           </button>
 
           {/* Login Link */}
-          <p className="text-center mt-5 text-sm text-block-700 font-medium">
+          <p className="text-center mt-5 text-sm text-gray-700 font-medium">
             Already have an account?{' '}
             <a href="/login" className="text-blue-600 font-semibold hover:underline">Login</a>
           </p>
