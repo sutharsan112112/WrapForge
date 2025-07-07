@@ -46,10 +46,11 @@ const SignupPage = () => {
       const res = await axios.post(`${API_URL}/auth/register`, {
         username: formData.username,
         email: formData.email,
-        password: formData.password,
+        password: formData.password
       });
 
       if (res.status === 200 || res.status === 201) {
+        console.log('Registration successful!');
         alert('Registration successful!');
         navigate('/login');
       }

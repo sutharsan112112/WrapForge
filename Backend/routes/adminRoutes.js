@@ -1,53 +1,26 @@
 import express from 'express';
-import { protect, adminOnly } from '../middleware/authMiddleware.js';
+import  isAdmin  from '../middleware/adminMiddleware.js';
+import {
+  getItems, createItem, updateItem, deleteItem,
+  getUsers, updateUser, deleteUser,
+  getPartners, updatePartner, deletePartner
+} from '../controllers /adminController.js'
 const router = express.Router();
+0
+// Item routes
+router.get('/items', isAdmin, getItems);
+router.post('/items', isAdmin, createItem);
+router.put('/items/:id', isAdmin, updateItem);
+router.delete('/items/:id', isAdmin, deleteItem);
 
-// Dummy in-memory data
-const items = [];
+// User routes
+router.get('/users', isAdmin, getUsers);
+router.put('/users/:id', isAdmin, updateUser);
+router.delete('/users/:id', isAdmin, deleteUser);
 
-// GET all items (Admin only)
-router.get('/items', protect, adminOnly, (req, res) => {
-    res.json({ items });
-});
+// Partner routes
+router.get('/partners', isAdmin, getPartners);
+router.put('/partners/:id', isAdmin, updatePartner);
+router.delete('/partners/:id', isAdmin, deletePartner);
 
-// POST create a new item (Admin only)
-router.post('/items', protect, adminOnly, (req, res) => {
-    const newItem = {
-        id: items.length + 1,
-        ...req.body
-    };
-    items.push(newItem);
-    res.status(201).json({ message: 'Item created', item: newItem });
-});
-
-// PUT update an item (Admin only)
-router.put('/items/:id', protect, adminOnly, (req, res) => {
-    const id = parseInt(req.params.id);
-    const index = items.findIndex(item => item.id === id);
-
-    if (index === -1) {
-        return res.status(404).json({ message: 'Item not found' });
-    }
-
-    items[index] = {
-        ...items[index],
-        ...req.body
-    };
-
-    res.json({ message: 'Item updated', item: items[index] });
-});
-
-// DELETE an item (Admin only)
-router.delete('/items/:id', protect, adminOnly, (req, res) => {
-    const id = parseInt(req.params.id);
-    const index = items.findIndex(item => item.id === id);
-
-    if (index === -1) {
-        return res.status(404).json({ message: 'Item not found' });
-    }
-
-    items.splice(index, 1);
-    res.json({ message: 'Item deleted' });
-});
-// ...existing code...
 export default router;

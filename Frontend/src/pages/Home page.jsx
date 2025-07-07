@@ -7,25 +7,25 @@ import Vehicle from "./Vehicle page";
 
 function HomePage() {
   return (
-    <div className="bg-gray-100 mt-20 font-sans text-gray-800">
+    <div className="bg-[#F9FAFB] min-h-screen text-[#1F2937] mt-5">
       {/* Hero Section */}
-      <section id="home" className="relative">
+      <section id="/" className="relative">
         <model-viewer
-          src="../src/assets/images/R15 V3.glb"
-          alt="Hero Bike"
-          camera-controls
-          auto-rotate
-          autoplay
-          camera-orbit="45deg 70deg 2.5m"
-          disable-zoom
-          disable-pan
-          disable-tap
-          shadow-intensity="1"
-          environment-image="neutral"
-          style={{ width: '100%', height: '80vh' }}
+        src="../src/assets/images/Car.glb"
+        alt="Hero Bike"
+        auto-rotate
+        autoplay
+        camera-controls={false}
+        disable-pan
+        disable-tap
+        shadow-intensity="1"
+        environment-image="neutral"
+        style={{ width: '100%', height: '80vh' }}
+        min-camera-orbit="auto auto 2m"
+        max-camera-orbit="auto auto 10m"
         ></model-viewer>
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center pt-36">
+        <div className="absolute inset-x-0 bottom-20 flex justify-center">
             <button
              onClick={() => {
               const vehicleSection = document.getElementById('Vehicle');
@@ -50,13 +50,14 @@ function HomePage() {
         <Vehicle />
       </section>
 
+      {/*Service*/}
+      <section id="service" className="relative">
+        <Service />
+      </section>
+
       {/* Contact */}
       <section id="contact" className="relative">
         <Contact />
-      </section>
-
-      <section id="service" className="relative">
-        <Service />
       </section>
     </div>
   );

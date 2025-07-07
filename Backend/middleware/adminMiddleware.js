@@ -1,4 +1,4 @@
-const adminMiddleware = (req, res, next) => {
+const isAdmin = (req, res, next) => {
     try {
         // Example: req.user is set by your auth middleware (after verifying JWT)
         if (req.user && req.user.isAdmin) {
@@ -12,4 +12,4 @@ const adminMiddleware = (req, res, next) => {
     }
 };
 
-export default adminMiddleware;
+export default isAdmin;

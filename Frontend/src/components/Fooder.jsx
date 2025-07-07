@@ -11,8 +11,10 @@ const Fooder = () => {
             <h4 className="font-semibold mb-2 text-xl">Quick Links</h4>
             <ul className="space-y-1 text-lg">
               <li><Link to="/">Home</Link></li>
-              <li><Link to="/vehicle">Vehicle</Link></li>
-              <li><Link to="/service">Service</Link></li>
+              <li><Link to="/">About us</Link></li>
+              <li><Link to="/">Vehicle</Link></li>
+              <li><Link to="/">Service</Link></li>
+              <li><Link to="/">Contact us</Link></li>
             </ul>
           </div>
           <div>

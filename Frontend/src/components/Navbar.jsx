@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
+import LoginPage from '../auth/Login page.jsx'; // LoginPage import செய்யவும்
 
 function Navbar() {
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false); // Login Modal state
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -32,7 +34,7 @@ function Navbar() {
 
       <div className="flex items-center space-x-4 relative">
         {/* Scroll Links */}
-        <ScrollLink to="home" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Home</ScrollLink>
+        <ScrollLink to="/" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Home</ScrollLink>
         <ScrollLink to="aboutus" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">About us</ScrollLink>
         <ScrollLink to="Vehicle" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Vehicle</ScrollLink>
         <ScrollLink to="service" smooth={true} duration={500} className="cursor-pointer text-black-700 hover:text-orange-500 px-5 py-5 text-xl">Service</ScrollLink>
@@ -40,7 +42,7 @@ function Navbar() {
 
         {!user ? (
           <button
-            onClick={() => navigate('/login')}
+            onClick={() => setShowLoginModal(true)} // Popup open
             className="bg-yellow-500 text-white px-6 py-3 rounded hover:bg-orange-500 transition-colors"
           >
             Login
@@ -74,6 +76,30 @@ function Navbar() {
           </div>
         )}
       </div>
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <div
+          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4"
+          onClick={() => setShowLoginModal(false)}
+        >
+          <div
+            className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowLoginModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+              aria-label="Close modal"
+            >
+              ×
+            </button>
+            <div className="p-6 h-full">
+              <LoginPage isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

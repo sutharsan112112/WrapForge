@@ -16,11 +16,19 @@ dotenv.config();
 connectDB();
 
 const app = express(); // Move this above app.get
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
 
-
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
-app.use(express.json());
-
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+app.use(express.json()); 
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use(express.urlencoded({ extended: true }));
@@ -30,6 +38,8 @@ app.use('/api/vehicle', VehicleRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/sticker", stickerRoutes);
 app.use('/api/gallery', galleryRoutes);
+
+
 // app.use('/api/payment', paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
