@@ -171,6 +171,7 @@ const Login = ({ onClose }) => {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
       if (res.status === 200) {
         alert('Login Successful!');
+        console.log('Login Successful')
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
 
@@ -192,7 +193,7 @@ const Login = ({ onClose }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f3f3fb] px-4">
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-10 py-10 text-gray-800 mt-20">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
         {/* Logo & Title */}
         <div className="flex flex-col items-center mb-6">
@@ -278,7 +279,7 @@ const Login = ({ onClose }) => {
           onClick={() => setShowSignupPage(false)}
         >
           <div
-            className="bg-white h-[90vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-auto"
+            className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -288,7 +289,7 @@ const Login = ({ onClose }) => {
             >
               <FaTimes />
             </button>
-            <div className="p-5 h-full overflow-y-auto">
+            <div className="p-6 h-full">
               <SignupPage isOpen={showSignupPage} onClose={() => setShowSignupPage(false)} />
             </div>
           </div>

@@ -241,7 +241,7 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f3f3fb] px-4">
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-10 py-10 text-gray-800 mt-20">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
         <div className="text-center mb-6">
           <img src={logo} alt="WrapForge Logo" className="mx-auto w-20" />

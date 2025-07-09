@@ -3,9 +3,26 @@ import {
   LayoutDashboard, Car, Users, Settings, Box, Wrench,
   Calendar, UserPlus, PlusCircle, DollarSign, X
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import AddStickers from '../pages/Addstickers';
 import AddVehicle from '../pages/AddVehicles';
+
+// ✅ SidebarLink component added here
+const SidebarLink = ({ icon, label, to }) => {
+  return (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `flex items-center gap-2 p-2 rounded-md cursor-pointer ${
+          isActive ? 'bg-indigo-100 font-semibold' : 'hover:bg-gray-100'
+        }`
+      }
+    >
+      {icon}
+      <span>{label}</span>
+    </NavLink>
+  );
+};
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -25,13 +42,53 @@ const AdminDashboard = () => {
         <h2 className="text-2xl font-bold mb-2">Admin Panel</h2>
         <p className="text-xs text-gray-500 mb-4">Vehicle Service Management</p>
         <nav className="space-y-2">
-          <SidebarItem icon={<LayoutDashboard size={18} />} label="Dashboard" active />
-          <SidebarItem icon={<Car size={18} />} label="Vehicles" onClick={() => navigate('/vehicles')} />
-          <SidebarItem icon={<Users size={18} />} label="Partners" onClick={() => navigate('/partners')} />
-          <SidebarItem icon={<UserPlus size={18} />} label="Customers" onClick={() => navigate('/customers')} />
-          <SidebarItem icon={<Wrench size={18} />} label="Services" onClick={() => navigate('/services')} />
-          <SidebarItem icon={<Box size={18} />} label="Inventory" onClick={() => navigate('/inventory')} />
-          <SidebarItem icon={<Settings size={18} />} label="Settings" onClick={() => navigate('/settings')} />
+          <button
+        onClick={() => navigate('/admin')}
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+      >
+        <LayoutDashboard size={20} />
+        <span>Dashboard</span>
+      </button>
+
+      <button
+        onClick={() => navigate('/vehiclesmanagement')}
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+      >
+        <Car size={20} />
+        <span>Vehicles</span>
+      </button>
+
+      <button
+        onClick={() => navigate('/customer')}
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+      >
+        <UserPlus size={20} />
+        <span>Customers</span>
+      </button>
+
+      <button
+        onClick={() => navigate('/services')}
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+      >
+        <Wrench size={20} />
+        <span>Services</span>
+      </button>
+
+      <button
+        onClick={() => navigate('/contact-message')}
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+      >
+        <Box size={20} />
+        <span>Contact Message</span>
+      </button>
+
+      <button
+        onClick={() => navigate('/settings')}
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+      >
+        <Settings size={20} />
+        <span>Settings</span>
+      </button>
         </nav>
       </aside>
 
@@ -52,10 +109,10 @@ const AdminDashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard title="Active Vehicles" value="124" growth="12%" icon={<Car size={20} />} color="bg-indigo-100" />
-          <StatCard title="Customers" value="89" growth="8%" icon={<Users size={20} />} color="bg-green-100" />
-          <StatCard title="Pending Services" value="34" growth="-3%" icon={<Wrench size={20} />} color="bg-yellow-100" />
-          <StatCard title="Monthly Revenue" value="$45,230" growth="15%" icon={<DollarSign size={20} />} color="bg-purple-100" />
+          <StatCard title="Active Vehicles" value="124" growth="12%" icon={<Car size={20} />} color="bg-indigo-200" />
+          <StatCard title="Customers" value="89" growth="8%" icon={<Users size={20} />} color="bg-green-200" />
+          <StatCard title="Pending Services" value="34" growth="-3%" icon={<Wrench size={20} />} color="bg-yellow-200" />
+          <StatCard title="Monthly Revenue" value="$45,230" growth="15%" icon={<DollarSign size={20} />} color="bg-purple-200" />
         </div>
 
         {/* Recent Services Table */}
@@ -104,65 +161,31 @@ const AdminDashboard = () => {
 
         {/* Add Stickers Modal */}
         {showAddStickerModal && (
-          <div
-            className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4"
-            onClick={() => setShowAddStickerModal(false)}
-          >
-            <div
-              className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setShowAddStickerModal(false)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
-                aria-label="Close modal"
-              >
-                <X size={20} />
-              </button>
-              <div className="p-6 h-full">{/* ✅ No scroll here */}
-                <AddStickers />
-              </div>
-            </div>
-          </div>
+          <Modal onClose={() => setShowAddStickerModal(false)}>
+            <AddStickers />
+          </Modal>
         )}
 
         {/* Add Vehicle Modal */}
         {showAddVehicleModal && (
-          <div
-            className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm shadow-lg bg-black/50 flex items-center justify-center p-4"
-            onClick={() => setShowAddVehicleModal(false)}
-          >
-            <div
-              className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setShowAddVehicleModal(false)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
-                aria-label="Close modal"
-              >
-                <X size={20} />
-              </button>
-              <div className="p-6 h-full">{/* ✅ No scroll here */}
-                <AddVehicle />
-              </div>
-            </div>
-          </div>
+          <Modal onClose={() => setShowAddVehicleModal(false)}>
+            <AddVehicle />
+          </Modal>
         )}
       </main>
     </div>
   );
 };
 
-// Sidebar Item Component
-const SidebarItem = ({ icon, label, active, onClick }) => (
-  <div
-    onClick={onClick}
-    className={`flex items-center gap-2 p-2 rounded-md cursor-pointer ${active ? 'bg-indigo-100 font-semibold' : 'hover:bg-gray-100'}`}
-    style={{ userSelect: 'none' }}
-  >
-    {icon}
-    <span>{label}</span>
+// Modal Wrapper
+const Modal = ({ children, onClose }) => (
+  <div className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      <button onClick={onClose} className="absolute top-3 right-3 text-gray-500 hover:text-red-500" aria-label="Close modal">
+        <X size={20} />
+      </button>
+      <div className="p-6 h-full">{children}</div>
+    </div>
   </div>
 );
 
@@ -180,14 +203,12 @@ const StatCard = ({ title, value, growth, color, icon }) => (
   </div>
 );
 
-// Service Table Row
+// Table Row Component
 const ServiceRow = ({ vehicle, plate, customer, service, status, date }) => {
   const statusColor =
-    status === 'Completed'
-      ? 'bg-green-100 text-green-700'
-      : status === 'In Progress'
-      ? 'bg-yellow-100 text-yellow-700'
-      : 'bg-gray-200 text-gray-700';
+    status === 'Completed' ? 'bg-green-100 text-green-700'
+    : status === 'In Progress' ? 'bg-yellow-100 text-yellow-700'
+    : 'bg-gray-200 text-gray-700';
 
   return (
     <tr className="border-b hover:bg-gray-50 transition">
@@ -195,15 +216,13 @@ const ServiceRow = ({ vehicle, plate, customer, service, status, date }) => {
       <td>{plate}</td>
       <td>{customer}</td>
       <td>{service}</td>
-      <td>
-        <span className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>{status}</span>
-      </td>
+      <td><span className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>{status}</span></td>
       <td>{date}</td>
     </tr>
   );
 };
 
-// Action Button Component
+// Action Button
 const ActionButton = ({ icon, label, color, onClick }) => (
   <button
     onClick={onClick}

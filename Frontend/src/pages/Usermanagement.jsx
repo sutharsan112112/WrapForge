@@ -1,14 +1,55 @@
-import React from 'react';
-import { FaEdit, FaTrashAlt, FaUserCircle } from 'react-icons';
+import React, { useEffect, useState } from 'react';
+import { FaEdit, FaTrashAlt, FaUserCircle } from 'react-icons/fa';
+import axios from 'axios';
 
-const Usermanagement = ({ users, onEdit, onDelete, searchTerm, setSearchTerm }) => {
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+const Usermanagement = () => {
+  const [users, setUsers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Fetch users on mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get("/users");
+        if (Array.isArray(res.data)) {
+          setUsers(res.data);
+        } else {
+          console.error('Expected array but got:', res.data);
+          setUsers([]);
+        }
+      } catch (err) {
+        console.error("Error fetching users:", err);
+        setUsers([]);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const handleEdit = (user) => {
+    alert(`Edit user: ${user.name}`);
+    // Optional: Trigger modal or navigate to edit form
+  };
+
+  const handleDelete = async (userId) => {
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
+
+    try {
+      await axios.delete(`/users/${userId}`);
+      setUsers((prev) => prev.filter((u) => u._id !== userId));
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      alert("Failed to delete user");
+    }
+  };
+
+  const filteredUsers = Array.isArray(users) ? users.filter((user) =>
+    user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  ) : [];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-6 mt-20">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">User List</h2>
         <input
@@ -54,13 +95,13 @@ const Usermanagement = ({ users, onEdit, onDelete, searchTerm, setSearchTerm }) 
             {/* Actions */}
             <div className="text-right space-x-4 text-sm">
               <button
-                onClick={() => onEdit(user)}
+                onClick={() => handleEdit(user)}
                 className="text-blue-600 hover:underline font-semibold"
               >
                 <FaEdit className="inline mr-1" /> Edit
               </button>
               <button
-                onClick={() => onDelete(user._id)}
+                onClick={() => handleDelete(user._id)}
                 className="text-red-600 hover:underline font-semibold"
               >
                 <FaTrashAlt className="inline mr-1" /> Delete

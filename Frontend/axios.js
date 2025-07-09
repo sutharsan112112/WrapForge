@@ -1,9 +1,9 @@
-// utils/axios.js or directly in axios call
+// utils/axios.js
 import axios from 'axios';
 
-const axios = axios.create({
-  baseURL: 'http://localhost:5000/api',
-  withCredentials: true, // 👈 This is essential for CORS with auth
+const instance = axios.create({
+  baseURL: 'http://localhost:5000/api', // your backend base URL
+  withCredentials: true,
 });
 
-export default axios;
+export default instance;

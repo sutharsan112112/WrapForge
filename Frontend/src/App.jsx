@@ -1,6 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+
 import Navbar from './components/Navbar';
+import Footer from './components/Fooder';
+
 import HomePage from './pages/Home page';
 import VehiclePage from './pages/Vehicle page';
 import ServicePage from './pages/Service page.jsx';
@@ -9,11 +12,11 @@ import PartnerDashboard from './dashboard/PartnerDashboard.jsx';
 import UserDashboard from './dashboard/UserDashboard.jsx';
 import LoginPage from './auth/Login page.jsx';
 import SignUpPage from './auth/Signup page.jsx';
-import Footer from './components/Fooder.jsx';
 import AddVehicles from './pages/AddVehicles.jsx';
 import AddStickers from './pages/Addstickers.jsx';
-// import VehicleScene from './pages/VehicleScene.jsx';
-// import Sticker from './pages/Sticker.jsx';
+import Usermanagement from './pages/Usermanagement.jsx';
+import VehicleScene from './pages/VehicleScene.jsx';
+import Sticker from './pages/Sticker.jsx';
 
 function App() {
   return (
@@ -30,9 +33,11 @@ function App() {
         <Route path='/signuppage' element={<SignUpPage />} />
         <Route path='/addvehicles' element={<AddVehicles />} />
         <Route path='/addstickers' element={<AddStickers />} />
-        {/* Optional - remove duplicate if not needed */}
-        {/* <Route path='/vehiclescene' element={<VehicleScene />} />
-        <Route path='/sticker' element={<Sticker />} /> */}
+        <Route path='/vehiclescene' element={<VehicleScene />} />
+        <Route path='/sticker' element={<Sticker />} />
+        <Route path='/customer' element={<Usermanagement />} />
+        {/* Optional fallback route */}
+        <Route path="*" element={<h1 className="text-center text-3xl mt-20">404 - Page Not Found</h1>} />
       </Routes>
       <Footer />
     </>

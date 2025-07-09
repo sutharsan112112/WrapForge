@@ -4,10 +4,9 @@ import axios from 'axios';
 
 const AddStickers = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
-
   const [stickerData, setStickerData] = useState({
     name: '',
-    category: '',
+    design: '',
     file: null
   });
 
@@ -34,19 +33,15 @@ const AddStickers = () => {
 
     const formData = new FormData();
     formData.append('name', stickerData.name);
-    formData.append('category', stickerData.category);
-    formData.append('file', stickerData.file);
+    formData.append('design', stickerData.design);
+    formData.append('imageUrl', stickerData.file);
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/stickers`, formData);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/sticker`, formData);
 
-      if (res.status === 200) {
+      if (res.status === 200 || res.status === 201) {
         alert('Sticker uploaded successfully!');
-        setStickerData({
-          name: '',
-          category: '',
-          file: null
-        });
+        setStickerData({ name: '', design: '', file: null });
         setPreviewUrl(null);
       } else {
         throw new Error('Sticker upload failed');
@@ -81,14 +76,14 @@ const AddStickers = () => {
             />
           </div>
 
-          {/* Category */}
+          {/* Design */}
           <div>
-            <label className="text-sm font-medium" htmlFor="category">Design / Category *</label>
+            <label className="text-sm font-medium" htmlFor="design">Design *</label>
             <input
               type="text"
-              id="category"
-              name="category"
-              value={stickerData.category}
+              id="design"
+              name="design"
+              value={stickerData.design}
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
               placeholder="Sport / Classic"
