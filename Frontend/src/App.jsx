@@ -17,6 +17,7 @@ import AddStickers from './pages/Addstickers.jsx';
 import Usermanagement from './pages/Usermanagement.jsx';
 import VehicleScene from './pages/VehicleScene.jsx';
 import Sticker from './pages/Sticker.jsx';
+import ContactMessage from './pages/Contact message.jsx';
 
 function App() {
   return (
@@ -36,8 +37,7 @@ function App() {
         <Route path='/vehiclescene' element={<VehicleScene />} />
         <Route path='/sticker' element={<Sticker />} />
         <Route path='/customer' element={<Usermanagement />} />
-        {/* Optional fallback route */}
-        <Route path="*" element={<h1 className="text-center text-3xl mt-20">404 - Page Not Found</h1>} />
+        <Route path="/contactmessage" element={<ContactMessage />} />
       </Routes>
       <Footer />
     </>
