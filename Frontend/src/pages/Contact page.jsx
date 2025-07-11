@@ -16,11 +16,9 @@ const ContactPage = () => {
       return;
     }
 
-    const token = localStorage.getItem('auth_token'); // get token here to ensure latest value
-    if (!token) {
-      setResponseMsg('⚠️ You must be logged in to send a message.');
-      return;
-    }
+    const token = localStorage.getItem('auth_token');
+      console.log("TOKEN:", token);
+
 
     try {
       setLoading(true);
@@ -33,11 +31,13 @@ const ContactPage = () => {
         },
       };
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/contact`,
-        { message },
-        config
-      );
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/contact`, { message }, {
+        headers: {
+          'Content-Type': 'application/json',
+           Authorization: `Bearer ${token}`,
+        },
+      });
+
 
       setResponseMsg(res.data.message || '✅ Message sent successfully!');
       setMessage('');

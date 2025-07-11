@@ -15,7 +15,7 @@ router.post('/contact', isAuthenticated, (req, res) => {
 
 router.post('/', isAuthenticated, sendMessage);
 
-router.get('/', isAuthenticated, isAdmin, getAllMessages);
+router.get('/', isAuthenticated, isAdmin, getAllMessages); // admin see all
 router.post('/:id/reply', isAuthenticated, isAdmin, replyToMessage); 
 router.put("/:id", protect, updateContactMessage); 
 router.delete('/:id', protect, deleteContactMessage);
