@@ -24,21 +24,28 @@ const Login = ({ onClose }) => {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
 
       if (res.status === 200) {
+        const { token, user } = res.data;
+
+        // ✅ Save token and user info to localStorage
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('user', JSON.stringify(user));
+
         alert('Login Successful!');
-        console.log('Login Successful:', res.data);
 
-        // ✅ Store token with consistent key used in other pages
-        localStorage.setItem('auth_token', response.data.token);
-        localStorage.setItem('user', JSON.stringify(res.data.user));
+        const role = user?.role;
 
-        const role = res.data.user?.role;
-        if (role === 'admin') navigate('/admin');
-        else if (role === 'partner') navigate('/partnerdashboard');
-        else if (role === 'user') { navigate('/');
-          if (onClose) onClose();
+        // ✅ Navigate based on role
+        if (role === 'admin') {
+          navigate('/admin');
+        } else if (role === 'partner') {
+          navigate('/partnerdashboard');
+        } else if (role === 'user') {
+          navigate('/userdashboard');
         } else {
           alert('Invalid role');
         }
+
+        if (onClose) onClose(); // close modal if open
       }
     } catch (err) {
       const msg = err.response?.data?.message || 'Login failed';
@@ -72,11 +79,10 @@ const Login = ({ onClose }) => {
 
           {/* Password */}
           <div className="mb-4">
-            <label htmlFor="password" className="block mb-1 font-medium text-gray-700">Password</label>
+            <label className="block font-medium text-gray-700 mb-1">Password</label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
-                id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
@@ -95,7 +101,7 @@ const Login = ({ onClose }) => {
             {passwordError && <p className="text-sm text-red-600 mt-1">{passwordError}</p>}
           </div>
 
-          {/* Remember Me & Forgot */}
+          {/* Remember Me */}
           <div className="flex items-center justify-between text-sm mb-6">
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="accent-yellow-500" />
@@ -104,7 +110,7 @@ const Login = ({ onClose }) => {
             <a href="#" className="text-gray-700 hover:underline">Forgot Password?</a>
           </div>
 
-          {/* Submit */}
+          {/* Login Button */}
           <button
             type="submit"
             className="w-full bg-yellow-500 hover:bg-orange-500 text-black font-bold py-2 rounded-md transition duration-300"
@@ -113,7 +119,7 @@ const Login = ({ onClose }) => {
           </button>
         </form>
 
-        {/* Signup */}
+        {/* Signup Link */}
         <p className="mt-6 text-center text-sm">
           Don't have an account?{' '}
           <button
@@ -128,7 +134,7 @@ const Login = ({ onClose }) => {
       {/* Signup Modal */}
       {showSignupPage && (
         <div
-          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/01 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/20 flex items-center justify-center p-4"
           onClick={() => setShowSignupPage(false)}
         >
           <div
@@ -137,12 +143,12 @@ const Login = ({ onClose }) => {
           >
             <button
               onClick={() => setShowSignupPage(false)}
-              className="absolute top-3 right-3 text-gray-50 hover:text-red-500"
+              className="absolute top-3 right-3 text-gray-700 hover:text-red-500"
               aria-label="Close modal"
             >
               <FaTimes />
             </button>
-            <div className="p-6 h-full">
+            <div className="p-6 h-full overflow-y-auto">
               <SignupPage isOpen={showSignupPage} onClose={() => setShowSignupPage(false)} />
             </div>
           </div>

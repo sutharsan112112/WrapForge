@@ -1,54 +1,98 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const images = [
-  { src: '../src/assets/images/t 1.png', title: 'Honda Click Demon Eye', description: 'Stylish demon eye modification for Honda Click.' },
-  { src: '../src/assets/images/t 2.png', title: '22mm Grips Cove', description: 'Comfortable 22mm handle grips for better control.' },
-  { src: '../src/assets/images/t 3.png', title: 'Pulsar Full Body Kit', description: 'Complete body kit for Bajaj Pulsar bikes.' },
-  { src: '../src/assets/images/t 4.png', title: 'Absorber Suspension Spring', description: 'Heavy-duty absorber for smooth rides.' },
-  { src: '../src/assets/images/t 5.png', title: 'Bajaj Pulsar Half Silencer', description: 'Bright and stylish headlight for Pulsar220.' },
-  { src: '../src/assets/images/t 6.jpg', title: 'YAMAHA R15 Engine retailers Racing Parts', description: 'Modified half silencer for better sound and look.' }
+const AddService = () => {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    image: null,
+  });
 
-];
-
-const Service = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
-
-  const openModal = (item) => {
-    setSelectedImage(item);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === 'image') {
+      setFormData({ ...formData, image: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
-  const closeModal = () => {
-    setSelectedImage(null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem('token'); // make sure token is stored on login
+    if (!token) {
+      alert('Please login first');
+      return;
+    }
+
+    const data = new FormData();
+    data.append('title', formData.title);
+    data.append('description', formData.description);
+    data.append('image', formData.image);
+
+    try {
+      const res = await axios.post(`${API_URL}/service`, data, {
+        headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+      alert('Service created successfully');
+      console.log(res.data);
+    } catch (err) {
+      console.error('Error:', err.response?.data || err.message);
+      alert(err.response?.data?.message || 'Failed to create service');
+    }
   };
 
   return (
-    <div className="p-6 bg-gray-200 mt-20 min-h-screen flex flex-col items-center">
-      <h1 className="text-4xl font-bold text-orange-500 mb-8">Service</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-6 w-6xl h-6xl">
-        {images.map((item, idx) => (
-          <div key={idx} className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm" >
-            <img src={item.src} alt={item.title} className="w-full h-48 object-cover" />
-            <div className="p-4 text-center">
-              <h2 className="text-lg font-semibold mb-2">{item.title}</h2>
-              <button onClick={() => openModal(item)} className="bg-yellow-500 hover:bg-orange-500 text-white px-4 py-2 rounded">Details</button>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl shadow-md w-full max-w-lg space-y-4"
+        encType="multipart/form-data"
+      >
+        <h2 className="text-xl font-bold text-center">Add New Service</h2>
 
-      {/* Modal */}
-      {selectedImage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
-            <img src={selectedImage.src} alt={selectedImage.title} className="w-full h-full object-cover rounded" />
-            <h2 className="text-xl font-bold mt-4">{selectedImage.title}</h2>
-            <p className="text-gray-700 mt-2">{selectedImage.description}</p>
-            <button onClick={closeModal} className="mt-4 bg-yellow-500 hover:bg-orange-500 text-white px-4 py-2 rounded">Close</button>
-          </div>
-        </div>
-      )}
+        <input
+          type="text"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          placeholder="Service Title"
+          required
+          className="w-full border border-gray-300 rounded-md p-2"
+        />
+
+        <textarea
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          placeholder="Service Description"
+          required
+          className="w-full border border-gray-300 rounded-md p-2"
+        />
+
+        <input
+          type="file"
+          name="image"
+          accept="image/*"
+          onChange={handleChange}
+          required
+          className="w-full border border-gray-300 rounded-md p-2"
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-yellow-500 text-black font-bold py-2 rounded-md hover:bg-orange-500 transition"
+        >
+          Submit Service
+        </button>
+      </form>
     </div>
   );
 };
 
-export default Service;
+export default AddService;

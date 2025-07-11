@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // ✅ FIXED: import useNavigate
 import {
   LayoutDashboard, Car, Wrench, Calendar,
-  Bell, Search, UserPlus, X
+  Bell, Search, UserPlus, X, ClipboardList
 } from 'lucide-react';
 import AddStickers from '../pages/Addstickers';
+import AddService from '../pages/AddService';
 
 const PartnerDashboard = () => {
   const navigate = useNavigate();
   const [showAddStickerModal, setShowAddStickerModal] = useState(false);
+  const [showAddServiceModal, setShowAddServiceModal] = useState(false);
 
   useEffect(() => {
     if (showAddStickerModal) {
@@ -123,6 +125,12 @@ const PartnerDashboard = () => {
             color="bg-yellow-400 hover:bg-orange-500"
             onClick={() => setShowAddStickerModal(true)}
           />
+          <ActionButton 
+            icon={<ClipboardList size={16} />}
+            label="Add Service"
+            color="bg-yellow-400 hover:bg-orange-500"
+            onClick={() => setShowAddServiceModal(true)}
+          />
         </div>
       </main>
 
@@ -149,7 +157,30 @@ const PartnerDashboard = () => {
           </div>
         </div>
       )}
-    </div>
+
+      {showAddServiceModal && (
+      <div
+          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm shadow-lg bg-black/50 flex items-center justify-center p-4"
+          onClick={() => setShowAddServiceModal(false)}
+      >
+        <div
+            className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => setShowAddServiceModal(false)}
+            className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+            aria-label="Close modal"
+          >
+            <X size={20} />
+          </button>
+          <div className="p-6 overflow-hidden">
+            <AddService />
+          </div>
+        </div>
+      </div>
+    )};
+  </div>
   );
 };
 

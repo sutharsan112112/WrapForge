@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import {
   LayoutDashboard, Car, Users, Settings, Box, Wrench,
-  Calendar, UserPlus, PlusCircle, DollarSign, X
+  Calendar, UserPlus, PlusCircle, DollarSign, X, ClipboardList
 } from 'lucide-react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import AddStickers from '../pages/Addstickers';
 import AddVehicle from '../pages/AddVehicles';
+import AddService from '../pages/AddService';
 
 // ✅ SidebarLink component added here
 const SidebarLink = ({ icon, label, to }) => {
@@ -28,6 +29,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [showAddStickerModal, setShowAddStickerModal] = useState(false);
   const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
+  const [showAddServiceModal, setShowAddServiceModal] = useState(false);
 
   const recentServices = [
     { vehicle: "Toyota Camry", plate: "ABC-123", customer: "John Smith", service: "Oil Change", status: "Completed", date: "2023-12-01" },
@@ -151,12 +153,19 @@ const AdminDashboard = () => {
             color="bg-yellow-400 hover:bg-orange-500"
             onClick={() => setShowAddStickerModal(true)}
           />
+          <ActionButton 
+            icon={<ClipboardList size={16} />}
+            label="Add Service"
+            color="bg-yellow-400 hover:bg-orange-500"
+            onClick={() => setShowAddServiceModal(true)}
+          />
           <ActionButton
             icon={<Calendar size={16} />}
             label="Schedule Service"
             color="bg-yellow-400 hover:bg-orange-500"
             onClick={() => navigate('/schedule-service')}
           />
+
         </div>
 
         {/* Add Stickers Modal */}
@@ -166,12 +175,21 @@ const AdminDashboard = () => {
           </Modal>
         )}
 
+        {/* Add Service Modal */}
+        {showAddServiceModal && (
+          <Modal onClose={() => setShowAddServiceModal(false)}>
+            <AddService />
+          </Modal>
+        )}
+
         {/* Add Vehicle Modal */}
         {showAddVehicleModal && (
           <Modal onClose={() => setShowAddVehicleModal(false)}>
             <AddVehicle />
           </Modal>
         )}
+
+        
       </main>
     </div>
   );

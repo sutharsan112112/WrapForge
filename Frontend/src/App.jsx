@@ -20,6 +20,7 @@ import Sticker from './pages/Sticker.jsx';
 import ContactMessage from './pages/Contact message.jsx';
 import MyCollection from './pages/MyCollections.jsx';
 import ContactPage from './pages/Contact page.jsx';
+import AddService from './pages/AddService.jsx';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="/contact-message" element={<ContactMessage />} />
         <Route path="/collection" element={<MyCollection/>}/>
         <Route path="/contact" element={<ContactPage/>}/>
+        <Route path="/addservie" element={<AddService />} />
       </Routes>
       <Footer />
     </>
