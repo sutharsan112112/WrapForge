@@ -2,7 +2,7 @@ import React from 'react';
 import '@google/model-viewer';
 import Contact from './Contact page';
 import AboutUs from './About us';
-import Service from './Service page';
+// import Service from './Service page';
 import Vehicle from "./Vehicle page";
 
 function HomePage() {
@@ -51,9 +51,9 @@ function HomePage() {
       </section>
 
       {/*Service*/}
-      <section id="service" className="relative">
+      {/* <section id="service" className="relative">
         <Service />
-      </section>
+      </section> */}
 
       {/* Contact */}
       <section id="contact" className="relative">
