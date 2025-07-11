@@ -1,6 +1,3 @@
-import jwt from 'jsonwebtoken';
-import Service from '../models/Service.js';
-
 const isAdminOrPartner = (req, res, next) => {
   try {
     if (req.user && (req.user.role === 'admin' || req.user.role === 'partner')) {

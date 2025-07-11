@@ -34,8 +34,7 @@ const Login = ({ onClose }) => {
         const role = res.data.user?.role;
         if (role === 'admin') navigate('/admin');
         else if (role === 'partner') navigate('/partnerdashboard');
-        else if (role === 'user') {
-          navigate('/');
+        else if (role === 'user') { navigate('/');
           if (onClose) onClose();
         } else {
           alert('Invalid role');
