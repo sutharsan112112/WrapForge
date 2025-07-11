@@ -23,7 +23,7 @@ const Service = () => {
 
   return (
     <div className="p-6 bg-gray-200 mt-20 min-h-screen flex flex-col items-center">
-      <h1 className="text-4xl font-bold text-orange-500 mb-8">Gallery</h1>
+      <h1 className="text-4xl font-bold text-orange-500 mb-8">Service</h1>
       <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-6 w-6xl h-6xl">
         {images.map((item, idx) => (
           <div key={idx} className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm" >

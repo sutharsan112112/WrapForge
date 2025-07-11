@@ -36,3 +36,12 @@ export const userOrPartner = (req, res, next) => {
     res.status(403).json({ message: 'User or Partner access required' });
   }
 };
+
+// Service
+export const isPartnerOrAdmin = (req, res, next) => {
+  if (req.user && (req.user.role === 'admin' || req.user.role === 'partner')) {
+    next();
+  } else {
+    return res.status(403).json({ message: 'Access denied. Partners or Admins only.' });
+  }
+};
