@@ -3,8 +3,6 @@ import axios from 'axios';
 import logo from '/src/assets/images/car.jpg';
 
 const ContactPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -14,7 +12,13 @@ const ContactPage = () => {
     e.preventDefault();
 
     if (!agree) {
-      setResponseMsg('Please agree to the terms.');
+      setResponseMsg('⚠️ Please agree to the terms.');
+      return;
+    }
+
+    const token = localStorage.getItem('auth_token'); // get token here to ensure latest value
+    if (!token) {
+      setResponseMsg('⚠️ You must be logged in to send a message.');
       return;
     }
 
@@ -22,24 +26,28 @@ const ContactPage = () => {
       setLoading(true);
       setResponseMsg('');
 
-      const token = localStorage.getItem('token');
       const config = {
         headers: {
-         'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-       },
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       };
-      const payload = { name, email, message };
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/contact`, payload, config);
 
-      setResponseMsg(response.data.message || 'Message sent successfully!');
-      setName('');
-      setEmail('');
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/contact`,
+        { message },
+        config
+      );
+
+      setResponseMsg(res.data.message || '✅ Message sent successfully!');
       setMessage('');
       setAgree(false);
     } catch (error) {
+      console.error('Submit error:', error);
       setResponseMsg(
-        error.response?.data?.message || 'Failed to send message. Try again later.'
+        error.response?.data?.message === 'Unauthorized'
+          ? '⚠️ You must be logged in to send a message.'
+          : error.response?.data?.message || '❌ Failed to send message. Try again later.'
       );
     } finally {
       setLoading(false);
@@ -47,47 +55,16 @@ const ContactPage = () => {
   };
 
   return (
-    <section id="contact" className="py-16 px-4 bg-white mx-4 md:mx-20 my-10 rounded-xl">
-      <h2 className="text-4xl font-extrabold text-yellow-600 mb-10 tracking-wide text-center" style={{ fontFamily: 'Georgia, serif' }}>
-        Contact Us
-      </h2>
-
+    <section className="py-16 px-4 bg-white mx-4 md:mx-20 my-10 rounded-xl">
+      <h2 className="text-4xl font-extrabold text-yellow-600 mb-10 tracking-wide text-center">Contact Us</h2>
       <div className="flex flex-col md:flex-row gap-10">
-        {/* Logo Left */}
-        <div className=" flex items-center justify-center order-2 md:order-1">
-          <div className="w-full h-full rounded-lg flex items-center justify-center">
-            <img src={logo} alt="WrapForge Logo" className="max-w-x mx-auto" />
-          </div>
+        <div className="flex items-center justify-center order-2 md:order-1">
+          <img src={logo} alt="WrapForge Logo" className="max-w-xs mx-auto" />
         </div>
 
-        {/* Contact Form */}
         <form onSubmit={handleSubmit} className="flex-1 bg-gray-50 p-8 rounded-lg shadow-md order-1 md:order-2">
           <h3 className="text-2xl font-bold mb-4 text-black">Contact Admin</h3>
           <p className="mb-6 text-lg font-semibold">Send us your message</p>
-
-          <div className="mb-4">
-            <label className="block font-semibold mb-1">Your Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block font-semibold mb-1">Email Address</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@mail.com"
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              required
-            />
-          </div>
 
           <div className="mb-4">
             <label className="block font-semibold mb-1">Message</label>
@@ -115,7 +92,13 @@ const ContactPage = () => {
           </div>
 
           {responseMsg && (
-            <div className="text-sm font-semibold text-center text-blue-600 mb-4">{responseMsg}</div>
+            <div
+              className={`text-sm font-semibold text-center mb-4 ${
+                responseMsg.startsWith('✅') ? 'text-green-600' : 'text-red-600'
+              }`}
+            >
+              {responseMsg}
+            </div>
           )}
 
           <button

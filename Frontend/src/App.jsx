@@ -18,6 +18,8 @@ import Usermanagement from './pages/Usermanagement.jsx';
 import VehicleScene from './pages/VehicleScene.jsx';
 import Sticker from './pages/Sticker.jsx';
 import ContactMessage from './pages/Contact message.jsx';
+import MyCollection from './pages/MyCollections.jsx';
+import ContactPage from './pages/Contact page.jsx';
 
 function App() {
   return (
@@ -37,7 +39,9 @@ function App() {
         <Route path='/vehiclescene' element={<VehicleScene />} />
         <Route path='/sticker' element={<Sticker />} />
         <Route path='/customer' element={<Usermanagement />} />
-        <Route path="/contactmessage" element={<ContactMessage />} />
+        <Route path="/contact-message" element={<ContactMessage />} />
+        <Route path="/collection" element={<MyCollection/>}/>
+        <Route path="/contact" element={<ContactPage/>}/>
       </Routes>
       <Footer />
     </>

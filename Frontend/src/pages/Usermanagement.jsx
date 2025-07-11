@@ -6,11 +6,21 @@ const Usermanagement = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch users on mount
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("/users");
+        const token = localStorage.getItem('auth_token');
+        if (!token) {
+          console.warn('No auth token found.');
+          return;
+        }
+
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         if (Array.isArray(res.data)) {
           setUsers(res.data);
         } else {
@@ -18,7 +28,7 @@ const Usermanagement = () => {
           setUsers([]);
         }
       } catch (err) {
-        console.error("Error fetching users:", err);
+        console.error('Error fetching users:', err);
         setUsers([]);
       }
     };
@@ -28,25 +38,32 @@ const Usermanagement = () => {
 
   const handleEdit = (user) => {
     alert(`Edit user: ${user.name}`);
-    // Optional: Trigger modal or navigate to edit form
+    // Optional: Navigate to edit page or open modal
   };
 
   const handleDelete = async (userId) => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      await axios.delete(`/users/${userId}`);
+      const token = localStorage.getItem('auth_token');
+      await axios.delete(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUsers((prev) => prev.filter((u) => u._id !== userId));
     } catch (err) {
-      console.error("Error deleting user:", err);
-      alert("Failed to delete user");
+      console.error('Error deleting user:', err);
+      alert('Failed to delete user');
     }
   };
 
-  const filteredUsers = Array.isArray(users) ? users.filter((user) =>
-    user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) : [];
+  const filteredUsers = Array.isArray(users)
+    ? users.filter((user) =>
+        user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 mt-20">
@@ -61,7 +78,7 @@ const Usermanagement = () => {
         />
       </div>
 
-      <div className="bg-white rounded-md shadow-sm overflow-hidden">
+      <div className="bg-white rounded-md shadow overflow-hidden">
         <div className="grid grid-cols-4 gap-4 p-4 border-b text-gray-600 text-sm font-semibold uppercase">
           <span>User</span>
           <span>Contact</span>
@@ -74,7 +91,7 @@ const Usermanagement = () => {
             key={user._id}
             className="grid grid-cols-4 gap-4 items-center px-4 py-3 border-b hover:bg-gray-50 transition"
           >
-            {/* User */}
+            {/* User Info */}
             <div className="flex items-center gap-3">
               <FaUserCircle className="text-3xl text-gray-400" />
               <div>

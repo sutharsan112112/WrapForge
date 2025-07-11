@@ -10,14 +10,21 @@ const ContactMessage = () => {
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem('auth_token');
-      const res = await axios.get('/contact', {
+      const res = await axios.get('/api/contact', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setMessages(res.data);
+
+      if (Array.isArray(res.data)) {
+        setMessages(res.data);
+      } else {
+        console.error('Expected array but got:', res.data);
+        setMessages([]); // fallback
+      }
     } catch (err) {
       console.error('Failed to fetch contact messages:', err);
+      setMessages([]); // fallback on error
     } finally {
       setLoading(false);
     }
@@ -91,7 +98,7 @@ const ContactMessage = () => {
                       <strong>Reply:</strong> {msg.reply}
                     </p>
                   ) : (
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
                       <input
                         type="text"
                         placeholder="Type reply..."

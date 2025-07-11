@@ -144,6 +144,7 @@
 //   );
 // };
 
+// Login.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -153,7 +154,6 @@ import SignupPage from '../auth/Signup page.jsx';
 
 const Login = ({ onClose }) => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
@@ -169,10 +169,13 @@ const Login = ({ onClose }) => {
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
+
       if (res.status === 200) {
         alert('Login Successful!');
-        console.log('Login Successful')
-        localStorage.setItem('token', res.data.token);
+        console.log('Login Successful:', res.data);
+
+        // ✅ Store token with consistent key used in other pages
+        localStorage.setItem('auth_token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
 
         const role = res.data.user?.role;
@@ -180,7 +183,7 @@ const Login = ({ onClose }) => {
         else if (role === 'partner') navigate('/partnerdashboard');
         else if (role === 'user') {
           navigate('/');
-          if (onClose) onClose(); // Close the login modal after success
+          if (onClose) onClose();
         } else {
           alert('Invalid role');
         }
@@ -195,15 +198,13 @@ const Login = ({ onClose }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-10 py-10 text-gray-800 mt-20">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        {/* Logo & Title */}
         <div className="flex flex-col items-center mb-6">
           <img src={logo} alt="WrapForge Logo" className="w-20 h-20" />
           <h2 className="text-xl font-bold text-[#2f1c13] mt-2">Login Page</h2>
         </div>
 
-        {/* Login Form */}
         <form onSubmit={handleSubmit}>
-          {/* Email Field */}
+          {/* Email */}
           <div className="mb-4">
             <label className="block font-semibold text-gray-700 mb-1">Email Address</label>
             <input
@@ -217,7 +218,7 @@ const Login = ({ onClose }) => {
             />
           </div>
 
-          {/* Password Field */}
+          {/* Password */}
           <div className="mb-4">
             <label htmlFor="password" className="block mb-1 font-medium text-gray-700">Password</label>
             <div className="relative">
@@ -260,7 +261,7 @@ const Login = ({ onClose }) => {
           </button>
         </form>
 
-        {/* Sign Up Trigger */}
+        {/* Signup */}
         <p className="mt-6 text-center text-sm">
           Don't have an account?{' '}
           <button
@@ -272,7 +273,7 @@ const Login = ({ onClose }) => {
         </p>
       </div>
 
-      {/* Sign Up Modal */}
+      {/* Signup Modal */}
       {showSignupPage && (
         <div
           className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4"
@@ -300,4 +301,3 @@ const Login = ({ onClose }) => {
 };
 
 export default Login;
-

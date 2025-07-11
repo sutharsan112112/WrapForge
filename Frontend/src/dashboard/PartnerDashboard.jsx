@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // ✅ FIXED: import useNavigate
 import {
   LayoutDashboard, Car, Wrench, Calendar,
   Bell, Search, UserPlus, X
@@ -9,7 +10,6 @@ const PartnerDashboard = () => {
   const navigate = useNavigate();
   const [showAddStickerModal, setShowAddStickerModal] = useState(false);
 
-  // Disable body scroll on modal open
   useEffect(() => {
     if (showAddStickerModal) {
       document.body.style.overflow = 'hidden';
@@ -35,10 +35,37 @@ const PartnerDashboard = () => {
         <h2 className="text-2xl font-bold mb-1">Partner Panel</h2>
         <p className="text-xs text-gray-500 mb-4">Welcome to your dashboard</p>
         <nav className="space-y-2">
-          <SidebarItem icon={<LayoutDashboard size={20} />} label="Dashboard" active />
-          <SidebarItem icon={<Car size={20} />} label="My Vehicles" />
-          <SidebarItem icon={<Wrench size={20} />} label="Service History" />
-          <SidebarItem icon={<Calendar size={20} />} label="Schedule" />
+         <button
+      onClick={() => navigate('/partnerdashboard')}
+      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm bg-indigo-600 text-white font-medium"
+    >
+      <LayoutDashboard size={20} />
+      Dashboard
+    </button>
+
+    <button
+      onClick={() => navigate('/collection')}
+      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm hover:bg-gray-100 text-gray-700"
+    >
+      <Car size={20} />
+      My Collections
+    </button>
+
+    <button
+      onClick={() => navigate('/service-history')}
+      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm hover:bg-gray-100 text-gray-700"
+    >
+      <Wrench size={20} />
+      Service History
+    </button>
+
+    <button
+      onClick={() => navigate('/schedule')}
+      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm hover:bg-gray-100 text-gray-700"
+    >
+      <Calendar size={20} />
+      Schedule
+    </button>
         </nav>
       </aside>
 

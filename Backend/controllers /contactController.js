@@ -2,16 +2,22 @@ import Contact from "../models/Contact.js";
 
 // Send a message from user or partner
 export const sendMessage = async (req, res) => {
-    try {
-        const { message } = req.body;
-        const newMsg = await Contact.create({
-            senderId: req.user.id,
-            message
-        });
-        res.status(201).json({ message: 'Message sent successfully', data: newMsg });
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to send message', error: error.message });
+  try {
+    const { message } = req.body;
+
+    if (!message || message.trim() === '') {
+      return res.status(400).json({ message: 'Message is required' });
     }
+
+    const newMsg = await Contact.create({
+      senderId: req.user.id,
+      message,
+    });
+
+    res.status(201).json({ message: 'Message sent successfully', data: newMsg });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to send message', error: error.message });
+  }
 };
 
 // Get all messages for admin
