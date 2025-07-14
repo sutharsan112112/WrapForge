@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FaEdit, FaTrashAlt, FaUserCircle } from 'react-icons/fa';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Usermanagement = () => {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -15,7 +18,7 @@ const Usermanagement = () => {
           return;
         }
 
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/admin/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -38,7 +41,6 @@ const Usermanagement = () => {
 
   const handleEdit = (user) => {
     alert(`Edit user: ${user.name}`);
-    // Optional: Navigate to edit page or open modal
   };
 
   const handleDelete = async (userId) => {
@@ -46,7 +48,7 @@ const Usermanagement = () => {
 
     try {
       const token = localStorage.getItem('auth_token');
-      await axios.delete(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/admin/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -67,6 +69,15 @@ const Usermanagement = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 mt-20">
+      {/* 🔙 Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-4 flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"
+      >
+        <ArrowLeft className="mr-2" size={18} />
+        Back
+      </button>
+
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">User List</h2>
         <input
@@ -91,7 +102,6 @@ const Usermanagement = () => {
             key={user._id}
             className="grid grid-cols-4 gap-4 items-center px-4 py-3 border-b hover:bg-gray-50 transition"
           >
-            {/* User Info */}
             <div className="flex items-center gap-3">
               <FaUserCircle className="text-3xl text-gray-400" />
               <div>
@@ -100,16 +110,13 @@ const Usermanagement = () => {
               </div>
             </div>
 
-            {/* Contact */}
             <div>
               <p>{user.email}</p>
               <p className="text-sm text-gray-500">{user.contactNumber || '—'}</p>
             </div>
 
-            {/* Registered */}
             <div>{new Date(user.createdAt).toLocaleDateString()}</div>
 
-            {/* Actions */}
             <div className="text-right space-x-4 text-sm">
               <button
                 onClick={() => handleEdit(user)}

@@ -6,7 +6,6 @@ import {
   getPartners, updatePartner, deletePartner
 } from '../controllers /adminController.js'
 const router = express.Router();
-0
 // Item routes
 router.get('/items', isAdmin, getItems);
 router.post('/items', isAdmin, createItem);

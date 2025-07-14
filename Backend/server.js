@@ -34,7 +34,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/vehicle', VehicleRoutes);
+app.use('/api/vehicles', VehicleRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/sticker", stickerRoutes);
 app.use('/api/service', serviceRoutes);

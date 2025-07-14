@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { X, Send, Trash2 } from 'lucide-react';
+import { X, Send, Trash2, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ContactMessage = () => {
   const [messages, setMessages] = useState([]);
   const [replyText, setReplyText] = useState({});
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // 👈 for navigation
 
   const fetchMessages = async () => {
     try {
@@ -72,6 +74,15 @@ const ContactMessage = () => {
 
   return (
     <div className="p-6 mt-20 min-h-screen bg-gray-100">
+      {/* 🔙 Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-4 flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"
+      >
+        <ArrowLeft className="mr-2" size={18} />
+        Back
+      </button>
+
       <h2 className="text-2xl font-bold mb-4 text-gray-800">Contact Messages</h2>
 
       {loading ? (
