@@ -99,6 +99,7 @@ function Navbar() {
             <button
               onClick={() => setShowLoginModal(false)}
               className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+              style={{fontSize:"30px"}}
               aria-label="Close modal"
             >
               ×

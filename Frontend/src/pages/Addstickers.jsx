@@ -41,6 +41,7 @@ const AddStickers = () => {
 
       if (res.status === 200 || res.status === 201) {
         alert('Sticker uploaded successfully!');
+        console.log("Sticker uploaded successfully!")
         setStickerData({ name: '', design: '', file: null });
         setPreviewUrl(null);
       } else {

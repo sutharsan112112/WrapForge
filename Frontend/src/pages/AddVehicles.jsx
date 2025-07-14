@@ -24,6 +24,7 @@ const AddVehicle = ({ onUploadSuccess }) => {
       });
       const data = await res.json();
       alert('Vehicle uploaded successfully!');
+      console.log("Vehicle uploaded successfully!")
       if (onUploadSuccess) onUploadSuccess(data);
     } catch (err) {
       console.error('Upload failed:', err);
