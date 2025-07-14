@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link,useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import LoginPage from '../auth/Login page.jsx';
 import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
@@ -33,9 +33,16 @@ function Navbar() {
 
       {/* Links + Auth Actions */}
       <div className="flex items-center space-x-4 relative">
-        <ScrollLink to="/" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Home</ScrollLink>
+<Link to="/" className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">
+  Home
+</Link>
         <ScrollLink to="aboutus" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">About us</ScrollLink>
-        <ScrollLink to="Vehicle" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Vehicle</ScrollLink>
+<Link
+  to="/vehicles"
+  className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl"
+>
+  Vehicle
+</Link>
         <ScrollLink to="service" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Service</ScrollLink>
         <ScrollLink to="contact" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Contact us</ScrollLink>
 

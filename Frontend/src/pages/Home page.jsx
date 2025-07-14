@@ -53,9 +53,9 @@ onClick={handleGetStarted}
       </section>
 
       {/* Vehicle */}
-      <section id="Vehicle" className="relative">
+      {/* <section id="Vehicle" className="relative">
         <Vehicle />
-      </section>
+      </section> */}
 
       {/*Service*/}
       <section id="service" className="relative">

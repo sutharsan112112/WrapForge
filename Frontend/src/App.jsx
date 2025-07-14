@@ -22,6 +22,7 @@ import MyCollection from './pages/MyCollections.jsx';
 import ContactPage from './pages/Contact page.jsx';
 import AddService from './pages/AddService.jsx';
 import VehiclesManagement from './pages/VehicleManagement.jsx'
+import VehicleStickerViewer from './pages/vechicleSticker.jsx';
 
 function App() {
   return (
@@ -38,6 +39,9 @@ function App() {
         <Route path='/signuppage' element={<SignUpPage />} />
         <Route path='/addvehicles' element={<AddVehicles />} />
         <Route path='/addstickers' element={<AddStickers />} />
+        <Route path="/customize/:id" element={<VehicleStickerViewer />} />
+       <Route path="/vehicles" element={<VehiclePage />} />
+
         <Route path='/vehiclescene' element={<VehicleScene />} />
         <Route path='/sticker' element={<Sticker />} />
         <Route path='/Usermanagement' element={<Usermanagement />} />

@@ -1,16 +1,38 @@
 import Sticker from '../models/Sticker.js';
 
 // Create sticker
+// export const createSticker = async (req, res) => {
+//   try {
+//     const { name, design, imageUrl } = req.body;
+//     const newSticker = new Sticker({ name, design, imageUrl });
+//     await newSticker.save();
+//     res.status(201).json({ message: 'Sticker created successfully', sticker: newSticker });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Failed to create sticker', error });
+//   }
+// };
+// With multer upload.single('image')
 export const createSticker = async (req, res) => {
   try {
-    const { name, design, imageUrl } = req.body;
+    console.log("req.body:", req.body);
+    console.log("req.file:", req.file);
+
+    const { name, design } = req.body;
+
+    const imageUrl = req.file
+      ? `/uploads/${req.file.filename}`
+      : '';
+
     const newSticker = new Sticker({ name, design, imageUrl });
     await newSticker.save();
+
     res.status(201).json({ message: 'Sticker created successfully', sticker: newSticker });
   } catch (error) {
+    console.error("Upload error:", error); // 🟥 log actual error
     res.status(500).json({ message: 'Failed to create sticker', error });
   }
 };
+
 
 // Get all stickers
 export const getAllStickers = async (req, res) => {

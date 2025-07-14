@@ -19,14 +19,23 @@ export const createVehicle = async (req, res) => {
 
 
 // Get all vehicles
+// export const getAllVehicles = async (req, res) => {
+//   try {
+//     const vehicles = await Vehicle.find().select('name model');
+//     res.status(200).json(vehicles);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Failed to fetch vehicles' });
+//   }
+// };
 export const getAllVehicles = async (req, res) => {
   try {
-    const vehicles = await Vehicle.find().select('name model');
+    const vehicles = await Vehicle.find().select('name model image');
     res.status(200).json(vehicles);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch vehicles' });
   }
 };
+
 
 // Get vehicle by ID
 export const getVehicleById = async (req, res) => {

@@ -218,6 +218,7 @@
 // export default VehiclePage;
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // ⬅️ Add this at the top
 import '@google/model-viewer';
 
 function VehiclePage() {
@@ -226,6 +227,7 @@ function VehiclePage() {
   const [selectedModel, setSelectedModel] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+const navigate = useNavigate();
 
   useEffect(() => {
     fetch('http://localhost:5000/api/vehicle')
@@ -295,7 +297,7 @@ function VehiclePage() {
               </button>
               {expandedVehicleType === type && (
                 <div className="mt-2 pl-4">
-                  {vehicleData[type].map((model, idx) => (
+                  {/* {vehicleData[type].map((model, idx) => (
                     <button
                       key={model.name + idx}
                       className={`w-full text-left py-2 px-4 mt-1 rounded-md ${selectedModel?.name === model.name ? 'bg-blue-400 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
@@ -306,7 +308,27 @@ function VehiclePage() {
                     >
                       {model.name}
                     </button>
-                  ))}
+                  ))} */}
+                  {vehicleData[type].map((model, idx) => (
+  <div key={model.name + idx} className="mb-2">
+    <button
+      className={`w-full text-left py-2 px-4 rounded-md ${selectedModel?.name === model.name ? 'bg-blue-400 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+      onClick={() => {
+        setSelectedModel(model);
+        setCurrentImageIndex(idx);
+      }}
+    >
+      {model.name}
+    </button>
+
+    <button
+      onClick={() => navigate(`/customize/${model._id}`)}
+      className="mt-1 ml-2 px-3 py-1 text-sm bg-green-500 text-white rounded hover:bg-green-600"
+    >
+      Customize
+    </button>
+  </div>
+))}
                 </div>
               )}
             </div>
@@ -330,7 +352,7 @@ function VehiclePage() {
             &lt;
           </button>
 
-          {selectedModel ? (
+          {/* {selectedModel ? (
             selectedModel?.image && selectedModel.image.endsWith('.glb') ? (
               <model-viewer
                 src={`http://localhost:5000${selectedModel.image}`}
@@ -349,7 +371,27 @@ function VehiclePage() {
             )
           ) : (
             <p className="text-gray-500 text-xl">Select a vehicle model to view</p>
-          )}
+          )} */}
+{selectedModel ? (
+  selectedModel?.image && selectedModel.image.endsWith('.glb') ? (
+    <model-viewer
+      src={selectedModel.image.startsWith('http') ? selectedModel.image : `http://localhost:5000${selectedModel.image}`}
+      alt={selectedModel.name}
+      auto-rotate
+      camera-controls
+      style={{ width: '100%', height: '100%' }}
+      background-color="#FFFFFF"
+    ></model-viewer>
+  ) : (
+    <img
+      src={selectedModel.image.startsWith('http') ? selectedModel.image : `http://localhost:5000${selectedModel.image}`}
+      alt={selectedModel.name}
+      className="max-w-full max-h-full object-contain"
+    />
+  )
+) : (
+  <p className="text-gray-500 text-xl">Select a vehicle model to view</p>
+)}
 
           <button
             className="absolute right-4 p-3 bg-gray-200 hover:bg-gray-300 rounded-full text-gray-700 text-2xl"
