@@ -1,98 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const AddService = () => {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    image: null,
-  });
+const ServicePage = () => {
+  const [services, setServices] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === 'image') {
-      setFormData({ ...formData, image: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/service`);
+        setServices(res.data); // assuming array of service objects
+      } catch (err) {
+        console.error('Fetch error:', err);
+      }
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const token = localStorage.getItem('token'); // make sure token is stored on login
-    if (!token) {
-      alert('Please login first');
-      return;
-    }
-
-    const data = new FormData();
-    data.append('title', formData.title);
-    data.append('description', formData.description);
-    data.append('image', formData.image);
-
-    try {
-      const res = await axios.post(`${API_URL}/service`, data, {
-        headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-      alert('Service created successfully');
-      console.log(res.data);
-    } catch (err) {
-      console.error('Error:', err.response?.data || err.message);
-      alert(err.response?.data?.message || 'Failed to create service');
-    }
-  };
+    fetchServices();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl shadow-md w-full max-w-lg space-y-4"
-        encType="multipart/form-data"
-      >
-        <h2 className="text-xl font-bold text-center">Add New Service</h2>
-
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          placeholder="Service Title"
-          required
-          className="w-full border border-gray-300 rounded-md p-2"
-        />
-
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Service Description"
-          required
-          className="w-full border border-gray-300 rounded-md p-2"
-        />
-
-        <input
-          type="file"
-          name="image"
-          accept="image/*"
-          onChange={handleChange}
-          required
-          className="w-full border border-gray-300 rounded-md p-2"
-        />
-
-        <button
-          type="submit"
-          className="w-full bg-yellow-500 text-black font-bold py-2 rounded-md hover:bg-orange-500 transition"
-        >
-          Submit Service
-        </button>
-      </form>
+    <div className="py-16 px-4 bg-white mx-4 md:mx-20 my-10 rounded-xl">
+      <h2 className="text-3xl font-bold text-center mb-10 text-gray-800">Our Services</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {services.map((service) => (
+          <div key={service._id} className="bg-gray-50 rounded-xl shadow-md p-4">
+            <img
+              src={service.image} // must be full Cloudinary or server URL
+              alt={service.title}
+              className="w-full h-48 object-cover rounded-md mb-4"
+            />
+            <h3 className="text-lg font-semibold">{service.title}</h3>
+            <p className="text-gray-600 text-sm mt-2">{service.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-export default AddService;
+export default ServicePage;

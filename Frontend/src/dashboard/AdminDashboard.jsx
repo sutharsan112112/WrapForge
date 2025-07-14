@@ -48,8 +48,6 @@ const AdminDashboard = () => {
         onClick={() => navigate('/admin')}
         className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
       >
-        <LayoutDashboard size={20} />
-        <span>Dashboard</span>
       </button>
 
       <button
@@ -57,23 +55,15 @@ const AdminDashboard = () => {
         className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
       >
         <Car size={20} />
-        <span>Vehicles</span>
+        <span>Vehiclesmanagement</span>
       </button>
 
       <button
-        onClick={() => navigate('/customer')}
+        onClick={() => navigate('/usermanagement')}
         className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
       >
         <UserPlus size={20} />
-        <span>Customers</span>
-      </button>
-
-      <button
-        onClick={() => navigate('/services')}
-        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
-      >
-        <Wrench size={20} />
-        <span>Services</span>
+        <span>Usermanagement</span>
       </button>
 
       <button
@@ -101,12 +91,6 @@ const AdminDashboard = () => {
             <h1 className="text-2xl font-semibold">Dashboard</h1>
             <p className="text-sm text-gray-500">Welcome back! Here's what's happening with your business today.</p>
           </div>
-          <button
-            onClick={() => navigate('/schedule-service')}
-            className="bg-yellow-400 text-black px-4 py-2 rounded-md shadow-md hover:bg-orange-500 transition"
-          >
-            Schedule Service
-          </button>
         </div>
 
         {/* Stats Cards */}
