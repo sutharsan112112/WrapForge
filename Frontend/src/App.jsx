@@ -23,6 +23,9 @@ import ContactPage from './pages/Contact page.jsx';
 import AddService from './pages/AddService.jsx';
 import VehiclesManagement from './pages/VehicleManagement.jsx'
 import VehicleStickerViewer from './pages/vechicleSticker.jsx';
+import StickerManagement from './pages/Stickermanagement.jsx';
+import ServiceManagement from './pages/ServiceManagement.jsx';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -50,8 +53,13 @@ function App() {
         <Route path="/contact" element={<ContactPage/>}/>
         <Route path="/add-service" element={<AddService />} />
         <Route path='/vehiclesmanagement' element={<VehiclesManagement />} />
+        <Route path='/stickerManagement' element={<StickerManagement />} />
+        <Route path='/servicemanagement' element={<ServiceManagement />} />
       </Routes>
       <Footer />
+
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+
     </>
   );
 }

@@ -33,6 +33,46 @@ export const deleteItem = (req, res) => {
 };
 
 // ===== USER CONTROLLERS =====
+// export const getUsers = async (req, res) => {
+//   try {
+//     const users = await User.find({ role: 'user' }).select('-password');
+//     res.json(users);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Failed to get users', error });
+//   }
+// };
+
+// export const updateUser = async (req, res) => {
+//   try {
+//     const user = await User.findOneAndUpdate(
+//       { _id: req.params.id, role: 'user' },
+//       req.body,
+//       { new: true }
+//     ).select('-password');
+
+//     if (!user) return res.status(404).json({ message: 'User not found' });
+
+//     res.json({ message: 'User updated successfully', user });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Failed to update user', error });
+//   }
+// };
+
+// export const deleteUser = async (req, res) => {
+//   try {
+//     const user = await User.findOneAndDelete({ _id: req.params.id, role: 'user' });
+//     if (!user) return res.status(404).json({ message: 'User not found' });
+
+//     res.json({ message: 'User deleted successfully' });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Failed to delete user', error });
+//   }
+// };
+
+
+// import User from '../models/User.js';
+
+// Fetch all users (only for admin)
 export const getUsers = async (req, res) => {
   try {
     const users = await User.find({ role: 'user' }).select('-password');
@@ -42,6 +82,7 @@ export const getUsers = async (req, res) => {
   }
 };
 
+// Update a user's details
 export const updateUser = async (req, res) => {
   try {
     const user = await User.findOneAndUpdate(
@@ -49,7 +90,6 @@ export const updateUser = async (req, res) => {
       req.body,
       { new: true }
     ).select('-password');
-
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     res.json({ message: 'User updated successfully', user });
@@ -58,6 +98,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
+// Delete a user
 export const deleteUser = async (req, res) => {
   try {
     const user = await User.findOneAndDelete({ _id: req.params.id, role: 'user' });
@@ -68,6 +109,7 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete user', error });
   }
 };
+
 
 // ===== PARTNER CONTROLLERS =====
 export const getPartners = async (req, res) => {

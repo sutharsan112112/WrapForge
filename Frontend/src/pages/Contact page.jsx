@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import logo from '/src/assets/images/car.jpg';
+import { toast } from 'react-toastify';
+
 
 const ContactPage = () => {
   const [message, setMessage] = useState('');
@@ -8,49 +10,52 @@ const ContactPage = () => {
   const [loading, setLoading] = useState(false);
   const [responseMsg, setResponseMsg] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!agree) {
-      setResponseMsg('⚠️ Please agree to the terms.');
-      return;
-    }
+  if (!agree) {
+    toast.warning('⚠️ Please agree to the terms.');  // Warning toast
+    return;
+  }
 
-    const token = localStorage.getItem('auth_token');
-    if (!token) {
-      setResponseMsg('⚠️ You must be logged in to send a message.');
-      return;
-    }
+  const token = localStorage.getItem('auth_token');
+  if (!token) {
+    toast.warning('⚠️ You must be logged in to send a message.');  // Warning toast
+    return;
+  }
 
-    try {
-      setLoading(true);
-      setResponseMsg('');
+  try {
+    setLoading(true);  // You can still manage loading state if needed
+    setResponseMsg('');  // Clear previous response message
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/contact`,
-        { message }, // ✅ correct form data
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/contact`,
+      { message },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,  // Ensure token is included here
+        },
+      }
+    );
 
-      setResponseMsg(res.data.message || '✅ Message sent successfully!');
-      setMessage('');
-      setAgree(false);
-    } catch (error) {
-      console.error('Submit error:', error);
-      setResponseMsg(
-        error.response?.data?.message === 'Unauthorized'
-          ? '⚠️ You must be logged in to send a message.'
-          : error.response?.data?.message || '❌ Failed to send message. Try again later.'
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    toast.success(res.data.message || '✅ Message sent successfully!');  // Success toast
+    setMessage('');
+    setAgree(false);
+  } catch (error) {
+    console.error('Submit error:', error);
+
+    // Error handling with toast
+    toast.error(
+      error.response?.data?.message === 'Unauthorized'
+        ? '⚠️ You must be logged in to send a message.'
+        : error.response?.data?.message || '❌ Failed to send message. Try again later.'
+    );
+  } finally {
+    setLoading(false);  // Optional, if you still need to manage loading
+  }
+};
+
 
   return (
     <section className="py-16 px-4 bg-white mx-4 md:mx-20 my-10 rounded-xl">

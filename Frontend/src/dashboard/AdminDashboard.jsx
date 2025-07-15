@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-  LayoutDashboard, Car, Users, Settings, Box, Wrench,
-  Calendar, UserPlus, PlusCircle, DollarSign, X, ClipboardList
+  Car, Users, Settings, Box, Wrench,
+  Tag, PlusCircle, DollarSign, X, ClipboardList, UserPlus
 } from 'lucide-react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import AddStickers from '../pages/Addstickers';
@@ -64,6 +64,22 @@ const AdminDashboard = () => {
       >
         <UserPlus size={20} />
         <span>Usermanagement</span>
+      </button>
+
+      <button
+        onClick={() => navigate('/stickermanagement')}
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+      >
+        <Tag size={20} />
+        <span>Stickermanagement</span>
+      </button>
+
+      <button
+        onClick={() => navigate('/servicemanagement')}
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+      >
+        <ClipboardList size={20} />
+        <span>Servicemanagement</span>
       </button>
 
       <button
@@ -132,7 +148,7 @@ const AdminDashboard = () => {
             onClick={() => setShowAddVehicleModal(true)}
           />
           <ActionButton
-            icon={<UserPlus size={16} />}
+            icon={<Tag size={16} />}
             label="Add Stickers"
             color="bg-yellow-400 hover:bg-orange-500"
             onClick={() => setShowAddStickerModal(true)}
@@ -143,13 +159,6 @@ const AdminDashboard = () => {
             color="bg-yellow-400 hover:bg-orange-500"
             onClick={() => setShowAddServiceModal(true)}
           />
-          <ActionButton
-            icon={<Calendar size={16} />}
-            label="Schedule Service"
-            color="bg-yellow-400 hover:bg-orange-500"
-            onClick={() => navigate('/schedule-service')}
-          />
-
         </div>
 
         {/* Add Stickers Modal */}

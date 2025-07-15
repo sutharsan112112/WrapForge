@@ -6,9 +6,10 @@ export const protect = async (req, res, next) => {
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id).select('-password');
+      token = req.headers.authorization.split(' ')[1]; // Extract token from Bearer token
+      const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+
+      req.user = await User.findById(decoded.id).select('-password'); // Attach user info to the request
       next();
     } catch (error) {
       res.status(401).json({ message: 'Not authorized, token failed' });
@@ -17,6 +18,15 @@ export const protect = async (req, res, next) => {
 
   if (!token) {
     res.status(401).json({ message: 'Not authorized, no token' });
+  }
+};
+
+// Middleware to check if the user is an admin
+export const isAdmin = (req, res, next) => {
+  if (req.user && req.user.role === 'admin') {
+    next(); // User is an admin, proceed to the controller
+  } else {
+    res.status(403).json({ message: 'Access denied. Admins only.' }); // Access denied for non-admin users
   }
 };
 
