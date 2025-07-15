@@ -18,7 +18,7 @@ const AddVehicle = ({ onUploadSuccess }) => {
     formData.append('image', newVehicle.file);
 
     try {
-      const res = await fetch('http://localhost:5000/api/vehicle', {
+      const res = await fetch('http://localhost:5000/api/vehicles', {
         method: 'POST',
         body: formData,
       });

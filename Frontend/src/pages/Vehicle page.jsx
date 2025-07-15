@@ -230,7 +230,7 @@ function VehiclePage() {
 const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/vehicle')
+    fetch('http://localhost:5000/api/vehicles')
       .then((res) => res.json())
       .then((data) => {
         setVehicleData({ Bike: data });

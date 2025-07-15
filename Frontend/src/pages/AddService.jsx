@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const AddService = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -9,6 +10,8 @@ const AddService = () => {
     design: '',
     file: null,
   });
+
+  const navigate = useNavigate(); // Initialize navigate hook
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -56,6 +59,9 @@ const AddService = () => {
         alert('✅ Service uploaded successfully!');
         setServiceData({ name: '', design: '', file: null });
         setPreviewUrl(null);
+
+        // Redirect to the Service Page
+        navigate('/services'); // Navigate to the service page after success
       } else {
         throw new Error('Service upload failed');
       }
@@ -69,7 +75,7 @@ const AddService = () => {
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-4 py-10 text-gray-800 mt-20">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold">Add New Service</h1>
-        <p className="text-sm text-gray-500 mt-1">Upload custom service/sticker image with details</p>
+        <p className="text-sm text-gray-500 mt-1">Upload custom service/image with details</p>
       </div>
 
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md border">
@@ -84,7 +90,7 @@ const AddService = () => {
               value={serviceData.name}
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
-              placeholder="Example: Flame Sticker"
+              placeholder="service name"
               required
             />
           </div>
@@ -99,7 +105,7 @@ const AddService = () => {
               value={serviceData.design}
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
-              placeholder="Ex: Sport, Classic..."
+              placeholder="Ex: bike head light"
               required
             />
           </div>

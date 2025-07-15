@@ -40,7 +40,7 @@ const VehiclesManagement = () => {
         {vehicles.map((vehicle) => (
           <div key={vehicle._id} className="bg-gray-50 rounded-xl shadow-md p-4">
             <img
-              src={vehicle.imageUrl || vehicle.image}
+              src={vehicle.image || vehicle.image}
               alt={vehicle.name}
               className="w-full h-48 object-cover rounded-md mb-4"
             />

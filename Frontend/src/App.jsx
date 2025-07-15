@@ -40,15 +40,15 @@ function App() {
         <Route path='/addvehicles' element={<AddVehicles />} />
         <Route path='/addstickers' element={<AddStickers />} />
         <Route path="/customize/:id" element={<VehicleStickerViewer />} />
-       <Route path="/vehicles" element={<VehiclePage />} />
-
+        <Route path="/vehicles" element={<VehiclePage />} />
+       
         <Route path='/vehiclescene' element={<VehicleScene />} />
         <Route path='/sticker' element={<Sticker />} />
         <Route path='/Usermanagement' element={<Usermanagement />} />
         <Route path="/contact-message" element={<ContactMessage />} />
         <Route path="/collection" element={<MyCollection/>}/>
         <Route path="/contact" element={<ContactPage/>}/>
-        <Route path="/addservie" element={<AddService />} />
+        <Route path="/add-service" element={<AddService />} />
         <Route path='/vehiclesmanagement' element={<VehiclesManagement />} />
       </Routes>
       <Footer />
