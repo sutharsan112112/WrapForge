@@ -23,7 +23,7 @@ function HomePage() {
       {/* Hero Section */}
       <section id="/" className="relative">
         <model-viewer
-        src="../src/assets/images/Car.glb"
+        src="../src/assets/images/3d models/Car.glb"
         alt="Hero Bike"
         auto-rotate
         autoplay
