@@ -1,70 +1,100 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { X, Send, Trash2, ArrowLeft } from 'lucide-react';
+import { Send, Trash2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const ContactMessage = () => {
   const [messages, setMessages] = useState([]);
   const [replyText, setReplyText] = useState({});
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // 👈 for navigation
+  const navigate = useNavigate();
+
+  const API_URL = import.meta.env.VITE_API_URL; // e.g., http://localhost:5000/api
 
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem('auth_token');
-      const res = await axios.get('/api/contact', {
+      if (!token) {
+        toast.error('You are not logged in.');
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch(`${API_URL}/contact`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      if (Array.isArray(res.data)) {
-        setMessages(res.data);
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setMessages(data);
       } else {
-        console.error('Expected array but got:', res.data);
-        setMessages([]); // fallback
+        toast.warning('Unexpected response format.');
+        setMessages([]);
       }
     } catch (err) {
-      console.error('Failed to fetch contact messages:', err);
-      setMessages([]); // fallback on error
+      console.error('Fetch Error:', err);
+      toast.error('Failed to fetch messages.');
+      setMessages([]);
     } finally {
       setLoading(false);
     }
   };
 
   const handleReply = async (id) => {
+    const reply = replyText[id];
+    if (!reply || reply.trim() === '') {
+      toast.warn('Please type a reply.');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('auth_token');
-      await axios.post(
-        `/api/contact/${id}/reply`,
-        { reply: replyText[id] },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      alert('Reply sent!');
-      fetchMessages();
+      const res = await fetch(`${API_URL}/contact/${id}/reply`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ reply }),
+      });
+
+      if (res.ok) {
+        toast.success('Reply sent!');
+        fetchMessages();
+      } else {
+        const errData = await res.json();
+        toast.error(errData.message || 'Failed to send reply.');
+      }
     } catch (err) {
-      console.error('Error replying to message:', err);
-      alert('Failed to send reply.');
+      console.error(err);
+      toast.error('Error while sending reply.');
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this message?')) return;
+    if (!window.confirm('Are you sure you want to delete this message?')) return;
     try {
       const token = localStorage.getItem('auth_token');
-      await axios.delete(`/api/contact/${id}`, {
+      const res = await fetch(`${API_URL}/contact/${id}`, {
+        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      fetchMessages();
+
+      if (res.ok) {
+        toast.success('Message deleted');
+        fetchMessages();
+      } else {
+        const errData = await res.json();
+        toast.error(errData.message || 'Delete failed.');
+      }
     } catch (err) {
-      console.error('Error deleting message:', err);
-      alert('Delete failed.');
+      console.error(err);
+      toast.error('Error while deleting message.');
     }
   };
 
@@ -74,7 +104,6 @@ const ContactMessage = () => {
 
   return (
     <div className="p-6 mt-20 min-h-screen bg-gray-100">
-      {/* 🔙 Back Button */}
       <button
         onClick={() => navigate(-1)}
         className="mb-4 flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"

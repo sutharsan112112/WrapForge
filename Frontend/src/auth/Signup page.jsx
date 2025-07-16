@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import logo from '/src/assets/images/WrapForge logo.png';
+import { toast } from 'react-toastify';
+
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -35,34 +37,33 @@ const SignupPage = () => {
       setMismatchError(mismatch ? 'Passwords do not match' : '');
     }
   };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const API_URL = import.meta.env.VITE_API_URL;
 
-    const API_URL = import.meta.env.VITE_API_URL;
+  try {
+    const res = await axios.post(`${API_URL}/auth/register`, {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      confirmpassword: formData.confirmpassword,
+      role: formData.role,
+    });
 
-    try {
-      const res = await axios.post(`${API_URL}/auth/register`, {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        confirmpassword: formData.confirmpassword,
-        role: formData.role,
-      });
-
-      if (res.status === 200 || res.status === 201) {
-        console.log('Registration successful!');
-        alert('Registration successful!');
-        navigate('/');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
+    if (res.status === 200 || res.status === 201) {
+      toast.success('Registration successful!');
+      navigate('/');
     }
-  };
+  } catch (err) {
+    const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
+    toast.error(errorMessage);
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-10 py-10 text-gray-800 mt-20">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-  Car, Users, Settings, Box, Wrench,
-  Tag, PlusCircle, DollarSign, X, ClipboardList, UserPlus
+  Car, Users, Box, Wrench,
+  Tag, PlusCircle, DollarSign, X, ClipboardList, UserPlus, LayoutDashboard
 } from 'lucide-react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import AddStickers from '../pages/Addstickers';
@@ -46,13 +46,15 @@ const AdminDashboard = () => {
         <nav className="space-y-2">
           <button
         onClick={() => navigate('/admin')}
-        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+        className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm bg-gray-100 text-black font-medium"
       >
+        <LayoutDashboard size={20} />
+        Dashboard
       </button>
 
       <button
         onClick={() => navigate('/vehiclesmanagement')}
-        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition "
       >
         <Car size={20} />
         <span>Vehiclesmanagement</span>
@@ -88,14 +90,6 @@ const AdminDashboard = () => {
       >
         <Box size={20} />
         <span>Contact Message</span>
-      </button>
-
-      <button
-        onClick={() => navigate('/settings')}
-        className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
-      >
-        <Settings size={20} />
-        <span>Settings</span>
       </button>
         </nav>
       </aside>

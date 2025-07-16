@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Trash2 } from 'lucide-react';
+import { Trash2, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const MyCollection = () => {
   const [designs, setDesigns] = useState([]);
@@ -9,6 +10,7 @@ const MyCollection = () => {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const navigate = useNavigate();
 
   // Fetch saved designs
   const fetchDesigns = async () => {
@@ -86,6 +88,14 @@ const MyCollection = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 px-6 py-10 mt-20">
+      {/* 🔙 Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="mb-6 flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"
+      >
+        <ArrowLeft className="mr-2" size={18} />
+        Back
+      </button>
       <h2 className="text-3xl font-bold text-yellow-600 mb-6">My Collection</h2>
 
       {/* Show selected vehicle if exists */}

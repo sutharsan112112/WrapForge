@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // ✅ FIXED: import useNavigate
 import {
-  LayoutDashboard, Car, Wrench, Calendar,
+  LayoutDashboard, Car, Wrench, Calendar, Tag,
   Bell, Search, UserPlus, X, ClipboardList
 } from 'lucide-react';
 import AddStickers from '../pages/Addstickers';
@@ -33,13 +33,13 @@ const PartnerDashboard = () => {
   return (
     <div className="flex min-h-screen bg-gray-50 text-gray-800 mt-20 relative">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm p-4 space-y-4" aria-label="Sidebar Navigation">
+      <aside className="w-64 bg-yellow-300 shadow-md p-4 hidden md:block" aria-label="Sidebar Navigation">
         <h2 className="text-2xl font-bold mb-1">Partner Panel</h2>
         <p className="text-xs text-gray-500 mb-4">Welcome to your dashboard</p>
         <nav className="space-y-2">
          <button
       onClick={() => navigate('/partnerdashboard')}
-      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm bg-indigo-600 text-white font-medium"
+      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm bg-gray-100 text-black font-medium"
     >
       <LayoutDashboard size={20} />
       Dashboard
@@ -51,6 +51,14 @@ const PartnerDashboard = () => {
     >
       <Car size={20} />
       My Collections
+    </button>
+
+    <button
+      onClick={() => navigate('/stickermanagement')}
+      className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+    >
+      <Tag size={20} />
+      <span>Stickermanagement</span>
     </button>
 
     <button

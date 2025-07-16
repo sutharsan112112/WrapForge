@@ -4,7 +4,7 @@ import {
     createService, 
     updateService, 
     deleteService 
-} from '../controllers /serviceController.js';
+} from '../controllers/serviceController.js';
 import isAdminOrPartner from '../middleware/serviceMiddleware.js';
 import upload from '../middleware/multerMiddleware.js'; // Multer config
 

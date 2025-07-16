@@ -4,35 +4,34 @@ const paymentSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   amount: {
     type: Number,
-    required: true
+    required: true,
   },
   currency: {
     type: String,
-    default: 'usd'
+    default: 'usd',
   },
   paymentStatus: {
     type: String,
     enum: ['pending', 'completed', 'failed'],
-    default: 'pending'
+    default: 'pending',
   },
   stripeSessionId: {
     type: String,
-    required: true
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const Payment = mongoose.model('Payment', paymentSchema);
-
 export default Payment;

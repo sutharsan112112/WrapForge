@@ -5,7 +5,7 @@ import {
   createVehicle,
   updateVehicle,
   deleteVehicle
-} from '../controllers /vehicleController.js';
+} from '../controllers/vehicleController.js';
 import upload from '../middleware/upload.js';
 
 import { vehicleMiddleware } from '../middleware/vehiclemiddleware.js'

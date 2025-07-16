@@ -5,7 +5,7 @@ import {
   getAllStickers,
   updateSticker,
   deleteSticker
-} from '../controllers /stickerController.js';
+} from '../controllers/stickerController.js';
 
 import { protect, isAdminOrPartner } from '../middleware/stickerMiddleware.js';
 
