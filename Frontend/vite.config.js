@@ -10,4 +10,9 @@ export default defineConfig({
       '/api': 'http://localhost:5000',
     },
   },
+  
+  // Other configurations...
+  optimizeDeps: {
+    include: ['@stripe/stripe-js', '@stripe/react-stripe-js']
+  }
 });

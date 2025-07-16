@@ -13,6 +13,7 @@
     "@google/model-viewer": "^4.1.0",
     "@react-three/drei": "^10.3.0",
     "@react-three/fiber": "^9.1.2",
+    "@stripe/stripe-js": "^7.4.0",
     "@tailwindcss/vite": "^4.1.10",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
@@ -23,6 +24,7 @@
     "react-router-dom": "^7.6.3",
     "react-scroll": "^1.9.3",
     "react-toastify": "^11.0.5",
+    "stripe": "^18.3.0",
     "three": "^0.177.0"
   },
   "devDependencies": {

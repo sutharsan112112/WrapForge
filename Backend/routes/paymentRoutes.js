@@ -1,12 +1,15 @@
 import express from 'express';
-import PaymentController from '../controllers/paymentController.js';
-import { protect, isAdmin } from '../middleware/authMiddleware.js';
+import { createPaymentIntent, getPaymentById, updatePaymentStatus } from '../controllers/paymentController.js';
 
 const router = express.Router();
 
-router.post('/create-checkout-session', protect, isAdmin, PaymentController.createCheckoutSession);
-router.get('/', protect, isAdmin, PaymentController.getAllPayments);
-router.put('/:id', protect, isAdmin, PaymentController.updatePaymentStatus);
-router.delete('/:id', protect, isAdmin, PaymentController.deletePayment);
+// POST: Create Payment Intent
+router.post('/create-payment-intent', createPaymentIntent);
+
+// GET: Get a payment by ID
+router.get('/:id', getPaymentById);
+
+// PUT: Update Payment Status
+router.put('/:id', updatePaymentStatus);
 
 export default router;

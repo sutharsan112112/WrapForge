@@ -1,37 +1,30 @@
 import mongoose from 'mongoose';
 
 const paymentSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
   amount: {
     type: Number,
     required: true,
   },
-  currency: {
+  paymentMethod: {
     type: String,
-    default: 'usd',
+    enum: ['Credit Card', 'PayPal', 'Bank Transfer'],
+    required: true,
   },
-  paymentStatus: {
+  status: {
     type: String,
-    enum: ['pending', 'completed', 'failed'],
-    default: 'pending',
+    enum: ['Pending', 'Completed', 'Failed'],
+    default: 'Pending',
   },
-  stripeSessionId: {
+  transactionId: {
     type: String,
     required: true,
   },
-  createdAt: {
+  paymentDate: {
     type: Date,
     default: Date.now,
   },
 });
 
 const Payment = mongoose.model('Payment', paymentSchema);
+
 export default Payment;

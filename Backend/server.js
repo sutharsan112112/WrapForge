@@ -9,7 +9,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import stickerRoutes from './routes/stickerRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
-// import paymentRoutes from './routes/paymentRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 import path from 'path';
 
 dotenv.config();
@@ -38,7 +38,7 @@ app.use('/api/vehicles', VehicleRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/sticker", stickerRoutes);
 app.use('/api/service', serviceRoutes);
-// app.use('/api/payment', paymentRoutes);
+app.use('/api/payment', paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

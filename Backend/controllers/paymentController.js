@@ -1,89 +1,77 @@
 import Stripe from 'stripe';
 import Payment from '../models/payment.js';
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+// Initialize Stripe with your secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-class PaymentController {
-  // Create Stripe checkout session
-  static async createCheckoutSession(req, res) {
-    try {
-      const { amount, userEmail } = req.body;
+// POST: Create Payment Intent (For handling payments)
+export const createPaymentIntent = async (req, res) => {
+  const { amount } = req.body;  // amount should be in cents (e.g., $100 = 10000 cents)
 
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ['card'],
-        line_items: [
-          {
-            price_data: {
-              currency: 'usd',
-              product_data: {
-                name: 'WrapForge App Subscription',
-              },
-              unit_amount: amount * 100,
-            },
-            quantity: 1,
-          },
-        ],
-        mode: 'payment',
-        customer_email: userEmail,
-        success_url: 'http://localhost:5173/success',
-        cancel_url: 'http://localhost:5173/cancel',
-      });
+  try {
+    // Create a PaymentIntent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: 'usd',
+      payment_method_types: ['card'],
+    });
 
-      await Payment.create({
-        userId: req.user._id,
-        email: userEmail,
-        amount,
-        stripeSessionId: session.id,
-        paymentStatus: 'pending',
-      });
+    // Create a new payment record in MongoDB (Optional)
+    const newPayment = new Payment({
+      amount: amount / 100, // convert back to dollars for storage
+      paymentMethod: 'Credit Card',
+      transactionId: paymentIntent.id,
+    });
 
-      res.status(200).json({ id: session.id });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+    await newPayment.save();
+
+    // Send the client secret back to the frontend
+    res.status(201).json({
+      clientSecret: paymentIntent.client_secret,
+      paymentId: paymentIntent.id,
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Error creating payment intent', error: error.message });
   }
+};
 
-  // Get all payments
-  static async getAllPayments(req, res) {
-    try {
-      const payments = await Payment.find().populate('userId', 'name email');
-      res.status(200).json(payments);
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to fetch payments.' });
+// GET: Get Payment by ID (optional)
+export const getPaymentById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const payment = await Payment.findById(id);
+
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
     }
+
+    res.status(200).json(payment);
+  } catch (error) {
+    res.status(400).json({ message: 'Error retrieving payment', error: error.message });
   }
+};
 
-  // Update payment status
-  static async updatePaymentStatus(req, res) {
-    const { id } = req.params;
-    const { status } = req.body;
+// PUT: Update Payment Status (optional)
+export const updatePaymentStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body; // status could be 'Completed', 'Failed'
 
-    try {
-      const payment = await Payment.findById(id);
-      if (!payment) return res.status(404).json({ message: 'Payment not found' });
+  try {
+    const payment = await Payment.findById(id);
 
-      payment.paymentStatus = status;
-      await payment.save();
-
-      res.status(200).json({ message: 'Payment status updated', payment });
-    } catch (error) {
-      res.status(500).json({ message: 'Update failed', error: error.message });
+    if (!payment) {
+      return res.status(404).json({ message: 'Payment not found' });
     }
+
+    payment.status = status;
+    await payment.save();
+
+    res.status(200).json({ message: 'Payment updated successfully', payment });
+  } catch (error) {
+    res.status(400).json({ message: 'Error updating payment', error: error.message });
   }
-
-  // Delete a payment
-  static async deletePayment(req, res) {
-    try {
-      const { id } = req.params;
-      const deleted = await Payment.findByIdAndDelete(id);
-
-      if (!deleted) return res.status(404).json({ message: 'Payment not found' });
-
-      res.status(200).json({ message: 'Payment deleted successfully' });
-    } catch (error) {
-      res.status(500).json({ message: 'Delete failed', error: error.message });
-    }
-  }
-}
-
-export default PaymentController;
+};
