@@ -26,7 +26,7 @@ import VehicleStickerViewer from './pages/vechicleSticker.jsx';
 import StickerManagement from './pages/Stickermanagement.jsx';
 import ServiceManagement from './pages/ServiceManagement.jsx';
 import { ToastContainer } from 'react-toastify';
-import StripeContainer from './pages/Payment.jsx';
+// import StripeContainer from './pages/Payment.jsx';
 
 function App() {
   return (
@@ -56,7 +56,7 @@ function App() {
         <Route path='/vehiclesmanagement' element={<VehiclesManagement />} />
         <Route path='/stickerManagement' element={<StickerManagement />} />
         <Route path='/servicemanagement' element={<ServiceManagement />} />
-        <Route path='/payment' element={<StripeContainer/>} />
+        {/* <Route path='/payment' element={<StripeContainer/>} /> */}
       </Routes>
       <Footer />
 
