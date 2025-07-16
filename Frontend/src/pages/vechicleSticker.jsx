@@ -11,7 +11,7 @@ const VehicleStickerViewer = () => {
 
   // Fetch vehicle by ID
   useEffect(() => {
-    fetch(`http://localhost:5000/api/vehicle/${id}`)
+    fetch(`http://localhost:5000/api/vehicles/${id}`)
       .then((res) => res.json())
       .then((data) => {
         const path = data.image.startsWith('/uploads')

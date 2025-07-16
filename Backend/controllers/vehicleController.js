@@ -6,15 +6,22 @@ import Sticker from '../models/Sticker.js';
 export const createVehicle = async (req, res) => {
   try {
     const { name, model, year } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : '';
 
-    const newVehicle = new Vehicle({ name, model, year, image });
+    // Determine if the uploaded file is an image or a 3D model (GLB or GLTF)
+    const imageUrl = req.file ? `http://localhost:5000/uploads/${req.file.filename}` : '';  // Full URL of image or 3D model
+
+    const newVehicle = new Vehicle({
+      name,
+      model,
+      year,
+      image: imageUrl,  // Store the URL of the uploaded file (image or 3D model)
+    });
+
     await newVehicle.save();
-    res.status(201).json(newVehicle);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create vehicle' });
+    res.status(201).json({ message: 'Vehicle created successfully', vehicle: newVehicle });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to create vehicle', error: err.message });
   }
-
 };
 
 

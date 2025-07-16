@@ -11,9 +11,9 @@ const ServiceManagement = () => {
     const fetchServices = async () => {
       try {
         const token = localStorage.getItem('auth_token');
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/services`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+const res = await axios.get(`${import.meta.env.VITE_API_URL}/service`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
         setServices(res.data); // assuming res.data is array of service objects
       } catch (err) {
         console.error('Fetch error:', err);

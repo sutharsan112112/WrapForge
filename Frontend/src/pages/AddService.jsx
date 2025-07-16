@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const AddService = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -16,7 +17,7 @@ const AddService = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    if (name === 'image') {  // <-- MUST be 'image' to match backend multer.single('image')
+    if (name === 'image') {
       const file = files[0];
       setServiceData((prev) => ({ ...prev, file }));
 
@@ -32,40 +33,49 @@ const AddService = () => {
     e.preventDefault();
 
     if (!serviceData.file) {
-      alert('Please select an image file.');
+      toast.warning('Please select an image file.');
       return;
     }
 
     const token = localStorage.getItem('auth_token');
     if (!token) {
-      alert('❌ Please log in to upload a service.');
+      toast.error('❌ Please log in to upload a service.');
       return;
     }
 
     const formData = new FormData();
     formData.append('title', serviceData.title);
     formData.append('description', serviceData.description);
-    formData.append('image', serviceData.file); // key must be 'image'
+    formData.append('image', serviceData.file); // 👈 must match backend's multer.single('image')
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/service`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
+          'Content-Type': 'multipart/form-data', // This header is necessary
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (res.status === 200 || res.status === 201) {
-        alert('✅ Service uploaded successfully!');
+        toast.success('✅ Service uploaded successfully!');
         setServiceData({ title: '', description: '', file: null });
         setPreviewUrl(null);
-        navigate('/services');
       } else {
-        throw new Error('Service upload failed');
+        toast.error('Service upload failed.');
       }
     } catch (err) {
       console.error('Upload error:', err);
-      alert(err.response?.data?.message || '❌ Upload failed. Try again later.');
+      
+      if (err.response) {
+        // Server response error
+        toast.error(err.response.data.message || '❌ Upload failed. Try again later.');
+      } else if (err.request) {
+        // Network or request error
+        toast.error('❌ No response from the server. Please try again later.');
+      } else {
+        // Other error
+        toast.error(`Error: ${err.message}`);
+      }
     }
   };
 
@@ -73,7 +83,7 @@ const AddService = () => {
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-4 py-10 text-gray-800 mt-20">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold">Add New Service</h1>
-        <p className="text-sm text-gray-500 mt-1">Upload custom service/image with details</p>
+        <p className="text-sm text-gray-500 mt-1">Upload a custom service with image and details</p>
       </div>
 
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md border">
@@ -111,7 +121,7 @@ const AddService = () => {
             <input
               type="file"
               id="image"
-              name="image"  // MUST be 'image'
+              name="image" // must match multer key
               accept=".jpg,.jpeg,.png"
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
@@ -123,7 +133,7 @@ const AddService = () => {
             <div className="flex justify-center mt-3">
               <img
                 src={previewUrl}
-                alt="Service preview"
+                alt="Preview"
                 className="h-40 border rounded-md object-contain shadow"
               />
             </div>
