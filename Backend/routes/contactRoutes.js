@@ -1,24 +1,21 @@
 import express from 'express';
-import {protect, isAdmin} from '../middleware/contactMiddleware.js';
-import { sendMessage, getAllMessages, replyToMessage, updateContactMessage, deleteContactMessage} from '../controllers/contactController.js';
+import { protect, isAdmin } from '../middleware/authMiddleware.js'; // ✅ Fixed
+import {
+  sendMessage,
+  getAllMessages,
+  replyToMessage,
+  updateContactMessage,
+  deleteContactMessage
+} from '../controllers/contactController.js';
 
 const router = express.Router();
 
-// // Example protected contact route
-// router.post('/contact', isAuthenticated, (req, res) => {
-//   const userId = req.user.id;
-//   const { message } = req.body;
+// 📩 Public or protected contact routes
+router.get('/', getAllMessages); // GET /api/contact
+router.post('/', protect, sendMessage); // POST /api/contact (send message)
 
-//   return res.json({ message: 'Message received from user: ' + userId });
-// });
-
-router.get('/contact', getAllMessages);
-router.post('/', protect, sendMessage); // Only authenticated users can send messages
-
-// // Protect routes with isAuthenticated middleware
-// router.post('/', protect, sendMessage); // Send message route
-// router.put('/:id',  updateContactMessage); // Update contact message
-// router.delete('/:id',  deleteContactMessage); // Delete contact message
-
+// Optional: Uncomment and fix these if needed
+// router.put('/:id', updateContactMessage); // PUT /api/contact/:id
+// router.delete('/:id', deleteContactMessage); // DELETE /api/contact/:id
 
 export default router;

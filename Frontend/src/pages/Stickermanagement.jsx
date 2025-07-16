@@ -11,10 +11,10 @@ const StickerManagement = () => {
     const fetchStickers = async () => {
       try {
         const token = localStorage.getItem('auth_token');
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/sticker`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/service`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setStickers(res.data); // assuming res.data is array of sticker objects
+        setStickers(res.data);
       } catch (err) {
         console.error('Fetch error:', err);
       }
@@ -25,7 +25,6 @@ const StickerManagement = () => {
 
   return (
     <div className="py-16 px-4 bg-white mx-4 md:mx-20 my-10 rounded-xl">
-      {/* 🔙 Back Button */}
       <button
         onClick={() => navigate(-1)}
         className="mb-6 flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"
@@ -40,12 +39,12 @@ const StickerManagement = () => {
         {stickers.map((sticker) => (
           <div key={sticker._id} className="bg-gray-50 rounded-xl shadow-md p-4">
             <img
-              src={sticker.image || sticker.image}  // Assuming it has an image field
+              src={`${import.meta.env.VITE_API_URL}/${sticker.image}`}
               alt={sticker.name}
-              className="w-full h-48 object-cover rounded-md mb-4"
+              className="w-full h-48 object-contain rounded-md mb-4"
             />
             <h3 className="text-lg font-semibold">{sticker.name}</h3>
-            <p className="text-gray-600 text-sm mt-2">Type: {sticker.type}</p>
+            <p className="text-gray-600 text-sm mt-2">Type: {sticker.design}</p>
           </div>
         ))}
       </div>

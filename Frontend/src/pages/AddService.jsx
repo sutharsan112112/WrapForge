@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const AddService = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [serviceData, setServiceData] = useState({
-    name: '',
-    design: '',
+    title: '',
+    description: '',
     file: null,
   });
 
-  const navigate = useNavigate(); // Initialize navigate hook
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    if (name === 'file') {
+    if (name === 'image') {  // <-- MUST be 'image' to match backend multer.single('image')
       const file = files[0];
       setServiceData((prev) => ({ ...prev, file }));
 
@@ -43,9 +43,9 @@ const AddService = () => {
     }
 
     const formData = new FormData();
-    formData.append('name', serviceData.name);
-    formData.append('design', serviceData.design);
-    formData.append('image', serviceData.file); // 'image' key must match backend
+    formData.append('title', serviceData.title);
+    formData.append('description', serviceData.description);
+    formData.append('image', serviceData.file); // key must be 'image'
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/service`, formData, {
@@ -57,11 +57,9 @@ const AddService = () => {
 
       if (res.status === 200 || res.status === 201) {
         alert('✅ Service uploaded successfully!');
-        setServiceData({ name: '', design: '', file: null });
+        setServiceData({ title: '', description: '', file: null });
         setPreviewUrl(null);
-
-        // Redirect to the Service Page
-        navigate('/services'); // Navigate to the service page after success
+        navigate('/services');
       } else {
         throw new Error('Service upload failed');
       }
@@ -80,43 +78,40 @@ const AddService = () => {
 
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md border">
         <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
-          {/* Service Name */}
           <div>
-            <label className="text-sm font-medium" htmlFor="name">Service Name</label>
+            <label className="text-sm font-medium" htmlFor="title">Service Title</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={serviceData.name}
+              id="title"
+              name="title"
+              value={serviceData.title}
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
-              placeholder="service name"
+              placeholder="Eg: Oil Change"
               required
             />
           </div>
 
-          {/* Description */}
           <div>
-            <label className="text-sm font-medium" htmlFor="design">Description</label>
+            <label className="text-sm font-medium" htmlFor="description">Description</label>
             <input
               type="text"
-              id="design"
-              name="design"
-              value={serviceData.design}
+              id="description"
+              name="description"
+              value={serviceData.description}
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
-              placeholder="Ex: bike head light"
+              placeholder="Eg: Full service and filter change"
               required
             />
           </div>
 
-          {/* File Upload */}
           <div>
-            <label className="text-sm font-medium" htmlFor="file">Upload Image (jpg/png)</label>
+            <label className="text-sm font-medium" htmlFor="image">Upload Image (jpg/png)</label>
             <input
               type="file"
-              id="file"
-              name="file"
+              id="image"
+              name="image"  // MUST be 'image'
               accept=".jpg,.jpeg,.png"
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
@@ -124,7 +119,6 @@ const AddService = () => {
             />
           </div>
 
-          {/* Preview */}
           {previewUrl && (
             <div className="flex justify-center mt-3">
               <img
@@ -135,7 +129,6 @@ const AddService = () => {
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full py-2 mt-2 bg-yellow-500 text-black rounded-md font-semibold flex items-center justify-center gap-2 hover:bg-orange-500"

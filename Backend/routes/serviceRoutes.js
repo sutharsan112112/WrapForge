@@ -6,6 +6,7 @@ import {
     deleteService 
 } from '../controllers/serviceController.js';
 import isAdminOrPartner from '../middleware/serviceMiddleware.js';
+import { protect } from '../middleware/authMiddleware.js';
 import upload from '../middleware/multerMiddleware.js'; // Multer config
 
 const router = express.Router();
@@ -14,8 +15,8 @@ const router = express.Router();
 router.get('/', getAllServices);
 
 // Protected routes
-router.post('/', isAdminOrPartner, upload.single('image'), createService);
-router.put('/:id', isAdminOrPartner, upload.single('image'), updateService);
-router.delete('/:id', isAdminOrPartner, deleteService);
+router.post('/', protect, isAdminOrPartner, upload.single('image'), createService);
+router.put('/:id', protect, isAdminOrPartner, upload.single('image'), updateService);
+router.delete('/:id', protect, isAdminOrPartner, deleteService);
 
 export default router;

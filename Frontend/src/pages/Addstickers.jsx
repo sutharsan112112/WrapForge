@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddStickers = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -23,35 +25,45 @@ const AddStickers = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!stickerData.file) {
-      alert('Please select a sticker image file.');
-      return;
-    }
+  if (!stickerData.file) {
+    toast.warning('Please select a sticker image file.');
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append('name', stickerData.name);
-    formData.append('design', stickerData.design);
-    formData.append('imageUrl', stickerData.file);
+  const formData = new FormData();
+  formData.append('name', stickerData.name);
+  formData.append('design', stickerData.design);
+  formData.append('image', stickerData.file);
 
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/sticker`, formData);
+  try {
+    const token = localStorage.getItem('auth_token');
 
-      if (res.status === 200 || res.status === 201) {
-        alert('Sticker uploaded successfully!');
-        console.log("Sticker uploaded successfully!")
-        setStickerData({ name: '', design: '', file: null });
-        setPreviewUrl(null);
-      } else {
-        throw new Error('Sticker upload failed');
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/sticker`,
+      formData,
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       }
-    } catch (err) {
-      console.error('Upload error:', err);
-      alert('Upload failed. Please try again.');
+    );
+
+    if (res.status === 200 || res.status === 201) {
+      toast.success('Sticker uploaded successfully!');
+      setStickerData({ name: '', design: '', file: null });
+      setPreviewUrl(null);
+    } else {
+      toast.error('Sticker upload failed.');
     }
-  };
+  } catch (err) {
+    console.error('Upload error:', err);
+    toast.error('Upload failed. Please try again.');
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-4 py-10 text-gray-800 mt-20">
