@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Save, ArrowLeft } from 'lucide-react';
 import '@google/model-viewer';
 
 const VehicleStickerViewer = () => {
@@ -26,9 +27,9 @@ const VehicleStickerViewer = () => {
     fetch('http://localhost:5000/api/sticker')
       .then((res) => res.json())
       .then((data) => {
-            console.log("STICKER DATA:", data); // ⬅️ check this
-      setStickers(data);
-    });
+        console.log("STICKER DATA:", data); // ⬅️ check this
+        setStickers(data);
+      });
 
   }, []);
 
@@ -44,20 +45,30 @@ const VehicleStickerViewer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-6 mt-20">
       <div className="flex justify-between items-center mb-4">
+        {/* 🔙 Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="mb-6 flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"
+        >
+          <ArrowLeft className="mr-2" size={18} />
+          Back
+        </button>
         <h2 className="text-2xl font-bold">Sticker Customization</h2>
         <button
-          onClick={() => navigate('/')}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={() => navigate(-1)}
+          className="mb-6 flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"
         >
-          Back to Vehicle List
+          <Save size={20} />
+          Save
         </button>
       </div>
 
       <div
         className="relative w-full max-w-5xl h-[600px] mx-auto border bg-white rounded shadow"
         onDragOver={(e) => e.preventDefault()}
+
         onDrop={handleDrop}
       >
         {vehicle ? (
@@ -95,42 +106,29 @@ const VehicleStickerViewer = () => {
       {/* Sticker Selection */}
       <div className="mt-6 flex justify-center flex-wrap gap-4">
         {stickers.map((sticker, idx) => (
-//           <img
-//             key={idx}
-// src={sticker.imageUrl.startsWith('http') ? sticker.imageUrl : `http://localhost:5000${sticker.imageUrl}`}
-//             alt={sticker.name}
-//             draggable
-//             onDragStart={(e) =>
-// e.dataTransfer.setData(
-//   'sticker',
-//   sticker.imageUrl.startsWith('http') ? sticker.imageUrl : `http://localhost:5000${sticker.imageUrl}`
-// )
 
-//             }
-//             className="w-20 h-20 object-contain border rounded shadow cursor-move bg-white"
-//           />
-<img
-  key={idx}
-  src={
-    sticker.imageUrl.startsWith('http')
-      ? sticker.imageUrl
-      : `http://localhost:5000${sticker.imageUrl}`
-  }
-  alt={sticker.name}
-  draggable
-  onDragStart={(e) =>
-    e.dataTransfer.setData(
-      'sticker',
-      sticker.imageUrl.startsWith('http')
-        ? sticker.imageUrl
-        : `http://localhost:5000${sticker.imageUrl}`
-    )
-  }
-  onError={(e) => {
-    e.target.src = '/fallback.png'; // fallback if broken
-  }}
-  className="w-20 h-20 object-contain border rounded shadow cursor-move bg-white"
-/>
+          <img
+            key={idx}
+            src={
+              sticker.imageUrl.startsWith('http')
+                ? sticker.imageUrl
+                : `http://localhost:5000${sticker.imageUrl}`
+            }
+            alt={sticker.name}
+            draggable
+            onDragStart={(e) =>
+              e.dataTransfer.setData(
+                'sticker',
+                sticker.imageUrl.startsWith('http')
+                  ? sticker.imageUrl
+                  : `http://localhost:5000${sticker.imageUrl}`
+              )
+            }
+            onError={(e) => {
+              e.target.src = '/fallback.png'; // fallback if broken
+            }}
+            className="w-20 h-20 object-contain border rounded shadow cursor-move bg-white"
+          />
 
         ))}
       </div>

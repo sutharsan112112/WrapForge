@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
-const UserDashboard = () => {
+const UserProfile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
@@ -19,10 +20,18 @@ const UserDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6 mt-20">
+      {/* 🔙 Back Button */}
+            <button
+              onClick={() => navigate(-1)}
+              className="mb-4 flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"
+            >
+              <ArrowLeft className="mr-2" size={18} />
+              Back
+            </button>
       <div className="max-w-4xl mx-auto">
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Welcome, {user.name}</h1>
-          <p className="text-gray-600 mt-2">Here’s your dashboard overview.</p>
+          <p className="text-gray-600 mt-2">Here’s Your Userprofile Overview.</p>
         </header>
 
         {/* Profile Info */}
@@ -80,4 +89,4 @@ const UserDashboard = () => {
   );
 };
 
-export default UserDashboard;
+export default UserProfile;

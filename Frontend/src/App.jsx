@@ -9,7 +9,7 @@ import VehiclePage from './pages/Vehicle page';
 import ServicePage from './pages/Service page.jsx';
 import AdminDashboard from './dashboard/AdminDashboard.jsx';
 import PartnerDashboard from './dashboard/PartnerDashboard.jsx';
-import UserDashboard from './dashboard/UserDashboard.jsx';
+import UserProfile from './dashboard/UserProfile.jsx';
 import LoginPage from './auth/Login page.jsx';
 import SignUpPage from './auth/Signup page.jsx';
 import AddVehicles from './pages/AddVehicles.jsx';
@@ -38,7 +38,7 @@ function App() {
         <Route path='/service' element={<ServicePage />} />
         <Route path='/admin' element={<AdminDashboard />} />
         <Route path='/partnerdashboard' element={<PartnerDashboard />} />
-        <Route path='/userdashboard' element={<UserDashboard />} />
+        <Route path='/userprofile' element={<UserProfile />} />
         <Route path='/login' element={<LoginPage />} />
         <Route path='/signuppage' element={<SignUpPage />} />
         <Route path='/addvehicles' element={<AddVehicles />} />

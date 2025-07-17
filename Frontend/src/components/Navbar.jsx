@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link,useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import LoginPage from '../auth/Login page.jsx';
 import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
@@ -24,74 +24,70 @@ function Navbar() {
   };
 
   return (
-    <nav className="shadow-md flex items-center justify-between fixed top-0 left-0 w-full bg-white z-50 px-6">
-      {/* Logo */}
-      <div className="logo items-center flex">
-        <img src="/src/assets/images/WrapForge logo.png" alt="Logo" className="h-20 w-20" />
-        <h1 className="text-2xl font-bold text-gray-800">WrapForge</h1>
-      </div>
+    <>
+      {/* Navbar */}
+      <nav className="shadow-md flex items-center justify-between fixed top-0 left-0 w-full bg-white z-50 px-6">
+        {/* Logo */}
+        <div className="logo items-center flex">
+          <img src="/src/assets/images/WrapForge logo.png" alt="Logo" className="h-20 w-20" />
+          <h1 className="text-2xl font-bold text-gray-800">WrapForge</h1>
+        </div>
 
-      {/* Links + Auth Actions */}
-      <div className="flex items-center space-x-4 relative">
-<Link to="/" className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">
-  Home
-</Link>
-        <ScrollLink to="aboutus" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">About us</ScrollLink>
-<Link
-  to="/vehicles"
-  className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl"
->
-  Vehicle
-</Link>
-        <ScrollLink to="service" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Service</ScrollLink>
-        <ScrollLink to="contact" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Contact us</ScrollLink>
+        {/* Links + Auth */}
+        <div className="flex items-center space-x-4 relative">
+          <Link to="/" className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Home</Link>
+          <ScrollLink to="aboutus" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">About us</ScrollLink>
+          <Link to="/vehicles" className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Vehicle</Link>
+          <ScrollLink to="service" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Service</ScrollLink>
+          <ScrollLink to="contact" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Contact us</ScrollLink>
 
-        {!user ? (
-          <button
-            onClick={() => setShowLoginModal(true)}
-            className="bg-yellow-500 text-white px-6 py-3 rounded hover:bg-orange-500 transition-colors"
-          >
-            Login
-          </button>
-        ) : (
-          <div className="relative">
-            <div
-              onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center space-x-2 cursor-pointer bg-yellow-500 px-4 py-2 rounded-full text-white font-medium shadow"
+          {!user ? (
+            <button
+              onClick={() => setShowLoginModal(true)}
+              className="bg-yellow-500 text-white px-6 py-3 rounded hover:bg-orange-500 transition-colors"
             >
-              <FaUserCircle className="text-xl" />
-              <span>{user.name?.split(' ')[0] || 'User'}</span>
-            </div>
-
-            {showDropdown && (
-              <div className="absolute right-0 mt-2 w-64 bg-white border rounded-md shadow-md z-50 p-4 text-sm">
-                <div className="mb-3">
-                  <p className="text-gray-800 font-semibold">{user.name}</p>
-                  <p className="text-gray-500">{user.email}</p>
-                  <p className="text-gray-400 capitalize">{user.role}</p>
-                </div>
-                <hr className="my-2" />
-                <button
-                  onClick={() => {
-                    setShowDropdown(false);
-                    navigate('/userdashboard');
-                  }}
-                  className="w-full text-left px-3 py-2 text-blue-600 hover:bg-gray-100 rounded"
-                >
-                  Profile
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center justify-center space-x-2 text-red-600 hover:text-white hover:bg-red-600 px-3 py-2 rounded transition"
-                >
-                  <FaSignOutAlt />
-                  <span>Logout</span>
-                </button>
+              Login
+            </button>
+          ) : (
+            <div className="relative">
+              <div
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="flex items-center space-x-2 cursor-pointer bg-yellow-500 px-4 py-2 rounded-full text-white font-medium shadow"
+              >
+                <FaUserCircle className="text-xl" />
+                <span>{user.name?.split(' ')[0] || 'User'}</span>
               </div>
-            )}
-          </div>
-        )}
-      </div>
+
+              {showDropdown && (
+                <div className="absolute right-0 mt-2 w-64 bg-white border rounded-md shadow-md z-50 p-4 text-sm">
+                  <div className="mb-3">
+                    <p className="text-gray-800 font-semibold">{user.name}</p>
+                    <p className="text-gray-500">{user.email}</p>
+                    <p className="text-gray-400 capitalize">{user.role}</p>
+                  </div>
+                  <hr className="my-2" />
+                  <button
+                    onClick={() => {
+                      setShowDropdown(false);
+                      navigate('/userprofile');
+                    }}
+                    className="w-full text-left px-3 py-2 text-blue-600 hover:bg-gray-100 rounded"
+                  >
+                    Profile
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center justify-center space-x-2 text-red-600 hover:text-white hover:bg-red-600 px-3 py-2 rounded transition"
+                  >
+                    <FaSignOutAlt />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </nav>
 
       {/* Login Modal */}
       {showLoginModal && (
@@ -106,7 +102,7 @@ function Navbar() {
             <button
               onClick={() => setShowLoginModal(false)}
               className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
-              style={{fontSize:"30px"}}
+              style={{ fontSize: "30px" }}
               aria-label="Close modal"
             >
               ×
@@ -117,7 +113,7 @@ function Navbar() {
           </div>
         </div>
       )}
-    </nav>
+    </>
   );
 }
 
