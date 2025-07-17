@@ -9,7 +9,7 @@ const ContactMessage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL; // e.g., http://localhost:5000/api
+  const API_URL = import.meta.env.VITE_API_URL; // example: http://localhost:5000/api
 
   const fetchMessages = async () => {
     try {
@@ -28,8 +28,8 @@ const ContactMessage = () => {
 
       const data = await res.json();
 
-      if (Array.isArray(data)) {
-        setMessages(data);
+      if (Array.isArray(data.messages)) {
+        setMessages(data.messages);
       } else {
         toast.warning('Unexpected response format.');
         setMessages([]);
@@ -63,6 +63,7 @@ const ContactMessage = () => {
 
       if (res.ok) {
         toast.success('Reply sent!');
+        setReplyText((prev) => ({ ...prev, [id]: '' }));
         fetchMessages();
       } else {
         const errData = await res.json();

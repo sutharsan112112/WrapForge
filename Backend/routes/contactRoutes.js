@@ -1,21 +1,25 @@
 import express from 'express';
-import { protect, isAdmin } from '../middleware/authMiddleware.js'; // ✅ Fixed
 import {
-  sendMessage,
   getAllMessages,
   replyToMessage,
   updateContactMessage,
-  deleteContactMessage
+  deleteContactMessage,
 } from '../controllers/contactController.js';
+
+import { protect, isAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// 📩 Public or protected contact routes
-router.get('/', getAllMessages); // GET /api/contact
-router.post('/', protect, sendMessage); // POST /api/contact (send message)
+// Admin - Get all messages
+router.get('/', protect, isAdmin, getAllMessages);
 
-// Optional: Uncomment and fix these if needed
-// router.put('/:id', updateContactMessage); // PUT /api/contact/:id
-// router.delete('/:id', deleteContactMessage); // DELETE /api/contact/:id
+// Admin - Reply to message by ID
+router.post('/reply/:id', protect, isAdmin, replyToMessage);
+
+// User/Partner - Update their own message
+router.put('/:id', protect, updateContactMessage);
+
+// Admin - Delete message by ID
+router.delete('/:id', protect, isAdmin, deleteContactMessage);
 
 export default router;
