@@ -4,8 +4,7 @@ import axios from 'axios';
 import { FaTimes } from 'react-icons/fa';
 import logo from '/src/assets/images/WrapForge logo.png';
 import SignupPage from '../auth/Signup page.jsx';
-import { toast } from 'react-toastify'; // Import toast
-
+import { toast } from 'react-toastify';
 
 const Login = ({ onClose }) => {
   const navigate = useNavigate();
@@ -18,48 +17,49 @@ const Login = ({ onClose }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setPasswordError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setPasswordError('');
 
-  try {
-    const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, formData);
 
-    if (res.status === 200) {
-      const { token, user } = res.data;
+      if (res.status === 200) {
+        const { token, user } = res.data;
 
-      // ✅ Save token and user info to localStorage
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+        // Combine token inside user object for easier access later
+        const userWithToken = { ...user, token };
 
-      toast.success('Login Successful!');  // Success toast
+        // Save combined user object to localStorage
+        localStorage.setItem('user', JSON.stringify(userWithToken));
 
-      const role = user?.role;
+        toast.success('Login Successful!');
 
-      // ✅ Navigate based on role
-      if (role === 'admin') {
-        navigate('/admin');
-      } else if (role === 'partner') {
-        navigate('/partnerdashboard');
-      } else if (role === 'user') {
-        navigate('/vehicle');
-      } else {
-        toast.error('Invalid role');  // Error toast for invalid role
+        const role = user?.role;
+
+        if (role === 'admin') {
+          navigate('/admin');
+        } else if (role === 'partner') {
+          navigate('/partnerdashboard');
+        } else if (role === 'user') {
+          navigate('/vehicle');
+        } else {
+          toast.error('Invalid role');
+        }
+
+        if (onClose) onClose();
       }
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Login failed';
 
-      if (onClose) onClose(); // close modal if open
-    }
-  } catch (err) {
-    const msg = err.response?.data?.message || 'Login failed';
-    
-    toast.error(msg);  // Error toast for general failure
+      toast.error(msg);
 
-    if (msg.toLowerCase().includes('password')) {
-      setPasswordError(msg);
-      toast.warning(msg);  // Show password-related warning
+      if (msg.toLowerCase().includes('password')) {
+        setPasswordError(msg);
+        toast.warning(msg);
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-10 py-10 text-gray-800 mt-20">

@@ -26,7 +26,7 @@ import VehicleStickerViewer from './pages/vechicleSticker.jsx';
 import StickerManagement from './pages/Stickermanagement.jsx';
 import ServiceManagement from './pages/ServiceManagement.jsx';
 import { ToastContainer } from 'react-toastify';
-// import StripeContainer from './pages/Payment.jsx';
+import PartnerProfile from './dashboard/PartnerProfile.jsx';
 
 function App() {
   return (
@@ -45,7 +45,8 @@ function App() {
         <Route path='/addstickers' element={<AddStickers />} />
         <Route path="/customize/:id" element={<VehicleStickerViewer />} />
         <Route path="/vehicles" element={<VehiclePage />} />
-       
+               <Route path='/partnerprofile' element={<PartnerProfile/>} />
+
         <Route path='/vehiclescene' element={<VehicleScene />} />
         <Route path='/sticker' element={<Sticker />} />
         <Route path='/Usermanagement' element={<Usermanagement />} />

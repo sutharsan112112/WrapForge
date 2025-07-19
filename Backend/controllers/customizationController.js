@@ -1,4 +1,4 @@
-import Customization from '../models/customization.js';
+import Customization from '../models/Customization.js';
 
 export const createCustomization = async (req, res) => {
   try {
@@ -28,5 +28,16 @@ export const getCustomizationByVehicleId = async (req, res) => {
   } catch (err) {
     console.error('Fetch Customization Error:', err);
     res.status(500).json({ error: 'Failed to fetch customization' });
+  }
+};
+
+export const getAllCustomizations = async (req, res) => {
+  try {
+    const customizations = await Customization.find().populate('vehicleId'); // populate vehicle details
+
+    res.status(200).json(customizations);
+  } catch (err) {
+    console.error('Fetch All Customizations Error:', err);
+    res.status(500).json({ error: 'Failed to fetch all customizations' });
   }
 };

@@ -69,7 +69,11 @@ function Navbar() {
                   <button
                     onClick={() => {
                       setShowDropdown(false);
-                      navigate('/userprofile');
+                      if (user?.role === 'partner') {
+                        navigate('/partnerprofile');
+                      } else {
+                        navigate('/userprofile');
+                      }
                     }}
                     className="w-full text-left px-3 py-2 text-blue-600 hover:bg-gray-100 rounded"
                   >

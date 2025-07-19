@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
 import connectDB from './config/database.js';
 
 import authRoutes from './routes/authRoutes.js';
@@ -12,12 +13,18 @@ import serviceRoutes from './routes/serviceRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import customizationRoutes from './routes/customizationRoutes.js';
 import path from 'path';
+import requestRoutes from './routes/requestRoutes.js';
 
 dotenv.config();
 connectDB();
 
-const app = express(); // Move this above app.get
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+const app = express();
+
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'http://localhost:5174', 
+  'http://localhost:3000' // Added React default dev server port
+];
 
 app.use(cors({
   origin: function (origin, callback) {
@@ -29,18 +36,23 @@ app.use(cors({
   },
   credentials: true
 }));
-app.use(express.json()); 
+
+app.use(express.json());
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+// Stripe webhook requires raw body
+app.use('/api/payment/webhook', bodyParser.raw({ type: 'application/json' }));
 
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/vehicles', VehicleRoutes);
-app.use("/api/contact", contactRoutes);
-app.use("/api/sticker", stickerRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/sticker', stickerRoutes);
 app.use('/api/service', serviceRoutes);
-app.use('/api/payment', paymentRoutes);
+app.use('/api/requests', requestRoutes);
 app.use('/api/customizations', customizationRoutes);
+app.use('/api/payment', paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
