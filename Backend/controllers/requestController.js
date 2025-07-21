@@ -1,13 +1,16 @@
+// controllers/requestController.js
+import mongoose from 'mongoose';
 import Request from '../models/Request.js';
 import User from '../models/User.js';
 import Customization from '../models/Customization.js';
 
+// ✅ User creates request
 export const createRequest = async (req, res) => {
   try {
     console.log("Request body:", req.body);
     console.log("User from token:", req.user);
 
-    const userId = req.user.id; // ✅ Corrected from _id to id
+    const userId = new mongoose.Types.ObjectId(req.user.id);
     const { partnerId, customizationId } = req.body;
 
     if (!partnerId || !customizationId) {
@@ -15,11 +18,12 @@ export const createRequest = async (req, res) => {
     }
 
     const newRequest = new Request({
-      userId,
-      partnerId,
-      customizationId,
-      status: 'pending',
-    });
+  userId,
+  partnerId: new mongoose.Types.ObjectId(partnerId),
+  customizationId: new mongoose.Types.ObjectId(customizationId),
+  status: 'pending',
+});
+
 
     await newRequest.save();
 
@@ -30,24 +34,26 @@ export const createRequest = async (req, res) => {
   }
 };
 
+// ✅ Partner fetches received requests
 export const getRequestsForPartner = async (req, res) => {
   try {
-    const partnerId = req.user._id; // still valid if _id is set in partner login
+    console.log("User from token:", req.user);  // Check user object
+    const partnerId = new mongoose.Types.ObjectId(req.user.id);
+    console.log("partnerId:", partnerId);
+    console.log("User from token in getRequestsForPartner:", req.user);
 
     const requests = await Request.find({ partnerId })
       .populate('userId', 'name email')
       .populate({
         path: 'customizationId',
-        populate: {
-          path: 'vehicleId',
-          select: 'name'
-        }
+        populate: { path: 'vehicleId', select: 'name' }
       })
       .exec();
 
+    console.log("Requests found:", requests.length);
     res.status(200).json(requests);
   } catch (error) {
-    console.error('Error fetching requests for partner:', error);
-    res.status(500).json({ message: 'Server error while fetching requests' });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };

@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import bodyParser from 'body-parser';
 import connectDB from './config/database.js';
 
@@ -12,7 +13,6 @@ import stickerRoutes from './routes/stickerRoutes.js';
 import serviceRoutes from './routes/serviceRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import customizationRoutes from './routes/customizationRoutes.js';
-import path from 'path';
 import requestRoutes from './routes/requestRoutes.js';
 
 dotenv.config();
@@ -23,7 +23,6 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173', 
   'http://localhost:5174', 
-  'http://localhost:3000' // Added React default dev server port
 ];
 
 app.use(cors({
@@ -41,7 +40,7 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Stripe webhook requires raw body
-app.use('/api/payment/webhook', bodyParser.raw({ type: 'application/json' }));
+// app.use('/api/payment/webhook', bodyParser.raw({ type: 'application/json' }));
 
 app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);
@@ -52,8 +51,7 @@ app.use('/api/sticker', stickerRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/customizations', customizationRoutes);
-app.use('/api/payment', paymentRoutes);
-
+app.use('/api/payments', paymentRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

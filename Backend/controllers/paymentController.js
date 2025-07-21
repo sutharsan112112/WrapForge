@@ -1,39 +1,39 @@
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
-
 dotenv.config();
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export const createCheckoutSession = async (req, res) => {
+export const createSubscription = async (req, res) => {
+  console.log("Subscription route hit");
   try {
-    const { productName, description, price } = req.body;
-    const userId = req.user._id;
+    const { email, billingType } = req.body;
+
+    // Create customer
+    const customer = await stripe.customers.create({ email });
+
+    const priceId =
+      billingType === "monthly"
+        ? process.env.STRIPE_MONTHLY_PRICE_ID
+        : process.env.STRIPE_YEARLY_PRICE_ID;
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'payment',
-      customer_email: req.user.email,
-      line_items: [{
-        price_data: {
-          currency: 'usd',
-          unit_amount: price * 100,
-          product_data: {
-            name: productName,
-            description,
-          },
+      mode: "subscription",
+      payment_method_types: ["card"],
+      customer: customer.id,
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
         },
-        quantity: 1,
-      }],
-      success_url: `${process.env.CLIENT_URL}/payment-success`,
-      cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
-      metadata: {
-        userId,
-        type: "generic"
-      }
+      ],
+      success_url: `https://yourdomain.com/success`,
+      cancel_url: `https://yourdomain.com/cancel`,
     });
 
-    res.status(200).json({ url: session.url });
+    res.status(200).json({ sessionId: session.id });
   } catch (error) {
-    res.status(500).json({ message: "Payment session creation failed", error });
+    console.error("Subscription error:", error.message);
+    res.status(500).json({ message: "Subscription failed", error: error.message });
   }
 };

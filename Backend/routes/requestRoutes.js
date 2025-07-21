@@ -1,14 +1,13 @@
-// routes/requestRoutes.js
 import express from 'express';
 import { createRequest, getRequestsForPartner } from '../controllers/requestController.js';
-import { verifyToken } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// User sends a request to a partner
-router.post('/send', verifyToken, createRequest);
+// 🔘 User sends a customization request to a partner
+router.post('/send', protect, createRequest);
 
-// Partner fetches requests sent to them
-router.get('/partner', verifyToken, getRequestsForPartner);
+// 🔍 Partner views requests sent to them
+router.get('/partner', protect, getRequestsForPartner);
 
 export default router;

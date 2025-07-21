@@ -1,57 +1,117 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const stripePromise = loadStripe('your-publishable-key-from-stripe');  // Your Stripe publishable key
+const Payment = () => {
+  const [billingFrequency, setBillingFrequency] = useState("yearly");
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [loading, setLoading] = useState(false);
 
-const PaymentForm = () => {
-  const [amount, setAmount] = useState(10000); // Amount in cents
-  const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const stripe = useStripe();
-  const elements = useElements();
+  const handleSubscribe = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+      const res = await axios.post(
+        "/api/payments/subscribe",
+        { billingFrequency, paymentMethod },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    // 1. Call the backend to create a payment intent
-    const { data } = await axios.post('/payment/create-payment-intent', { amount });
-
-    const { clientSecret } = data;
-
-    // 2. Confirm the payment using Stripe
-    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-      },
-    });
-
-    if (error) {
-      console.log('Payment failed:', error);
-    } else if (paymentIntent.status === 'succeeded') {
-      setPaymentSuccess(true);
-      alert('Payment successful!');
+      if (res.data && res.data.url) {
+        toast.success("✅ Redirecting to secure checkout...");
+        setTimeout(() => {
+          window.location.href = res.data.url;
+        }, 1000);
+      }
+    } catch (err) {
+      console.error("Payment Error:", err.response?.data || err.message);
+      toast.error("❌ Subscription failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div>
-      <h1>Payment Form</h1>
-      <form onSubmit={handleSubmit}>
-        <CardElement />
-        <button type="submit" disabled={!stripe}>Pay</button>
-      </form>
-      {paymentSuccess && <p>Payment Successful!</p>}
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-xl mt-10">
+      <h2 className="text-lg font-semibold mb-2">Billing frequency</h2>
+      <div className="flex gap-4 mb-6">
+        <button
+          onClick={() => setBillingFrequency("monthly")}
+          className={`w-full p-4 border rounded-lg ${
+            billingFrequency === "monthly"
+              ? "border-blue-500 ring-2 ring-blue-300"
+              : "border-gray-300"
+          }`}
+        >
+          <div className="text-sm font-medium">Pay monthly</div>
+          <div className="text-gray-700">$239/month</div>
+        </button>
+        <button
+          onClick={() => setBillingFrequency("yearly")}
+          className={`w-full p-4 border rounded-lg ${
+            billingFrequency === "yearly"
+              ? "border-blue-500 ring-2 ring-blue-300"
+              : "border-gray-300"
+          }`}
+        >
+          <div className="flex justify-between items-center">
+            <div>
+              <div className="text-sm font-medium">Pay yearly</div>
+              <div className="text-gray-700">$189/month</div>
+            </div>
+            <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full ml-2">
+              Save 20%
+            </span>
+          </div>
+        </button>
+      </div>
+
+      <h2 className="text-lg font-semibold mb-2">Payment method</h2>
+      <div className="flex gap-4 mb-6">
+        {["card", "paypal", "apple", "google"].map((method) => (
+          <button
+            key={method}
+            onClick={() => setPaymentMethod(method)}
+            className={`px-4 py-2 border rounded-lg capitalize ${
+              paymentMethod === method
+                ? "border-blue-500 ring-2 ring-blue-300"
+                : "border-gray-300"
+            }`}
+          >
+            {method === "card" && "Credit or Debit card"}
+            {method === "paypal" && "PayPal"}
+            {method === "apple" && " Pay"}
+            {method === "google" && "G Pay"}
+          </button>
+        ))}
+      </div>
+
+      {paymentMethod === "card" && (
+        <div>
+          <h2 className="text-lg font-semibold mb-4">Payment information</h2>
+          <div className="text-sm text-gray-500 mb-2">
+            Handled by Stripe securely at checkout
+          </div>
+        </div>
+      )}
+
+      <div className="mt-6">
+        <button
+          onClick={handleSubscribe}
+          disabled={loading}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg"
+        >
+          {loading ? "Redirecting..." : "Subscribe"}
+        </button>
+      </div>
     </div>
   );
 };
 
-const StripeContainer = () => {
-  return (
-    <Elements stripe={stripePromise}>
-      <PaymentForm />
-    </Elements>
-  );
-};
-
-export default StripeContainer;
+export default Payment;

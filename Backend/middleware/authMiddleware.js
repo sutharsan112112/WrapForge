@@ -1,26 +1,48 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 // import Stripe from 'stripe';
+
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// 🔐 Protect route: verifies JWT token and loads user info
 export const protect = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "No token provided" });
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select('-password');
+    const user = await User.findById(decoded.id).select('-password');
+    if (!user) {
+      return res.status(401).json({ message: 'User not found.' });
+    }
+
+    req.user = user;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Invalid or expired token' });
+    res.status(401).json({ message: 'Invalid or expired token.' });
   }
 };
 
+// 🛡️ Admin only access
 export const isAdmin = (req, res, next) => {
-  if (req.user?.role === 'admin') return next();
-  return res.status(403).json({ message: 'Admins only' });
+  if (req.user?.role === 'admin') {
+    return next();
+  }
+  return res.status(403).json({ message: 'Access denied: Admins only.' });
 };
 
+// 👥 User or Partner only access
+export const isUserOrPartner = (req, res, next) => {
+  const { role } = req.user || {};
+  if (role === 'user' || role === 'partner') {
+    return next();
+  }
+  return res.status(403).json({ message: 'Access denied: Users or Partners only.' });
+};
+
+// 💳 Stripe payment verification middleware (optional)
 export const verifyStripePayment = async (req, res, next) => {
   const { paymentIntentId } = req.body;
   try {
@@ -36,7 +58,6 @@ export const verifyStripePayment = async (req, res, next) => {
   }
 };
 
-
 export const verifyToken = (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -49,12 +70,3 @@ export const verifyToken = (req, res, next) => {
     res.status(401).json({ message: "Invalid token." });
   }
 };
-
-
-// export const isUser = (req, res, next) => {
-//   if (req.user.role === 'user' || req.user.role === 'partner') {
-//     next();
-//   } else {
-//     return res.status(403).json({ message: 'Access denied: User/Partner only' });
-//   }
-// };

@@ -27,6 +27,8 @@ import StickerManagement from './pages/Stickermanagement.jsx';
 import ServiceManagement from './pages/ServiceManagement.jsx';
 import { ToastContainer } from 'react-toastify';
 import PartnerProfile from './dashboard/PartnerProfile.jsx';
+import Payment from './pages/Payment.jsx';
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -45,23 +47,28 @@ function App() {
         <Route path='/addstickers' element={<AddStickers />} />
         <Route path="/customize/:id" element={<VehicleStickerViewer />} />
         <Route path="/vehicles" element={<VehiclePage />} />
-               <Route path='/partnerprofile' element={<PartnerProfile/>} />
+        <Route path='/partnerprofile' element={<PartnerProfile />} />
 
         <Route path='/vehiclescene' element={<VehicleScene />} />
         <Route path='/sticker' element={<Sticker />} />
         <Route path='/Usermanagement' element={<Usermanagement />} />
         <Route path="/contact-message" element={<ContactMessage />} />
-        <Route path="/collection" element={<MyCollection/>}/>
-        <Route path="/contact" element={<ContactPage/>}/>
+        <Route path="/collection" element={<MyCollection />} />
+        <Route path="/contact" element={<ContactPage />} />
         <Route path="/add-service" element={<AddService />} />
         <Route path='/vehiclesmanagement' element={<VehiclesManagement />} />
         <Route path='/stickerManagement' element={<StickerManagement />} />
         <Route path='/servicemanagement' element={<ServiceManagement />} />
-        {/* <Route path='/payment' element={<StripeContainer/>} /> */}
+        <Route path="/payment" element={
+            <ProtectedRoute>
+              <Payment />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       <Footer />
 
-            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
 
     </>
   );

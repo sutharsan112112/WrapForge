@@ -1,10 +1,10 @@
-import express from 'express';
-import { createCheckoutSession } from '../controllers/paymentController.js';
-import { protect } from '../middleware/authMiddleware.js';
+// routes/paymentRoutes.js
+import express from "express";
+import { createSubscription } from "../controllers/paymentController.js";
 
 const router = express.Router();
 
-// ➤ POST request to create a Stripe Checkout session
-router.post('/create-checkout-session', protect, createCheckoutSession);
+router.post("/subscribe", createSubscription);
+
 
 export default router;
