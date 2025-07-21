@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
-// import Stripe from 'stripe';
+import Stripe from 'stripe';
 
-// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // 🔐 Protect route: verifies JWT token and loads user info
 export const protect = async (req, res, next) => {
@@ -46,6 +45,7 @@ export const isUserOrPartner = (req, res, next) => {
 export const verifyStripePayment = async (req, res, next) => {
   const { paymentIntentId } = req.body;
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
     if (paymentIntent.status === 'succeeded') {
       req.payment = paymentIntent;

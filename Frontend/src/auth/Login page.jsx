@@ -27,31 +27,36 @@ const Login = ({ onClose }) => {
       if (res.status === 200) {
         const { token, user } = res.data;
 
-        // Combine token inside user object for easier access later
+        // Combine token inside user object
         const userWithToken = { ...user, token };
 
-        // Save combined user object to localStorage
+        // Save to localStorage
         localStorage.setItem('user', JSON.stringify(userWithToken));
 
         toast.success('Login Successful!');
 
-        const role = user?.role;
+        // Navigate to payment first (you can use a flag if needed)
+        navigate('/payment');
 
-        if (role === 'admin') {
-          navigate('/admin');
-        } else if (role === 'partner') {
-          navigate('/partnerdashboard');
-        } else if (role === 'user') {
-          navigate('/vehicle');
-        } else {
-          toast.error('Invalid role');
-        }
+        // Then redirect based on role (after a slight delay if needed)
+        setTimeout(() => {
+          const role = user?.role;
 
-        if (onClose) onClose();
+          if (role === 'admin') {
+            navigate('/admin');
+          } else if (role === 'partner') {
+            navigate('/partnerdashboard');
+          } else if (role === 'user') {
+            navigate('/vehicle');
+          } else {
+            toast.error('Invalid role');
+          }
+
+          if (onClose) onClose();
+        }, 1500); // Optional delay before redirecting to dashboard
       }
     } catch (err) {
       const msg = err.response?.data?.message || 'Login failed';
-
       toast.error(msg);
 
       if (msg.toLowerCase().includes('password')) {

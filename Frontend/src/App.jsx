@@ -28,7 +28,7 @@ import ServiceManagement from './pages/ServiceManagement.jsx';
 import { ToastContainer } from 'react-toastify';
 import PartnerProfile from './dashboard/PartnerProfile.jsx';
 import Payment from './pages/Payment.jsx';
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
   return (
