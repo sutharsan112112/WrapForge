@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddVehicle = ({ onUploadSuccess }) => {
   const [newVehicle, setNewVehicle] = useState({
@@ -23,12 +25,11 @@ const AddVehicle = ({ onUploadSuccess }) => {
         body: formData,
       });
       const data = await res.json();
-      alert('Vehicle uploaded successfully!');
-      console.log("Vehicle uploaded successfully!")
+      toast.success('Vehicle uploaded successfully!');
       if (onUploadSuccess) onUploadSuccess(data);
     } catch (err) {
       console.error('Upload failed:', err);
-      alert('Upload failed');
+      toast.error('Upload failed');
     }
   };
 
@@ -104,7 +105,7 @@ const AddVehicle = ({ onUploadSuccess }) => {
           </button>
         </form>
       </div>
-      </div>
+    </div>
   );
 };
 

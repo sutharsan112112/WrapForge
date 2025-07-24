@@ -35,6 +35,8 @@ const Login = ({ onClose }) => {
 
         toast.success('Login Successful!');
 
+        console.log('Login Successful!');
+
         // Then redirect based on role (after a slight delay if needed)
         setTimeout(() => {
           const role = user?.role;

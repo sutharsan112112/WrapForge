@@ -41,16 +41,6 @@ const AddStickers = () => {
         return;
       }
 
-      // Decode JWT token to extract role
-      const base64Url = token.split('.')[1];
-      const decodedPayload = JSON.parse(atob(base64Url));
-      const userRole = decodedPayload.role;
-
-      if (userRole !== 'admin' && userRole !== 'partner') {
-        toast.error("Unauthorized: Only admin or partner can upload.");
-        return;
-      }
-
       const formData = new FormData();
       formData.append('name', stickerData.name);
       formData.append('design', stickerData.design);
@@ -77,6 +67,7 @@ const AddStickers = () => {
       }
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-4 py-10 text-gray-800 mt-20">
