@@ -1,4 +1,4 @@
-const isAdminOrPartner = (req, res, next) => {
+export const isAdminOrPartner = (req, res, next) => {
   try {
     if (req.user && (req.user.role === 'admin' || req.user.role === 'partner')) {
       next();
@@ -9,5 +9,3 @@ const isAdminOrPartner = (req, res, next) => {
     return res.status(500).json({ message: 'Server error in role middleware.' });
   }
 };
-
-export default isAdminOrPartner;

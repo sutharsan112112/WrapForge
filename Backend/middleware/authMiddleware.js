@@ -4,25 +4,34 @@ import Stripe from 'stripe';
 
 
 // 🔐 Protect route: verifies JWT token and loads user info
+// middleware/authMiddleware.js
+
 export const protect = async (req, res, next) => {
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ message: 'Access denied. No token provided.' });
-    }
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await User.findById(decoded.id).select('-password');
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select('-password');
-    if (!user) {
-      return res.status(401).json({ message: 'User not found.' });
-    }
+      if (req.user && (req.user.role === 'admin' || req.user.role === 'partner')) {
+        next();
+      } else {
+        return res.status(403).json({ message: 'Access denied: Only admin or partner allowed' });
+      }
 
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Invalid or expired token.' });
+    } catch (error) {
+      console.error(error);
+      res.status(401).json({ message: 'Not authorized, token failed' });
+    }
+  } else {
+    res.status(401).json({ message: 'Not authorized, no token' });
   }
 };
+
 
 // 🛡️ Admin only access
 export const isAdmin = (req, res, next) => {
@@ -59,14 +68,20 @@ export const verifyStripePayment = async (req, res, next) => {
 };
 
 export const verifyToken = (req, res, next) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ message: "Access denied. No token provided." });
+  const authHeader = req.headers['authorization'];
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // now you can access req.user._id and req.user.email
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // 🟩 Set correct JWT_SECRET in .env
+    req.user = decoded;
     next();
-  } catch (error) {
-    res.status(401).json({ message: "Invalid token." });
+  } catch (err) {
+    console.error("Token verification failed:", err);
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };

@@ -9,12 +9,12 @@ const AddStickers = () => {
   const [stickerData, setStickerData] = useState({
     name: '',
     design: '',
-    file: null
+    file: null,
   });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'file') {
+    if (name === 'image') {
       const file = files[0];
       setStickerData((prev) => ({ ...prev, file }));
       if (file) {
@@ -25,45 +25,58 @@ const AddStickers = () => {
     }
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!stickerData.file) {
-    toast.warning('Please select a sticker image file.');
-    return;
-  }
+    if (!stickerData.file) {
+      toast.warning('Please select a sticker image file.');
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append('name', stickerData.name);
-  formData.append('design', stickerData.design);
-  formData.append('image', stickerData.file);
+    try {
+      const token = localStorage.getItem('auth_token');
 
-  try {
-    const token = localStorage.getItem('auth_token');
-
-    const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/sticker`,
-      formData,
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
+      if (!token) {
+        toast.error("Login required to upload.");
+        return;
       }
-    );
 
-    if (res.status === 200 || res.status === 201) {
+      // Decode JWT token to extract role
+      const base64Url = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(base64Url));
+      const userRole = decodedPayload.role;
+
+      if (userRole !== 'admin' && userRole !== 'partner') {
+        toast.error("Unauthorized: Only admin or partner can upload.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('name', stickerData.name);
+      formData.append('design', stickerData.design);
+      formData.append('image', stickerData.file); // multer field
+
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/sticker`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       toast.success('Sticker uploaded successfully!');
+      console.log('Upload success:', res.data);
+
       setStickerData({ name: '', design: '', file: null });
       setPreviewUrl(null);
-    } else {
-      toast.error('Sticker upload failed.');
+    } catch (error) {
+      console.error('Upload error:', error);
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        toast.error("Unauthorized: Admin or Partner access only.");
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to upload sticker');
+      }
     }
-  } catch (err) {
-    console.error('Upload error:', err);
-    toast.error('Upload failed. Please try again.');
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-4 py-10 text-gray-800 mt-20">
@@ -74,7 +87,6 @@ const handleSubmit = async (e) => {
 
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md border">
         <form onSubmit={handleSubmit} className="space-y-4" encType="multipart/form-data">
-          {/* Sticker Name */}
           <div>
             <label className="text-sm font-medium" htmlFor="name">Sticker Name *</label>
             <input
@@ -89,7 +101,6 @@ const handleSubmit = async (e) => {
             />
           </div>
 
-          {/* Design */}
           <div>
             <label className="text-sm font-medium" htmlFor="design">Design *</label>
             <input
@@ -104,13 +115,12 @@ const handleSubmit = async (e) => {
             />
           </div>
 
-          {/* File Upload */}
           <div>
             <label className="text-sm font-medium" htmlFor="file">Sticker File (Image only) *</label>
             <input
               type="file"
-              id="file"
-              name="file"
+              id="image"
+              name="image"
               accept=".jpg,.jpeg,.png"
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
@@ -118,7 +128,6 @@ const handleSubmit = async (e) => {
             />
           </div>
 
-          {/* Preview */}
           {previewUrl && (
             <div className="flex justify-center mt-3">
               <img
@@ -129,7 +138,6 @@ const handleSubmit = async (e) => {
             </div>
           )}
 
-          {/* Submit Button */}
           <button
             type="submit"
             className="w-full py-2 mt-2 bg-yellow-500 text-black rounded-md font-semibold flex items-center justify-center gap-2 hover:bg-orange-500"

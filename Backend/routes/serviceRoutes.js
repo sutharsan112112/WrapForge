@@ -6,7 +6,7 @@ import {
   deleteService 
 } from '../controllers/serviceController.js';
 import { protect } from '../middleware/authMiddleware.js';
-import isAdminOrPartner from '../middleware/serviceMiddleware.js';
+import { isAdminOrPartner } from '../middleware/serviceMiddleware.js';
 import upload from '../middleware/multerMiddleware.js'; // Import multer
 
 const router = express.Router();

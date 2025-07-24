@@ -14,10 +14,10 @@ export const protect = async (req, res, next) => {
       req.user = await User.findById(decoded.id).select('-password');
       next();
     } catch (error) {
-      return res.status(401).json({ message: 'Not authorized, token failed' });
+      res.status(401).json({ message: 'Not authorized, token failed' });
     }
   } else {
-    return res.status(401).json({ message: 'Not authorized, no token' });
+    res.status(401).json({ message: 'Not authorized, no token' });
   }
 };
 
@@ -26,6 +26,6 @@ export const isAdminOrPartner = (req, res, next) => {
   if (req.user && (req.user.role === 'admin' || req.user.role === 'partner')) {
     next();
   } else {
-    return res.status(403).json({ message: 'Access denied: Admin or Partner only' });
+    res.status(403).json({ message: 'Access denied: Only Admin or Partner allowed' });
   }
 };

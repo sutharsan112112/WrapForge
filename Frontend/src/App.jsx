@@ -27,8 +27,7 @@ import StickerManagement from './pages/Stickermanagement.jsx';
 import ServiceManagement from './pages/ServiceManagement.jsx';
 import { ToastContainer } from 'react-toastify';
 import PartnerProfile from './dashboard/PartnerProfile.jsx';
-import Payment from './pages/Payment.jsx';
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+// import Payment from './pages/Payment.jsx';
 
 function App() {
   return (
@@ -59,12 +58,12 @@ function App() {
         <Route path='/vehiclesmanagement' element={<VehiclesManagement />} />
         <Route path='/stickerManagement' element={<StickerManagement />} />
         <Route path='/servicemanagement' element={<ServiceManagement />} />
-        <Route path="/payment" element={
+        {/* <Route path="/payment" element={
             <ProtectedRoute>
               <Payment />
             </ProtectedRoute>
           }
-        />
+        /> */}
       </Routes>
       <Footer />
 

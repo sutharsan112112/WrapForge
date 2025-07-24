@@ -1,17 +1,7 @@
 import Sticker from '../models/Sticker.js';
+import jwt from 'jsonwebtoken';
 
-// Create sticker
-// export const createSticker = async (req, res) => {
-//   try {
-//     const { name, design, imageUrl } = req.body;
-//     const newSticker = new Sticker({ name, design, imageUrl });
-//     await newSticker.save();
-//     res.status(201).json({ message: 'Sticker created successfully', sticker: newSticker });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Failed to create sticker', error });
-//   }
-// };
-// With multer upload.single('image')
+// Create a new sticker
 export const createSticker = async (req, res) => {
   try {
     console.log("req.body:", req.body);

@@ -35,9 +35,6 @@ const Login = ({ onClose }) => {
 
         toast.success('Login Successful!');
 
-        // Navigate to payment first (you can use a flag if needed)
-        navigate('/payment');
-
         // Then redirect based on role (after a slight delay if needed)
         setTimeout(() => {
           const role = user?.role;

@@ -7,7 +7,8 @@ import {
   deleteSticker
 } from '../controllers/stickerController.js';
 
-import { protect, isAdminOrPartner } from '../middleware/stickerMiddleware.js';
+import { isAdminOrPartner } from '../middleware/stickerMiddleware.js';
+import { protect} from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -28,7 +29,7 @@ router.post(
   '/',
   protect,
   isAdminOrPartner,
-  upload.single('image'), //  Multer middleware
+  upload.single('image'),
   createSticker
 );
 
