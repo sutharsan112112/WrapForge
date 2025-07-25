@@ -3,6 +3,7 @@ import multer from 'multer';
 import {
   createSticker,
   getAllStickers,
+  getStickerById,
   updateSticker,
   deleteSticker
 } from '../controllers/stickerController.js';
@@ -24,6 +25,9 @@ const upload = multer({ storage });
 // Anyone can GET stickers
 router.get('/', getAllStickers);
 
+// getting single sticker by ID
+router.get('/:id', getStickerById);
+
 // Admin/Partner can POST stickers with image
 router.post(
   '/',
@@ -38,8 +42,10 @@ router.put(
   '/:id',
   protect,
   isAdminOrPartner,
+  upload.single('image'),  // ✅ Add multer for PUT
   updateSticker
 );
+
 
 // ⬅️ Admin/Partner can DELETE
 router.delete(

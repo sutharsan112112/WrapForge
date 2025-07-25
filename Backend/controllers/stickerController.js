@@ -34,15 +34,45 @@ export const getAllStickers = async (req, res) => {
   }
 };
 
+// Getting single sticker by ID
+export const getStickerById = async (req, res) => {
+  try {
+    const sticker = await Sticker.findById(req.params.id);
+    if (!sticker) {
+      return res.status(404).json({ message: "Sticker not found" });
+    }
+    res.status(200).json(sticker);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ message: "Invalid sticker ID" });
+  }
+};
+
 // Update sticker
 export const updateSticker = async (req, res) => {
   try {
-    const updatedSticker = await Sticker.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { name, design } = req.body;
+
+    const updateData = { name, design };
+
+    // ✅ If new image uploaded, update imageUrl
+    if (req.file) {
+      updateData.imageUrl = `/uploads/${req.file.filename}`;
+    }
+
+    const updatedSticker = await Sticker.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
     if (!updatedSticker) {
       return res.status(404).json({ message: 'Sticker not found' });
     }
+
     res.status(200).json({ message: 'Sticker updated', sticker: updatedSticker });
   } catch (error) {
+    console.error("Update error:", error);
     res.status(500).json({ message: 'Failed to update sticker', error });
   }
 };

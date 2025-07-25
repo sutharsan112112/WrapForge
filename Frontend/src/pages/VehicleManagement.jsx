@@ -11,7 +11,7 @@ const VehiclesManagement = () => {
     const fetchVehicles = async () => {
       try {
         const res = await axios.get('http://localhost:5000/api/vehicles');
-        setVehicles(res.data); // Assuming res.data contains an array of vehicles
+        setVehicles(res.data);
       } catch (err) {
         console.error('Fetch error:', err);
       }
@@ -42,9 +42,8 @@ const VehiclesManagement = () => {
           vehicles.map((vehicle) => (
             <div key={vehicle._id} className="bg-gray-50 rounded-xl shadow-md p-4">
               {is3DModel(vehicle.image) ? (
-                // Render 3D model using <model-viewer> if it's a .glb or .gltf
                 <model-viewer
-                  src={vehicle.image} // Full URL of the 3D model
+                  src={vehicle.image}
                   alt={vehicle.name}
                   auto-rotate
                   camera-controls={false}
@@ -58,16 +57,23 @@ const VehiclesManagement = () => {
                   max-camera-orbit="auto auto 10m"
                 />
               ) : (
-                // Render image if it's a normal image
                 <img
-                  src={vehicle.image || 'default-image-url'} // Fallback to default image if not available
+                  src={vehicle.image || 'default-image-url'}
                   alt={vehicle.name}
                   className="w-full h-48 object-cover rounded-md mb-4"
                 />
               )}
               <h3 className="text-lg font-semibold">{vehicle.name}</h3>
-              <p className="text-gray-600 text-sm mt-2">Model: {vehicle.model}</p>
-              <p className="text-gray-600 text-sm mt-2">Year: {vehicle.year}</p>
+              <p className="text-gray-600 text-sm mt-1">Model: {vehicle.model}</p>
+              <p className="text-gray-600 text-sm mt-1">Year: {vehicle.year}</p>
+              <p className="text-gray-600 text-sm mt-1">Status: {vehicle.status || 'Unknown'}</p>
+              <p className="text-gray-600 text-sm mt-1">
+                Date: {vehicle.date ? new Date(vehicle.date).toLocaleDateString() : 'N/A'}
+              </p>
+              {vehicle.size && (
+                <p className="text-gray-600 text-sm mt-1">Size: {vehicle.size}</p>
+              )}
+
             </div>
           ))
         ) : (
