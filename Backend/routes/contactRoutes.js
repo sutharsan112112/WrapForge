@@ -1,25 +1,30 @@
 import express from 'express';
+const router = express.Router();
+
 import {
+  sendMessage,
   getAllMessages,
   replyToMessage,
   updateContactMessage,
-  deleteContactMessage,
+  deleteContactMessage
 } from '../controllers/contactController.js';
 
-import { protect, isAdmin } from '../middleware/authMiddleware.js';
+import { isAdmin } from '../middleware/contactMiddleware.js';
+import { protect } from '../middleware/authMiddleware.js';
 
-const router = express.Router();
+// Send message (user/partner)
+router.post('/send',protect, sendMessage);
 
-// Admin - Get all messages
+// Get all messages (admin)
 router.get('/', protect, isAdmin, getAllMessages);
 
-// Admin - Reply to message by ID
+// Reply to a message (admin)
 router.post('/reply/:id', protect, isAdmin, replyToMessage);
 
-// User/Partner - Update their own message
+// Update own message (user/partner)
 router.put('/:id', protect, updateContactMessage);
 
-// Admin - Delete message by ID
+// Delete a message (admin)
 router.delete('/:id', protect, isAdmin, deleteContactMessage);
 
 export default router;

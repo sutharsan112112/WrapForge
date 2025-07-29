@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Car, Users, Box, Wrench,
   Tag, PlusCircle, DollarSign, X, ClipboardList, UserPlus, LayoutDashboard
@@ -36,6 +36,27 @@ const AdminDashboard = () => {
     { vehicle: "Honda Civic", plate: "XYZ-789", customer: "Sarah Johnson", service: "Brake Repair", status: "In Progress", date: "2023-12-02" },
     { vehicle: "Ford F-150", plate: "DEF-456", customer: "Mike Wilson", service: "Engine Diagnostic", status: "Pending", date: "2023-12-03" },
   ];
+
+
+  useEffect(() => {
+    if (showAddStickerModal || showAddVehicleModal || showAddServiceModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        setShowAddStickerModal(false);
+        setShowAddVehicleModal(false);
+        setShowAddServiceModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => {
+      document.body.style.overflow = 'auto';
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [showAddStickerModal, showAddVehicleModal, showAddServiceModal]);
 
   return (
     <div className="flex mt-20 min-h-screen bg-gray-100">

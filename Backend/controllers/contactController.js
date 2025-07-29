@@ -1,92 +1,115 @@
-import Contact from "../models/Contact.js";
+import Contact from '../models/Contact.js';
+import { sendEmail } from "../utils/sendEmail.js";
 
-// Send a message from user or partner
+// Send a message (user/partner)
 export const sendMessage = async (req, res) => {
   try {
     const { message } = req.body;
+    const { id, role } = req.user;
 
     if (!message || message.trim() === '') {
       return res.status(400).json({ message: 'Message is required' });
     }
 
-    const newMsg = await Contact.create({
-      senderId: req.user.id,
-      message,
+    const newMessage = await Contact.create({
+      senderId: id,
+      senderRole: role,
+      message
     });
 
-    res.status(201).json({ message: 'Message sent successfully', data: newMsg });
+    res.status(201).json({ message: 'Message sent successfully', data: newMessage });
   } catch (error) {
     res.status(500).json({ message: 'Failed to send message', error: error.message });
   }
 };
 
-// Get all messages for admin
+// Admin: Get all messages
 export const getAllMessages = async (req, res) => {
-    try {
-        const messages = await Contact.find().populate('senderId', 'email role');
-        res.json({ messages });
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to retrieve messages', error: error.message });
-    }
-};
-
-// Reply to a message from user or partner
-export const replyToMessage = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { reply } = req.body;
-
-        const message = await Contact.findById(id);
-        if (!message) return res.status(404).json({ message: 'Message not found' });
-
-        message.reply = reply;
-        await message.save();
-
-        res.json({ message: 'Replied successfully', data: message });
-    } catch (error) {
-        res.status(500).json({ message: 'Reply failed', error: error.message });
-    }
-};
-
-// Update contact message (PUT)
-export const updateContactMessage = async (req, res) => {
-  const { id } = req.params;
-  const { message } = req.body;
-  const userId = req.user._id;
-  const userRole = req.user.role;
-
   try {
-    const contact = await Contact.findById(id);
+    const messages = await Contact.find().populate('senderId', 'email role');
+    res.status(200).json({ messages });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve messages', error: error.message });
+  }
+};
 
-    if (!contact) {
+// Admin: Reply to message
+export const replyToMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reply } = req.body;
+
+    if (!reply || reply.trim() === "") {
+      return res.status(400).json({ message: "Reply cannot be empty" });
+    }
+
+    // ✅ Update directly to avoid validation issue
+    const message = await Contact.findByIdAndUpdate(
+      id,
+      { reply },
+      { new: true, runValidators: false } // skip required validation
+    );
+
+    if (!message) {
       return res.status(404).json({ message: "Message not found" });
     }
 
+    // ✅ Send email notification
+    try {
+      if (message.email) {
+        await sendEmail(message.email, "WrapForge Admin Reply", reply);
+        console.log(`✅ Reply email sent to ${message.email}`);
+      } else {
+        console.warn("⚠️ No email address for this message");
+      }
+    } catch (emailError) {
+      console.error("❌ Email sending failed:", emailError.message);
+    }
+
+    res.status(200).json({
+      message: "Reply saved successfully",
+      data: message,
+    });
+  } catch (error) {
+    console.error("❌ Reply error:", error);
+    res.status(500).json({ message: "Reply failed", error: error.message });
+  }
+};
+
+
+// User/Partner: Update their own message
+export const updateContactMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message } = req.body;
+    const userId = req.user.id;
+
+    const contact = await Contact.findById(id);
+    if (!contact) return res.status(404).json({ message: 'Message not found' });
+
     if (contact.senderId.toString() !== userId.toString()) {
-      return res.status(403).json({ message: "You are not allowed to edit this message" });
+      return res.status(403).json({ message: 'You are not allowed to edit this message' });
     }
 
     contact.message = message;
     await contact.save();
 
-    res.status(200).json({ message: "Message updated successfully", contact });
+    res.status(200).json({ message: 'Message updated successfully', data: contact });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// Delete a contact message by ID (Admin only)
+// Admin: Delete message
 export const deleteContactMessage = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
+    const contact = await Contact.findById(id);
+    if (!contact) return res.status(404).json({ message: 'Message not found' });
 
-        const message = await Contact.findById(id);
-        if (!message) return res.status(404).json({ message: 'Message not found' });
-
-        await message.deleteOne(); // or message.remove();
-
-        res.json({ message: 'Deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Deletion failed', error: error.message });
-    }
+    await contact.deleteOne();
+    res.json({ message: 'Message deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete message', error: error.message });
+  }
 };

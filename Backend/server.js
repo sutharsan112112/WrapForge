@@ -14,6 +14,8 @@ import serviceRoutes from './routes/serviceRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import customizationRoutes from './routes/customizationRoutes.js';
 import requestRoutes from './routes/requestRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+
 
 dotenv.config();
 connectDB();
@@ -40,9 +42,9 @@ app.use(cors({
 app.use(express.json());
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // app.use('/uploads', express.static('uploads'));
-
-
 app.use(express.urlencoded({ extended: true }));
+
+
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/vehicles', VehicleRoutes);
@@ -52,6 +54,8 @@ app.use('/api/service', serviceRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/customizations', customizationRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/orders', orderRoutes);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

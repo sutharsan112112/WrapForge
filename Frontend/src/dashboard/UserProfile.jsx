@@ -7,6 +7,7 @@ const UserProfile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [customizations, setCustomizations] = useState([]);
+  const [orders, setOrders] = useState([]);  // <--- add orders state
   const [selectedCustomization, setSelectedCustomization] = useState(null);
   const [partners, setPartners] = useState([]);
   const [showPartners, setShowPartners] = useState(false);
@@ -22,19 +23,29 @@ const UserProfile = () => {
     const parsedUser = JSON.parse(storedUser);
     setUser(parsedUser);
 
-    axios.get('http://localhost:5000/api/customizations', {
-      headers: {
-        Authorization: `Bearer ${parsedUser.token}`,
-      },
-    })
+    const headers = {
+      Authorization: `Bearer ${parsedUser.token}`,
+    };
+
+    // Fetch customizations
+    axios.get('http://localhost:5000/api/customizations', { headers })
       .then(res => setCustomizations(res.data || []))
       .catch(err => {
         console.error('Error fetching customizations:', err);
         setCustomizations([]);
       });
+
+    // Fetch orders
+    axios.get('http://localhost:5000/api/orders/user', { headers })
+      .then(res => setOrders(res.data || []))
+      .catch(err => {
+        console.error('Error fetching orders:', err);
+        setOrders([]);
+      });
+
   }, [navigate]);
 
-  const fetchPartners = useCallback(async (customization) => {
+   const fetchPartners = useCallback(async (customization) => {
     if (!user?.token) {
       alert('No auth token found. Please login again.');
       return;
@@ -42,7 +53,7 @@ const UserProfile = () => {
 
     setSelectedCustomization(customization); // 🔥 Set selected customization
     try {
-      const res = await axios.get('http://localhost:5000/api/admin/partner', {
+      const res = await axios.get('http://localhost:5000/api/admin/partners', {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setPartners(res.data || []);
@@ -97,7 +108,7 @@ const UserProfile = () => {
       <div className="max-w-6xl mx-auto">
         <header className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Welcome, {user.name}</h1>
-          <p className="text-gray-600 mt-2">Here’s Your Vehicle Customization Gallery.</p>
+          <p className="text-gray-600 mt-2">Here’s Your Vehicle Customization Gallery and Order History.</p>
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -116,41 +127,76 @@ const UserProfile = () => {
         </div>
 
         {/* 🚗 Customization Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mb-12">
+          <h2 className="text-2xl font-semibold mb-4">Your Vehicle Customizations</h2>
           {customizations.length === 0 ? (
             <p className="text-gray-500">No recent customizations found.</p>
           ) : (
-            customizations.map((custom) => (
-              <div
-                key={custom._id}
-                className="bg-white rounded-xl shadow-md p-5 transform transition hover:scale-105 hover:shadow-xl"
-              >
-                <h3 className="text-lg font-bold text-gray-700 mb-2">
-                  Vehicle: <span className="text-blue-600">
-                    {custom.vehicleId?.name || custom.vehicleId}
-                  </span>
-                </h3>
-                <p className="text-gray-600">Stickers: <span className="font-semibold">{custom.stickers?.length || 0}</span></p>
-                <p className="text-sm text-gray-400 mt-1">Date: {new Date(custom.createdAt).toLocaleDateString()}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {customizations.map((custom) => (
+                <div
+                  key={custom._id}
+                  className="bg-white rounded-xl shadow-md p-5 transform transition hover:scale-105 hover:shadow-xl"
+                >
+                  <h3 className="text-lg font-bold text-gray-700 mb-2">
+                    Vehicle: <span className="text-blue-600">
+                      {custom.vehicleId?.name || custom.vehicleId}
+                    </span>
+                  </h3>
+                  <p className="text-gray-600">Stickers: <span className="font-semibold">{custom.stickers?.length || 0}</span></p>
+                  <p className="text-sm text-gray-400 mt-1">Date: {new Date(custom.createdAt).toLocaleDateString()}</p>
 
-                <div className="flex justify-between items-center mt-4">
-                  <button
-                    onClick={() => setSelectedCustomization(custom)}
-                    className="flex items-center text-blue-600 hover:underline text-sm"
-                  >
-                    <Eye size={18} className="mr-1" />
-                    View
-                  </button>
+                  <div className="flex justify-between items-center mt-4">
+                    <button
+                      onClick={() => setSelectedCustomization(custom)}
+                      className="flex items-center text-blue-600 hover:underline text-sm"
+                    >
+                      <Eye size={18} className="mr-1" />
+                      View
+                    </button>
 
-                  <button
-                    onClick={() => fetchPartners(custom)} // ✅ Pass customization to fetchPartners
-                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm font-medium"
-                  >
-                    View Shops
-                  </button>
+                    <button
+                      onClick={() => fetchPartners(custom)} // ✅ Pass customization to fetchPartners
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm font-medium"
+                    >
+                      View Shops
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 📦 Order History */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-semibold mb-4">Your Orders</h2>
+          {orders.length === 0 ? (
+            <p className="text-gray-500">No orders found.</p>
+          ) : (
+            <div className="space-y-4">
+              {orders.map(order => (
+                <div key={order._id} className="bg-white rounded-lg shadow p-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <p className="font-semibold">Order ID: {order._id}</p>
+                    <p className={`font-semibold capitalize ${
+                      order.status === 'Delivered' ? 'text-green-600' :
+                      order.status === 'Pending' ? 'text-yellow-600' :
+                      'text-red-600'
+                    }`}>Status: {order.status}</p>
+                  </div>
+                  <ul className="mb-2 list-disc list-inside">
+                    {order.items.map(item => (
+                      <li key={item.serviceId}>
+                        {item.title} × {item.quantity} — Rs. {item.price * item.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="font-semibold text-right">Total: Rs. {order.totalAmount}</p>
+                  <p className="text-sm text-gray-400">Ordered on: {new Date(order.createdAt).toLocaleDateString()}</p>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>

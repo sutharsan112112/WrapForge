@@ -2,44 +2,66 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const ServiceManagement = () => {
   const [services, setServices] = useState([]);
-  const [selectedServiceId, setSelectedServiceId] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const token = localStorage.getItem('auth_token');
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/service`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setServices(res.data);
-      } catch (err) {
-        console.error('Fetch error:', err);
-      }
-    };
+  // Fetch all services on load
+  const fetchServices = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/service`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setServices(res.data);
+    } catch (err) {
+      console.error('Fetch error:', err);
+      toast.error('Failed to fetch services');
+    }
+  };
 
+  useEffect(() => {
     fetchServices();
   }, []);
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return 'N/A';
-    return new Date(dateStr).toLocaleDateString();
+  // Change status in DB and update UI
+  const handleAvailabilityChange = async (serviceId, status) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/service/${serviceId}/status`,
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      toast.success(`Status updated to ${status}`);
+      setServices((prev) =>
+        prev.map((s) => (s._id === serviceId ? res.data : s))
+      );
+    } catch (error) {
+      console.error('Error updating service status:', error);
+      toast.error('Failed to update status');
+    }
   };
 
-  const handleSelect = (serviceId) => {
-    setSelectedServiceId(serviceId === selectedServiceId ? null : serviceId);
-  };
+  // Delete service from DB and UI
+  const handleDelete = async (serviceId) => {
+    if (!window.confirm('Are you sure you want to delete this service?')) return;
 
-  const handleAvailabilityChange = (serviceId, status) => {
-    // ✅ If you want to call backend here, you can add axios.put(...)
-    const updated = services.map((s) =>
-      s._id === serviceId ? { ...s, status } : s
-    );
-    setServices(updated);
-    setSelectedServiceId(null); // close option buttons
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`${import.meta.env.VITE_API_URL}/service/${serviceId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      toast.success('Service deleted successfully');
+      setServices((prev) => prev.filter((s) => s._id !== serviceId));
+    } catch (error) {
+      console.error('Error deleting service:', error);
+      toast.error('Failed to delete service');
+    }
   };
 
   return (
@@ -61,39 +83,54 @@ const ServiceManagement = () => {
             <div key={service._id} className="bg-gray-50 rounded-xl shadow-md p-4">
               <img
                 src={service.image || 'https://via.placeholder.com/300x200?text=No+Image'}
-                alt={service.serviceType}
+                alt={service.title}
+                className="w-full h-40 object-cover rounded-md"
               />
-              <h3 className="text-lg font-semibold">{service.serviceType}</h3>
-              <h3 className={`mt-3 text-sm ${service.status === 'Available' ? 'text-green-600' : 'text-black'}`}>
-                Title: {service.title}
-              </h3>
-              <h3 className={`mt-3 text-sm ${service.status === 'Available' ? 'text-green-600' : 'text-black'}`}>
-                Description: {service.description}
-              </h3>
-              <p className="text-gray-600 text-sm mt-1">Status: {service.status || 'Pending'}</p>
+              <h3 className="text-lg font-semibold mt-3">{service.title}</h3>
+              <p className="text-sm text-gray-600 mt-2">{service.description}</p>
+              <p className="text-sm text-gray-800 mt-2 font-semibold">
+                Price: Rs.{service.price || 0}
+              </p>
+              <p className="text-sm text-gray-800 mt-1 font-semibold">
+                Status:{' '}
+                <span
+                  className={
+                    service.status === 'Available'
+                      ? 'text-green-600'
+                      : service.status === 'Unavailable'
+                      ? 'text-yellow-600'
+                      : 'text-gray-600'
+                  }
+                >
+                  {service.status || 'Pending'}
+                </span>
+              </p>
+
               {/* Action Buttons */}
               <div className="px-5 py-5 mt-4 flex gap-x-3 flex-wrap">
                 <button
-                  className={`px-3 py-1 rounded-md text-sm text-white ${service.status === 'Available'
+                  className={`px-3 py-1 rounded-md text-sm text-white ${
+                    service.status === 'Available'
                       ? 'bg-green-600'
                       : 'bg-green-500 hover:bg-green-600'
-                    }`}
+                  }`}
                   onClick={() => handleAvailabilityChange(service._id, 'Available')}
                 >
                   Available
                 </button>
                 <button
-                  className={`px-3 py-1 rounded-md text-sm text-white ${service.status === 'Unavailable'
+                  className={`px-3 py-1 rounded-md text-sm text-white ${
+                    service.status === 'Unavailable'
                       ? 'bg-yellow-600'
                       : 'bg-yellow-500 hover:bg-yellow-600'
-                    }`}
+                  }`}
                   onClick={() => handleAvailabilityChange(service._id, 'Unavailable')}
                 >
                   Unavailable
                 </button>
                 <button
                   className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-md text-sm"
-                  onClick={() => alert(`Delete service: ${service._id}`)}
+                  onClick={() => handleDelete(service._id)}
                 >
                   Delete
                 </button>
@@ -106,7 +143,7 @@ const ServiceManagement = () => {
           </div>
         )}
       </div>
-    </div >
+    </div>
   );
 };
 

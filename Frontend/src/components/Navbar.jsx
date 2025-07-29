@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import LoginPage from '../auth/Login page.jsx';
 import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
+import { useCart } from '../pages/cartContext.jsx'; // adjust the path
 
 function Navbar() {
   const [user, setUser] = useState(null);
@@ -10,6 +11,7 @@ function Navbar() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+const { cartItems } = useCart();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
@@ -36,10 +38,16 @@ function Navbar() {
         {/* Links + Auth */}
         <div className="flex items-center space-x-4 relative">
           <Link to="/" className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Home</Link>
-          <ScrollLink to="aboutus" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">About us</ScrollLink>
           <Link to="/vehicles" className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Vehicle</Link>
           <ScrollLink to="service" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Service</ScrollLink>
-          <ScrollLink to="contact" smooth duration={500} className="cursor-pointer hover:text-orange-500 px-5 py-5 text-xl">Contact us</ScrollLink>
+<Link to="/cart" className="relative inline-block text-sm font-semibold text-blue-600 hover:underline">
+  🛒 Cart
+  {cartItems.length > 0 && (
+    <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+      {cartItems.length}
+    </span>
+  )}
+</Link>
 
           {!user ? (
             <button

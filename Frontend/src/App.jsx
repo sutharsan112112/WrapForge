@@ -18,7 +18,6 @@ import Usermanagement from './pages/Usermanagement.jsx';
 import VehicleScene from './pages/VehicleScene.jsx';
 import Sticker from './pages/Sticker.jsx';
 import ContactMessage from './pages/Contact message.jsx';
-import MyCollection from './pages/MyCollections.jsx';
 import ContactPage from './pages/Contact page.jsx';
 import AddService from './pages/AddService.jsx';
 import VehiclesManagement from './pages/VehicleManagement.jsx'
@@ -29,7 +28,9 @@ import { ToastContainer } from 'react-toastify';
 import PartnerProfile from './dashboard/PartnerProfile.jsx';
 import EditSticker from './pages/EditSticker.jsx';
 // import Payment from './pages/Payment.jsx';
-
+import CartPage from './pages/cartPage.jsx';
+import CheckoutPage from './pages/checkoutPage.jsx'; 
+import MyServices from './pages/MyServices.jsx';
 function App() {
   return (
     <>
@@ -53,14 +54,16 @@ function App() {
         <Route path='/sticker' element={<Sticker />} />
         <Route path='/Usermanagement' element={<Usermanagement />} />
         <Route path="/contact-message" element={<ContactMessage />} />
-        <Route path="/collection" element={<MyCollection />} />
+        <Route path="/my-services" element={<MyServices />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/add-service" element={<AddService />} />
         <Route path='/vehiclesmanagement' element={<VehiclesManagement />} />
         <Route path='/stickerManagement' element={<StickerManagement />} />
         <Route path='/servicemanagement' element={<ServiceManagement />} />
         <Route path='/edit-sticker/:id' element={<EditSticker />} />
-        
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+
         {/* <Route path="/payment" element={
             <ProtectedRoute>
               <Payment />

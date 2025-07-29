@@ -20,7 +20,7 @@ const EditSticker = ({ id, onClose = () => {}, onSuccess = () => {} }) => {
 
     const fetchSticker = async () => {
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('token');
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/sticker/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -57,7 +57,7 @@ const EditSticker = ({ id, onClose = () => {}, onSuccess = () => {} }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('token');
     const formData = new FormData();
     formData.append('name', updatedData.name);
     formData.append('design', updatedData.design);

@@ -14,7 +14,7 @@ const StickerManagement = () => {
   // Fetch all stickers
   const fetchStickers = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/sticker`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -34,8 +34,8 @@ const StickerManagement = () => {
     if (!confirmDelete) return;
 
     try {
-      const token = localStorage.getItem('auth_token');
-      await axios.delete(`${import.meta.env.VITE_API_URL}/sticker/${id}`, {
+      const token = localStorage.getItem('token');
+      const res = await axios.delete(`${import.meta.env.VITE_API_URL}/sticker/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

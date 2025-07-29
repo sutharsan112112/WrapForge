@@ -34,7 +34,7 @@ const AddStickers = () => {
     }
 
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
 
       if (!token) {
         toast.error("Login required to upload.");

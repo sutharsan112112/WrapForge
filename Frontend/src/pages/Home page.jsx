@@ -6,13 +6,14 @@ import AboutUs from './About us';
 import Service from './Service page';
 import Vehicle from "./Vehicle page";
 import { FaTimes } from 'react-icons/fa';
-
 import Login from '../auth/Login page'; // ✅ Make sure path is correct
+import { useNavigate } from 'react-router-dom';
 
 
 function HomePage() {
 
     const [showLoginModal, setShowLoginModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
     setShowLoginModal(true); // ✅ Open login modal
@@ -53,9 +54,24 @@ onClick={handleGetStarted}
       </section>
 
       {/* Vehicle */}
-      {/* <section id="Vehicle" className="relative">
-        <Vehicle />
-      </section> */}
+      <section className="py-16 bg-gradient-to-r from-yellow-50 to-orange-50 text-center">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">
+            🚗 Customize Your Vehicle with Stickers!
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Make your ride stand out with our unique sticker customization service.
+            Choose your favorite stickers, place them on your vehicle, and create a design that’s truly yours.
+          </p>
+          <button
+            onClick={() => navigate('/vehicles')}
+            className="px-6 py-3 bg-yellow-500 hover:bg-orange-500 text-black font-semibold rounded-lg shadow-md transition"
+          >
+            Customize Now
+          </button>
+          
+        </div>
+      </section>
 
       {/*Service*/}
       <section id="service" className="relative">

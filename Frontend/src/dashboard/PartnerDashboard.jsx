@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // ✅ FIXED: import useNavigate
 import {
   LayoutDashboard, Car, Wrench, Calendar, Tag,
-  Bell, Search, UserPlus, X, ClipboardList
+  Bell, Search, UserPlus, X, ClipboardList, History
 } from 'lucide-react';
 import AddStickers from '../pages/Addstickers';
 import AddService from '../pages/AddService';
@@ -13,7 +13,7 @@ const PartnerDashboard = () => {
   const [showAddServiceModal, setShowAddServiceModal] = useState(false);
 
   useEffect(() => {
-    if (showAddStickerModal) {
+    if (showAddStickerModal ) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
@@ -39,43 +39,52 @@ const PartnerDashboard = () => {
         <nav className="space-y-2">
          <button
       onClick={() => navigate('/partnerdashboard')}
-      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm bg-gray-100 text-black font-medium"
+      className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition bg-gray-100 text-black"
     >
       <LayoutDashboard size={20} />
       Dashboard
     </button>
+    
+<button
+  onClick={() => navigate('/my-services')}
+  className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+>
+  <Car size={20} />
+  Get Service Order
+</button>
 
-    <button
-      onClick={() => navigate('/collection')}
-      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm hover:bg-gray-100 text-gray-700"
-    >
-      <Car size={20} />
-      My Collections
-    </button>
 
     <button
       onClick={() => navigate('/stickermanagement')}
       className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
     >
       <Tag size={20} />
-      <span>Stickermanagement</span>
+      <span>My Stickers</span>
     </button>
 
     <button
-      onClick={() => navigate('/service-history')}
-      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm hover:bg-gray-100 text-gray-700"
+      onClick={() => navigate('/servicemanagement')}
+      className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
     >
       <Wrench size={20} />
-      Service History
+     My Services
     </button>
 
-    <button
+    {/* <button
       onClick={() => navigate('/schedule')}
-      className="w-full flex items-center gap-3 p-2 rounded-md transition text-sm hover:bg-gray-100 text-gray-700"
+      className="flex items-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
     >
       <Calendar size={20} />
       Schedule
     </button>
+
+    <button
+      onClick={() => navigate('/history')}
+      className="flex item-center gap-2 w-full p-2 rounded-md hover:bg-gray-100 transition"
+    >
+      <History className="w-5 h-5" />
+      History
+    </button> */}
         </nav>
       </aside>
 
@@ -142,52 +151,53 @@ const PartnerDashboard = () => {
         </div>
       </main>
 
-      {/* Modal */}
-      {showAddStickerModal && (
-        <div
-          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm shadow-lg bg-black/50 flex items-center justify-center p-4"
-          onClick={() => setShowAddStickerModal(false)}
-        >
-          <div
-            className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowAddStickerModal(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
-              aria-label="Close modal"
-            >
-              <X size={20} />
-            </button>
-            <div className="p-6 overflow-hidden">
-              <AddStickers />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showAddServiceModal && (
-      <div
-          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm shadow-lg bg-black/50 flex items-center justify-center p-4"
-          onClick={() => setShowAddServiceModal(false)}
+   {/* Sticker Modal */}
+{showAddStickerModal && (
+  <div
+    className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4"
+    onClick={() => setShowAddStickerModal(false)}
+  >
+    <div
+      className="bg-white h-[80vh] max-w-xl w-full rounded-xl relative shadow-lg overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        onClick={() => setShowAddStickerModal(false)}
+        className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+        aria-label="Close modal"
       >
-        <div
-            className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-        >
-          <button
-            onClick={() => setShowAddServiceModal(false)}
-            className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
-            aria-label="Close modal"
-          >
-            <X size={20} />
-          </button>
-          <div className="p-6 overflow-hidden">
-            <AddService />
-          </div>
-        </div>
+        <X size={20} />
+      </button>
+      <div className="p-6 overflow-auto max-h-[80vh]">
+        <AddStickers />
       </div>
-    )};
+    </div>
+  </div>
+)}
+
+{/* Service Modal */}
+{showAddServiceModal && (
+  <div
+    className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4"
+    onClick={() => setShowAddServiceModal(false)}
+  >
+    <div
+      className="bg-white h-[80vh] max-w-xl w-full rounded-xl relative shadow-lg overflow-hidden"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        onClick={() => setShowAddServiceModal(false)}
+        className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+        aria-label="Close modal"
+      >
+        <X size={20} />
+      </button>
+      <div className="p-6 overflow-auto max-h-[80vh]">
+        <AddService />
+      </div>
+    </div>
+  </div>
+)}
   </div>
   );
 };

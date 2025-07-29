@@ -12,7 +12,7 @@ const Usermanagement = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('token');
         if (!token) {
           console.warn('No auth token found.');
           return;
@@ -47,7 +47,7 @@ const Usermanagement = () => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('token');
       await axios.delete(`${import.meta.env.VITE_API_URL}/admin/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,

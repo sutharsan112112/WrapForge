@@ -18,7 +18,7 @@ const handleSubmit = async (e) => {
     return;
   }
 
-  const token = localStorage.getItem('auth_token');
+  const token = localStorage.getItem('token');
   if (!token) {
     toast.warning('⚠️ You must be logged in to send a message.');  // Warning toast
     return;
@@ -29,7 +29,7 @@ const handleSubmit = async (e) => {
     setResponseMsg('');  // Clear previous response message
 
     const res = await axios.post(
-      `${import.meta.env.VITE_API_URL}/contact`,
+      `${import.meta.env.VITE_API_URL}/contact/send`,
       { message },
       {
         headers: {

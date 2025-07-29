@@ -9,6 +9,7 @@ const AddService = () => {
   const [serviceData, setServiceData] = useState({
     title: '',
     description: '',
+    price: '',
     file: null,
   });
 
@@ -37,7 +38,12 @@ const AddService = () => {
       return;
     }
 
-    const token = localStorage.getItem('auth_token');
+    if (!serviceData.price || isNaN(serviceData.price) || Number(serviceData.price) <= 0) {
+      toast.warning('Please enter a valid price.');
+      return;
+    }
+
+    const token = localStorage.getItem('token');
     if (!token) {
       toast.error('❌ Please log in to upload a service.');
       return;
@@ -46,20 +52,22 @@ const AddService = () => {
     const formData = new FormData();
     formData.append('title', serviceData.title);
     formData.append('description', serviceData.description);
-    formData.append('image', serviceData.file); // 👈 must match backend's multer.single('image')
+    formData.append('price', serviceData.price);
+    formData.append('image', serviceData.file); // must match backend multer key
 
     try {
       const res = await axios.post(`${import.meta.env.VITE_API_URL}/service`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data', // This header is necessary
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
         },
       });
 
       if (res.status === 200 || res.status === 201) {
         toast.success('✅ Service uploaded successfully!');
-        setServiceData({ title: '', description: '', file: null });
+        setServiceData({ title: '', description: '', price: '', file: null });
         setPreviewUrl(null);
+        navigate('/partnerdashboard'); // optional: redirect after upload
       } else {
         toast.error('Service upload failed.');
       }
@@ -67,13 +75,10 @@ const AddService = () => {
       console.error('Upload error:', err);
       
       if (err.response) {
-        // Server response error
         toast.error(err.response.data.message || '❌ Upload failed. Try again later.');
       } else if (err.request) {
-        // Network or request error
         toast.error('❌ No response from the server. Please try again later.');
       } else {
-        // Other error
         toast.error(`Error: ${err.message}`);
       }
     }
@@ -83,7 +88,7 @@ const AddService = () => {
     <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-4 py-10 text-gray-800 mt-20">
       <div className="text-center mb-10">
         <h1 className="text-3xl font-bold">Add New Service</h1>
-        <p className="text-sm text-gray-500 mt-1">Upload a custom service with image and details</p>
+        <p className="text-sm text-gray-500 mt-1">Upload a custom service with image, details and price</p>
       </div>
 
       <div className="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md border">
@@ -112,6 +117,22 @@ const AddService = () => {
               onChange={handleChange}
               className="w-full mt-1 border border-gray-300 rounded-md p-2"
               placeholder="Eg: Full service and filter change"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium" htmlFor="price">Price (Rs.)</label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={serviceData.price}
+              onChange={handleChange}
+              className="w-full mt-1 border border-gray-300 rounded-md p-2"
+              placeholder="Eg: 1500"
+              min="1"
+              step="0.01"
               required
             />
           </div>

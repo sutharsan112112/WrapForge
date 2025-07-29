@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Send, Trash2, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const ContactMessage = () => {
   const [messages, setMessages] = useState([]);
@@ -12,92 +13,91 @@ const ContactMessage = () => {
   const API_URL = import.meta.env.VITE_API_URL; // example: http://localhost:5000/api
 
   const fetchMessages = async () => {
-    try {
-      const token = localStorage.getItem('auth_token');
-      if (!token) {
-        toast.error('You are not logged in.');
-        setLoading(false);
-        return;
-      }
-
-      const res = await fetch(`${API_URL}/contact`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await res.json();
-
-      if (Array.isArray(data.messages)) {
-        setMessages(data.messages);
-      } else {
-        toast.warning('Unexpected response format.');
-        setMessages([]);
-      }
-    } catch (err) {
-      console.error('Fetch Error:', err);
-      toast.error('Failed to fetch messages.');
-      setMessages([]);
-    } finally {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('You are not logged in.');
       setLoading(false);
-    }
-  };
-
-  const handleReply = async (id) => {
-    const reply = replyText[id];
-    if (!reply || reply.trim() === '') {
-      toast.warn('Please type a reply.');
       return;
     }
 
-    try {
-      const token = localStorage.getItem('auth_token');
-      const res = await fetch(`${API_URL}/contact/${id}/reply`, {
-        method: 'POST',
+    // ✅ Axios GET request with headers
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/contact`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Axios-ல் response data directly res.data-ல் இருக்கும்
+    if (Array.isArray(res.data.messages)) {
+      setMessages(res.data.messages);
+    } else {
+      toast.warning('Unexpected response format.');
+      setMessages([]);
+    }
+  } catch (err) {
+    console.error('Fetch Error:', err);
+    toast.error(err.response?.data?.message || 'Failed to fetch messages.');
+    setMessages([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  const handleReply = async (id) => {
+  const reply = replyText[id];
+
+  if (!reply || reply.trim() === "") {
+    toast.warn("Please type a reply.");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+
+    const res = await axios.post(
+      `${import.meta.env.VITE_API_URL}/contact/reply/${id}`,
+      { reply },
+      {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ reply }),
-      });
-
-      if (res.ok) {
-        toast.success('Reply sent!');
-        setReplyText((prev) => ({ ...prev, [id]: '' }));
-        fetchMessages();
-      } else {
-        const errData = await res.json();
-        toast.error(errData.message || 'Failed to send reply.');
       }
-    } catch (err) {
-      console.error(err);
-      toast.error('Error while sending reply.');
-    }
-  };
+    );
+
+    toast.success(res.data?.message || "Reply sent successfully!");
+    setReplyText((prev) => ({ ...prev, [id]: "" }));
+    fetchMessages();
+  } catch (err) {
+    console.error("Reply failed:", err.response?.data || err.message);
+    toast.error(err.response?.data?.message || "Error while sending reply.");
+  }
+};
+
+
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this message?')) return;
-    try {
-      const token = localStorage.getItem('auth_token');
-      const res = await fetch(`${API_URL}/contact/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  if (!window.confirm('Are you sure you want to delete this message?')) return;
 
-      if (res.ok) {
-        toast.success('Message deleted');
-        fetchMessages();
-      } else {
-        const errData = await res.json();
-        toast.error(errData.message || 'Delete failed.');
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('Error while deleting message.');
-    }
-  };
+  try {
+    const token = localStorage.getItem('token');
+
+    // ✅ Axios DELETE request
+    await axios.delete(`${import.meta.env.VITE_API_URL}/contact/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    toast.success('Message deleted');
+    fetchMessages(); // Refresh messages after delete
+  } catch (err) {
+    console.error(err);
+    toast.error(err.response?.data?.message || 'Error while deleting message.');
+  }
+};
 
   useEffect(() => {
     fetchMessages();
