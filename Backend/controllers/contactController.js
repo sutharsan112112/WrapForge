@@ -5,7 +5,7 @@ import { sendEmail } from "../utils/sendEmail.js";
 export const sendMessage = async (req, res) => {
   try {
     const { message } = req.body;
-    const { id, role } = req.user;
+    const { id, role, email } = req.user;  // ✅ Get email from authenticated user
 
     if (!message || message.trim() === '') {
       return res.status(400).json({ message: 'Message is required' });
@@ -14,22 +14,31 @@ export const sendMessage = async (req, res) => {
     const newMessage = await Contact.create({
       senderId: id,
       senderRole: role,
+      email,        // ✅ Store the sender email
       message
     });
 
-    res.status(201).json({ message: 'Message sent successfully', data: newMessage });
+    res.status(201).json({ 
+      message: 'Message sent successfully', 
+      data: newMessage 
+    });
   } catch (error) {
+    console.error("Send message error:", error);
     res.status(500).json({ message: 'Failed to send message', error: error.message });
   }
 };
 
+
 // Admin: Get all messages
 export const getAllMessages = async (req, res) => {
   try {
-    const messages = await Contact.find().populate('senderId', 'email role');
+    const messages = await Contact.find()
+      .populate("senderId", "name email") // ✅ sender name & email populate
+      .sort({ createdAt: -1 });
+
     res.status(200).json({ messages });
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to retrieve messages', error: error.message });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch messages" });
   }
 };
 
@@ -43,18 +52,18 @@ export const replyToMessage = async (req, res) => {
       return res.status(400).json({ message: "Reply cannot be empty" });
     }
 
-    // ✅ Update directly to avoid validation issue
+    // Update the message with the reply
     const message = await Contact.findByIdAndUpdate(
       id,
       { reply },
-      { new: true, runValidators: false } // skip required validation
+      { new: true, runValidators: false }
     );
 
     if (!message) {
       return res.status(404).json({ message: "Message not found" });
     }
 
-    // ✅ Send email notification
+    // Send email notification
     try {
       if (message.email) {
         await sendEmail(message.email, "WrapForge Admin Reply", reply);
@@ -66,9 +75,10 @@ export const replyToMessage = async (req, res) => {
       console.error("❌ Email sending failed:", emailError.message);
     }
 
+    console.log("Reply saved and email sent");
     res.status(200).json({
       message: "Reply saved successfully",
-      data: message,
+      data: message
     });
   } catch (error) {
     console.error("❌ Reply error:", error);

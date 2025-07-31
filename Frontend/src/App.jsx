@@ -27,6 +27,7 @@ import ServiceManagement from './pages/ServiceManagement.jsx';
 import { ToastContainer } from 'react-toastify';
 import PartnerProfile from './dashboard/PartnerProfile.jsx';
 import EditSticker from './pages/EditSticker.jsx';
+import EditVehicle from './pages/EditVehicle.jsx';
 // import Payment from './pages/Payment.jsx';
 import CartPage from './pages/cartPage.jsx';
 import CheckoutPage from './pages/checkoutPage.jsx'; 
@@ -61,8 +62,12 @@ function App() {
         <Route path='/stickerManagement' element={<StickerManagement />} />
         <Route path='/servicemanagement' element={<ServiceManagement />} />
         <Route path='/edit-sticker/:id' element={<EditSticker />} />
+        <Route path='/edit-vehicle/:id' element={<EditVehicle />} />
+        
+        {/* Protected Routes */}
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
+
 
         {/* <Route path="/payment" element={
             <ProtectedRoute>

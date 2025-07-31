@@ -1,53 +1,30 @@
+import mongoose from "mongoose";
 
-// import mongoose from 'mongoose';
-
-// const contactSchema = new mongoose.Schema({
-//     senderId: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         required: true,
-//         ref: 'User'
-//     },
-//     senderRole: {
-//         type: String,
-//         enum: ['user', 'partner', 'admin'],
-//         required: true
-//     },
-//     message: { type: String, required: true },
-//     reply: { type: String },
-//     createdAt: { type: Date, default: Date.now }
-// });
-
-// const Contact = mongoose.model('Contact', contactSchema);
-
-// export default Contact;
-
-import mongoose from 'mongoose';
-
-const contactSchema = new mongoose.Schema({
-  senderId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: 'User'
+const contactSchema = new mongoose.Schema(
+  {
+    senderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    senderRole: {
+      type: String,
+      enum: ["user", "partner"],
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true, // ✅ Needed for sending admin replies
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    reply: {
+      type: String,
+    },
   },
-  senderRole: {
-    type: String,
-    enum: ['user', 'partner', 'admin'],
-    required: true
-  },
-  message: {
-    type: String,
-    required: true
-  },
-  reply: {
-    type: String,
-    default: ''
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+  { timestamps: true }
+);
 
-const Contact = mongoose.model('Contact', contactSchema);
-
-export default Contact;
+export default mongoose.model("Contact", contactSchema);
