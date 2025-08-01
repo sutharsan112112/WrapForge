@@ -2,17 +2,31 @@ import Customization from '../models/Customization.js';
 
 export const createCustomization = async (req, res) => {
   try {
+    console.log("Incoming Data:", req.body);
+    console.log("User:", req.user);
+
     const { vehicleId, stickers } = req.body;
 
-    const customization = new Customization({ vehicleId, stickers });
-    await customization.save();
+    if (!vehicleId) {
+      return res.status(400).json({ message: "Vehicle ID is required" });
+    }
+    if (!stickers || stickers.length === 0) {
+      return res.status(400).json({ message: "No stickers provided" });
+    }
+
+    const customization = await Customization.create({
+      vehicleId,         // ✅ now we save vehicleId
+      stickers,          // ✅ stickers array
+      user: req.user?._id, // Optional: Add this if you want to track user
+    });
 
     res.status(201).json(customization);
   } catch (err) {
-    console.error('Customization Save Error:', err);
-    res.status(500).json({ error: 'Failed to save customization' });
+    console.error("Customization Save Error:", err);
+    res.status(500).json({ message: "Failed to save customization" });
   }
 };
+
 
 export const getCustomizationByVehicleId = async (req, res) => {
   try {

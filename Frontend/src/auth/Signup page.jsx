@@ -4,8 +4,7 @@ import axios from 'axios';
 import logo from '/src/assets/images/WrapForge logo.png';
 import { toast } from 'react-toastify';
 
-
-const SignupPage = () => {
+const SignupPage = ({ onClose }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -31,52 +30,57 @@ const SignupPage = () => {
     }
 
     if (id === 'confirmpassword' || (id === 'password' && formData.confirmpassword)) {
-      const mismatch = id === 'confirmpassword'
-        ? value !== formData.password
-        : formData.confirmpassword !== value;
+      const mismatch =
+        id === 'confirmpassword'
+          ? value !== formData.password
+          : formData.confirmpassword !== value;
       setMismatchError(mismatch ? 'Passwords do not match' : '');
     }
   };
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const res = await axios.post(`${API_URL}/auth/register`, {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      confirmpassword: formData.confirmpassword,
-      role: formData.role,
-    });
+    const API_URL = import.meta.env.VITE_API_URL;
 
-    if (res.status === 200 || res.status === 201) {
-      toast.success('Registration successful!');
-      navigate('/');
+    try {
+      const res = await axios.post(`${API_URL}/auth/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        confirmpassword: formData.confirmpassword,
+        role: formData.role,
+      });
+
+      if (res.status === 200 || res.status === 201) {
+        toast.success('Registration successful!');
+        if (onClose) onClose(); // Close modal
+        navigate('/'); // Redirect to home
+      }
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
+      toast.error(errorMessage);
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
-    toast.error(errorMessage);
-    console.error(err);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 px-10 py-10 text-gray-800 mt-20">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+    <div className="bg-gradient-to-br from-white to-gray-100 px-6 py-10 text-gray-800">
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md mx-auto">
         <div className="text-center mb-6">
           <img src={logo} alt="WrapForge Logo" className="mx-auto w-20" />
-          <h2 className="mt-3 text-2xl font-bold text-[#2f1c13]">Sign Up</h2>
+          <h2 className="mt-3 text-2xl font-bold text-[#2f1c13]">Register</h2>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* Name */}
           <div className="mb-4">
-            <label htmlFor="name" className="block mb-1 font-medium text-gray-700">Full Name</label>
+            <label htmlFor="name" className="block mb-1 font-medium text-gray-700">
+              Full Name
+            </label>
             <input
               type="text"
               id="name"
@@ -90,7 +94,9 @@ const handleSubmit = async (e) => {
 
           {/* Email */}
           <div className="mb-4">
-            <label htmlFor="email" className="block mb-1 font-medium text-gray-700">Email address</label>
+            <label htmlFor="email" className="block mb-1 font-medium text-gray-700">
+              Email address
+            </label>
             <input
               type="email"
               id="email"
@@ -104,7 +110,9 @@ const handleSubmit = async (e) => {
 
           {/* Password */}
           <div className="mb-4">
-            <label htmlFor="password" className="block mb-1 font-medium text-gray-700">Password</label>
+            <label htmlFor="password" className="block mb-1 font-medium text-gray-700">
+              Password
+            </label>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -127,7 +135,12 @@ const handleSubmit = async (e) => {
 
           {/* Confirm Password */}
           <div className="mb-4">
-            <label htmlFor="confirmpassword" className="block mb-1 font-medium text-gray-700">Confirm Password</label>
+            <label
+              htmlFor="confirmpassword"
+              className="block mb-1 font-medium text-gray-700"
+            >
+              Confirm Password
+            </label>
             <div className="relative">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -153,7 +166,9 @@ const handleSubmit = async (e) => {
             <label className="flex items-center space-x-2">
               <input type="checkbox" className="accent-yellow-500" required />
               <span>I agree to the</span>
-              <span className="text-blue-600 hover:underline font-medium cursor-pointer">Terms & Conditions</span>
+              <span className="text-blue-600 hover:underline font-medium cursor-pointer">
+                Terms & Conditions
+              </span>
             </label>
           </div>
 
@@ -163,13 +178,21 @@ const handleSubmit = async (e) => {
             disabled={loading || passwordError || mismatchError}
             className="w-full bg-yellow-500 hover:bg-orange-500 text-black font-semibold py-2 rounded-md transition duration-300"
           >
-            {loading ? 'Signing up...' : 'Sign Up'}
+            {loading ? 'Registering...' : 'Register'}
           </button>
 
           {/* Login Link */}
           <p className="text-center mt-5 text-sm text-gray-700 font-medium">
             Already have an account?{' '}
-            <a href="" className="text-blue-600 font-semibold hover:underline">Login</a>
+            <span
+              onClick={() => {
+                if (onClose) onClose();
+                navigate('/login');
+              }}
+              className="text-blue-600 font-semibold hover:underline cursor-pointer"
+            >
+              Login
+            </span>
           </p>
         </form>
       </div>

@@ -53,7 +53,7 @@ app.use('/api/sticker', stickerRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/customizations', customizationRoutes);
-app.use('/api/payments', paymentRoutes);
+app.use('/api/payment', paymentRoutes);
 app.use('/api/orders', orderRoutes);
 
 const PORT = process.env.PORT || 5000;

@@ -130,7 +130,7 @@ const Login = ({ onClose }) => {
             onClick={() => setShowSignupPage(true)}
             className="text-blue-500 font-semibold hover:underline"
           >
-            Sign Up
+            Register
           </button>
         </p>
       </div>
@@ -138,26 +138,31 @@ const Login = ({ onClose }) => {
       {/* Signup Modal */}
       {showSignupPage && (
         <div
-          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/10 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-sm bg-black/50 flex items-center justify-center p-4"
           onClick={() => setShowSignupPage(false)}
         >
           <div
-            className="bg-white h-[80vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-hidden"
+            className="bg-white max-h-[95vh] rounded-xl max-w-xl w-full relative shadow-lg overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setShowSignupPage(false)}
               className="absolute top-3 right-3 text-gray-500 hover:text-red-500"
+              style={{ fontSize: "30px" }}
               aria-label="Close modal"
             >
               <FaTimes />
             </button>
-            <div className="p-6 h-full">
-              <SignupPage isOpen={showSignupPage} onClose={() => setShowSignupPage(false)} />
+            <div className="p-6">
+              <SignupPage
+                isOpen={showSignupPage}
+                onClose={() => setShowSignupPage(false)}
+              />
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 };

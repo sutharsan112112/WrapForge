@@ -1,13 +1,14 @@
 import express from 'express';
 import {
   createCustomization,
-  getCustomizationByVehicleId ,
-  getAllCustomizations// ✅ missing import added here
+  getCustomizationByVehicleId,
+  getAllCustomizations
 } from '../controllers/customizationController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', createCustomization);
-router.get('/:vehicleId', getCustomizationByVehicleId);
-router.get('/', getAllCustomizations); 
+router.post('/', protect, createCustomization);
+router.get('/:vehicleId', protect, getCustomizationByVehicleId);
+router.get('/', protect, getAllCustomizations);
 export default router;

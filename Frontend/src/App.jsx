@@ -67,14 +67,7 @@ function App() {
         {/* Protected Routes */}
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout" element={<CheckoutPage />} />
-
-
-        {/* <Route path="/payment" element={
-            <ProtectedRoute>
-              <Payment />
-            </ProtectedRoute>
-          }
-        /> */}
+        {/* <Route path="/payment" element={<Payment />} /> */}
       </Routes>
       <Footer />
 
