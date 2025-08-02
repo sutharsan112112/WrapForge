@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from './cartContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { ArrowLeft } from 'lucide-react';
 
 const CheckoutPage = () => {
   const { cartItems, clearCart } = useCart();
@@ -97,6 +98,18 @@ const CheckoutPage = () => {
 
   return (
     <div className="py-16 px-4 mx-4 md:mx-20 my-10 bg-white rounded-xl shadow-lg">
+
+      {/* Header with Back Button */}
+      <div className="flex justify-between items-center mb-4">
+        <button
+          onClick={() => navigate(-1)} // ✅ now works
+          className="flex items-center bg-yellow-400 hover:bg-orange-400 text-black px-4 py-2 rounded-md font-semibold"
+        >
+          <ArrowLeft className="mr-2" size={18} />
+          Back
+        </button>
+      </div>
+
       <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">🛍 Checkout</h2>
 
       <form onSubmit={handleCheckout} className="grid grid-cols-1 md:grid-cols-2 gap-6">
