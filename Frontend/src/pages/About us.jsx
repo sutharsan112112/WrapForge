@@ -20,6 +20,4 @@ const AboutUs = () => (
 </>
 );
 
-
-jgj
 export default AboutUs;
